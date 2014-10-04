@@ -1,6 +1,10 @@
 *.o
 *.elc
 *~
+*#
+.#*
+etc/DOC-24.3.*
+src/emacs-24.3.*
 
 configure
 Makefile
