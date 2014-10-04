@@ -32,6 +32,14 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "xterm.h"
 #endif
 
+
+DEFUN ("lua-eval", Flua_eval, Slua_eval, 1, 1, 0,
+       doc: /* Evaluate argument as lua code. return t on success, else nil */)
+  (Lisp_Object code)
+{
+  return luaL_dostring(L, XSTRING(code)->data) ? Qnil : Qt;
+}
+
 DEFUN ("lua-concat", Flua_concat, Slua_concat, 0, MANY, 0,
        doc: /* Concatenate all the arguments and make the result a string.
 The result is a string whose elements are the elements of all the arguments.
@@ -3566,6 +3574,7 @@ alist of active lexical bindings.  */);
 
   inhibit_lisp_code = Qnil;
 
+  defsubr (&Slua_eval);
   defsubr (&Slua_concat);
   defsubr (&Slua_test); 
   defsubr (&Sor);

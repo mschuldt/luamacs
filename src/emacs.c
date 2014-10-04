@@ -656,11 +656,14 @@ void (*__malloc_initialize_hook) (void) EXTERNALLY_VISIBLE = malloc_initialize_h
 
 #endif /* DOUG_LEA_MALLOC */
 
+extern lua_State *L;
 
 /* ARGSUSED */
 int
 main (int argc, char **argv)
 {
+  L = luaL_newstate();
+  luaL_openlibs(L);
 #if GC_MARK_STACK
   Lisp_Object dummy;
 #endif

@@ -33,6 +33,10 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include <intprops.h>
 
 #include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+
+lua_State *L;
 
 INLINE_HEADER_BEGIN
 #ifndef LISP_INLINE
