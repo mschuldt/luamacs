@@ -11,7 +11,9 @@
 #include "llimits.h"
 #include "lstate.h"
 
+//mbs
 TValue *getStackItem (lua_State *L, int idx);
+LUA_API void lua_pushTValue (lua_State *L, TValue * o);
   
 #define api_incr_top(L)   {L->top++; api_check(L, L->top <= L->ci->top, \
 				"stack overflow");}

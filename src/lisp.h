@@ -3783,5 +3783,5 @@ INLINE_HEADER_END
 
 
 Lisp_Object lua_to_lisp (int idx);
-
+Lisp_Object build_lua_tvalue (TValue * o);
 #endif /* EMACS_LISP_H */
