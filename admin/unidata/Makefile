@@ -23,10 +23,10 @@
 
 SHELL = /bin/sh
 
-srcdir = /misc/emacs/bzr/emacs24-merge/admin/unidata
-abs_builddir = /misc/emacs/bzr/emacs24-merge/admin/unidata
-top_srcdir = /misc/emacs/bzr/emacs24-merge
-abs_top_builddir = /misc/emacs/bzr/emacs24-merge
+srcdir = /home/mschuldt/luamacs/admin/unidata
+abs_builddir = /home/mschuldt/luamacs/admin/unidata
+top_srcdir = /home/mschuldt/luamacs
+abs_top_builddir = /home/mschuldt/luamacs
 
 EMACS = ${abs_top_builddir}/src/emacs
 DSTDIR = ${top_srcdir}/lisp/international
