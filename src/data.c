@@ -1048,6 +1048,11 @@ find_symbol_value (Lisp_Object symbol)
     }
 }
 
+#define LUA_VAR_STRING_P(str) ((str[3] == '.')          \
+                               && (str[0] == 'l')       \
+                               && (str[1] == 'u')       \
+                               && (str[2] == 'a'))
+
 //converts the object on the stack at postion IDX to a Lisp_Object
 Lisp_Object lua_to_lisp (int idx){
   int type = lua_type(L, idx);
@@ -1088,7 +1093,20 @@ global value outside of any lexical scope.  */)
 {
   Lisp_Object val;
 
-  val = find_symbol_value (symbol);
+  char * name = XSTRING(XSYMBOL(symbol)->name)->data;
+  int len = strlen(name);
+  if (len > 4 && LUA_VAR_STRING_P(name)){ //mbs
+    name += 4;
+    printf("looking up lua value: %s\n", name);
+    lua_pushglobaltable(L);
+    lua_getfield(L, -1, name);
+    //TODO: what if the field does not exist?
+    //val = lua_to_lisp(index2addr(L, -1));
+    val = lua_to_lisp(-1);
+  }else{
+    val = find_symbol_value (symbol);
+  }
+
   if (!EQ (val, Qunbound))
     return val;
 

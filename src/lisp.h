@@ -3759,4 +3759,7 @@ functionp (Lisp_Object object)
 
 INLINE_HEADER_END
 
+
+Lisp_Object lua_to_lisp (int idx);
+
 #endif /* EMACS_LISP_H */
