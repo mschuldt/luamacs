@@ -581,7 +581,7 @@ clip_to_bounds (ptrdiff_t lower, EMACS_INT num, ptrdiff_t upper)
 #define XMARKER(a)	(eassert (MARKERP (a)), &(XMISC (a)->u_marker))
 #define XOVERLAY(a)	(eassert (OVERLAYP (a)), &(XMISC (a)->u_overlay))
 #define XSAVE_VALUE(a)	(eassert (SAVE_VALUEP (a)), &(XMISC (a)->u_save_value))
-#define XLUA_VALUE(a)	(eassert (LUA_VALUEP (a)), &(XMISC (a)->lau_val))//mbs
+#define XLUA_VALUE(a)	(eassert (LUA_VALUEP (a)), &(XMISC (a)->lua_val))//mbs
 
 /* Forwarding object types.  */
 
@@ -1437,7 +1437,7 @@ union Lisp_Misc
     struct Lisp_Marker u_marker;
     struct Lisp_Overlay u_overlay;
     struct Lisp_Save_Value u_save_value;
-    struct Lisp_Lua_TValue lau_val; //mbs
+    struct Lisp_Lua_TValue lua_val; //mbs
   };
 
 /* Forwarding pointer to an int variable.
