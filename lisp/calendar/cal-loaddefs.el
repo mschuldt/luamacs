@@ -5,8 +5,8 @@
 
 ;;;### (autoloads (diary-bahai-insert-yearly-entry diary-bahai-insert-monthly-entry
 ;;;;;;  diary-bahai-insert-entry calendar-bahai-goto-date calendar-bahai-print-date
-;;;;;;  calendar-bahai-date-string) "cal-bahai" "cal-bahai.el" (20707
-;;;;;;  18685 911514 0))
+;;;;;;  calendar-bahai-date-string) "cal-bahai" "cal-bahai.el" (21551
+;;;;;;  35514 547626 339000))
 ;;; Generated autoloads from cal-bahai.el
 
 (autoload 'calendar-bahai-date-string "cal-bahai" "\
@@ -50,7 +50,7 @@ Prefix argument ARG will make the entry nonmarking.
 
 ;;;### (autoloads (calendar-chinese-goto-date calendar-chinese-print-date
 ;;;;;;  calendar-chinese-date-string) "cal-china" "cal-china.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 547626 339000))
 ;;; Generated autoloads from cal-china.el
 
 (autoload 'calendar-chinese-date-string "cal-china" "\
@@ -75,7 +75,7 @@ Echo Chinese date unless NOECHO is non-nil.
 ;;;### (autoloads (calendar-ethiopic-goto-date calendar-ethiopic-print-date
 ;;;;;;  calendar-ethiopic-date-string calendar-coptic-goto-date calendar-coptic-print-date
 ;;;;;;  calendar-coptic-date-string) "cal-coptic" "cal-coptic.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 551628 339000))
 ;;; Generated autoloads from cal-coptic.el
 
 (autoload 'calendar-coptic-date-string "cal-coptic" "\
@@ -118,7 +118,7 @@ Echo Ethiopic date unless NOECHO is t.
 
 ;;;### (autoloads (calendar-french-goto-date calendar-french-print-date
 ;;;;;;  calendar-french-date-string) "cal-french" "cal-french.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 551628 339000))
 ;;; Generated autoloads from cal-french.el
 
 (autoload 'calendar-french-date-string "cal-french" "\
@@ -144,7 +144,7 @@ Echo French Revolutionary date unless NOECHO is non-nil.
 ;;;### (autoloads (diary-hebrew-insert-yearly-entry diary-hebrew-insert-monthly-entry
 ;;;;;;  diary-hebrew-insert-entry calendar-hebrew-goto-date calendar-hebrew-print-date
 ;;;;;;  calendar-hebrew-date-string) "cal-hebrew" "cal-hebrew.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 551628 339000))
 ;;; Generated autoloads from cal-hebrew.el
 
 (autoload 'calendar-hebrew-date-string "cal-hebrew" "\
@@ -187,7 +187,7 @@ Prefix argument ARG makes the entry nonmarking.
 ;;;***
 
 ;;;### (autoloads (cal-html-cursor-year cal-html-cursor-month) "cal-html"
-;;;;;;  "cal-html.el" (20707 18685 911514 0))
+;;;;;;  "cal-html.el" (21551 35514 555630 338000))
 ;;; Generated autoloads from cal-html.el
 
 (autoload 'cal-html-cursor-month "cal-html" "\
@@ -212,7 +212,7 @@ specified by EVENT.  Note that any existing output files are overwritten.
 ;;;### (autoloads (diary-islamic-insert-yearly-entry diary-islamic-insert-monthly-entry
 ;;;;;;  diary-islamic-insert-entry calendar-islamic-goto-date calendar-islamic-print-date
 ;;;;;;  calendar-islamic-date-string) "cal-islam" "cal-islam.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 555630 338000))
 ;;; Generated autoloads from cal-islam.el
 
 (autoload 'calendar-islamic-date-string "cal-islam" "\
@@ -258,7 +258,7 @@ Prefix argument ARG makes the entry nonmarking.
 
 ;;;### (autoloads (calendar-iso-goto-week calendar-iso-goto-date
 ;;;;;;  calendar-iso-print-date calendar-iso-date-string calendar-iso-from-absolute)
-;;;;;;  "cal-iso" "cal-iso.el" (20707 18685 911514 0))
+;;;;;;  "cal-iso" "cal-iso.el" (21551 35514 555630 338000))
 ;;; Generated autoloads from cal-iso.el
 
 (autoload 'calendar-iso-from-absolute "cal-iso" "\
@@ -300,7 +300,7 @@ Interactively, goes to the first day of the specified week.
 ;;;;;;  calendar-astro-date-string calendar-astro-from-absolute calendar-astro-to-absolute
 ;;;;;;  calendar-julian-goto-date calendar-julian-print-date calendar-julian-date-string
 ;;;;;;  calendar-julian-from-absolute) "cal-julian" "cal-julian.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 555630 338000))
 ;;; Generated autoloads from cal-julian.el
 
 (autoload 'calendar-julian-from-absolute "cal-julian" "\
@@ -360,7 +360,7 @@ Echo astronomical (Julian) day number unless NOECHO is non-nil.
 ;;;;;;  calendar-mayan-next-round-date calendar-mayan-previous-tzolkin-date
 ;;;;;;  calendar-mayan-next-tzolkin-date calendar-mayan-previous-haab-date
 ;;;;;;  calendar-mayan-next-haab-date calendar-mayan-print-date calendar-mayan-date-string)
-;;;;;;  "cal-mayan" "cal-mayan.el" (20707 18685 911514 0))
+;;;;;;  "cal-mayan" "cal-mayan.el" (21551 35514 555630 338000))
 ;;; Generated autoloads from cal-mayan.el
 
 (autoload 'calendar-mayan-date-string "cal-mayan" "\
@@ -426,7 +426,7 @@ Echo Mayan date unless NOECHO is non-nil.
 ;;;;;;  calendar-backward-year calendar-backward-month calendar-forward-year
 ;;;;;;  calendar-forward-month calendar-goto-today calendar-cursor-to-visible-date
 ;;;;;;  calendar-cursor-to-nearest-date) "cal-move" "cal-move.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 559632 337000))
 ;;; Generated autoloads from cal-move.el
 
 (autoload 'calendar-cursor-to-nearest-date "cal-move" "\
@@ -576,7 +576,7 @@ Negative DAY counts backward from end of year.
 
 ;;;### (autoloads (calendar-persian-goto-date calendar-persian-print-date
 ;;;;;;  calendar-persian-date-string) "cal-persia" "cal-persia.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 559632 337000))
 ;;; Generated autoloads from cal-persia.el
 
 (autoload 'calendar-persian-date-string "cal-persia" "\
@@ -603,7 +603,7 @@ Echo Persian date unless NOECHO is non-nil.
 ;;;;;;  cal-tex-cursor-week2 cal-tex-cursor-week cal-tex-cursor-month
 ;;;;;;  cal-tex-cursor-month-landscape cal-tex-cursor-filofax-year
 ;;;;;;  cal-tex-cursor-year-landscape cal-tex-cursor-year) "cal-tex"
-;;;;;;  "cal-tex.el" (20707 18685 911514 0))
+;;;;;;  "cal-tex.el" (21551 35514 559632 337000))
 ;;; Generated autoloads from cal-tex.el
 
 (autoload 'cal-tex-cursor-year "cal-tex" "\
@@ -754,7 +754,7 @@ a buffer position to use instead of point.
 
 ;;;### (autoloads (calendar-two-frame-setup calendar-only-one-frame-setup
 ;;;;;;  calendar-one-frame-setup calendar-frame-setup) "cal-x" "cal-x.el"
-;;;;;;  (20707 18685 911514 0))
+;;;;;;  (21551 35514 559632 337000))
 ;;; Generated autoloads from cal-x.el
 
 (autoload 'calendar-frame-setup "cal-x" "\
@@ -802,8 +802,8 @@ See `calendar-frame-setup' for more information.
 ;;;;;;  diary-insert-monthly-entry diary-insert-weekly-entry diary-insert-entry
 ;;;;;;  diary-make-entry diary-mark-entries diary-show-all-entries
 ;;;;;;  diary-view-other-diary-entries diary-view-entries diary-set-maybe-redraw
-;;;;;;  diary-live-p) "diary-lib" "diary-lib.el" (20707 18685 911514
-;;;;;;  0))
+;;;;;;  diary-live-p) "diary-lib" "diary-lib.el" (21551 35514 567636
+;;;;;;  338000))
 ;;; Generated autoloads from diary-lib.el
 
 (autoload 'diary-live-p "diary-lib" "\
@@ -936,8 +936,8 @@ Return a value for the variable `diary-font-lock-keywords'.
 ;;;***
 
 ;;;### (autoloads (calendar-mark-holidays calendar-cursor-holidays
-;;;;;;  calendar-list-holidays) "holidays" "holidays.el" (20707 18685
-;;;;;;  911514 0))
+;;;;;;  calendar-list-holidays) "holidays" "holidays.el" (21551 35514
+;;;;;;  571638 338000))
 ;;; Generated autoloads from holidays.el
 
 (autoload 'calendar-list-holidays "holidays" "\
@@ -965,8 +965,8 @@ use instead of point.
 
 ;;;***
 
-;;;### (autoloads (calendar-lunar-phases) "lunar" "lunar.el" (20707
-;;;;;;  18685 911514 0))
+;;;### (autoloads (calendar-lunar-phases) "lunar" "lunar.el" (21551
+;;;;;;  35514 575640 337000))
 ;;; Generated autoloads from lunar.el
 
 (autoload 'calendar-lunar-phases "lunar" "\
@@ -981,7 +981,7 @@ use instead of point.
 ;;;***
 
 ;;;### (autoloads (calendar-sunrise-sunset-month calendar-sunrise-sunset)
-;;;;;;  "solar" "solar.el" (20707 18685 911514 0))
+;;;;;;  "solar" "solar.el" (21551 35514 575640 337000))
 ;;; Generated autoloads from solar.el
 
 (autoload 'calendar-sunrise-sunset "solar" "\
@@ -998,8 +998,9 @@ Local time of sunrise and sunset for month under cursor or at EVENT.
 ;;;***
 
 ;;;### (autoloads nil nil ("appt.el" "cal-dst.el" "cal-menu.el" "calendar.el"
-;;;;;;  "icalendar.el" "parse-time.el" "time-date.el" "timeclock.el"
-;;;;;;  "todo-mode.el") (20793 40498 550881 724000))
+;;;;;;  "diary-loaddefs.el" "hol-loaddefs.el" "icalendar.el" "parse-time.el"
+;;;;;;  "time-date.el" "timeclock.el" "todo-mode.el") (21551 35857
+;;;;;;  888681 183000))
 
 ;;;***
 
