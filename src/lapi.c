@@ -78,6 +78,10 @@ static TValue *index2addr (lua_State *L, int idx) {
   }
 }
 
+//mbs
+TValue *getStackItem (lua_State *L, int idx) {
+  return index2addr(L, idx);
+}
 
 /*
 ** to be called by 'lua_checkstack' in protected mode, to grow stack
