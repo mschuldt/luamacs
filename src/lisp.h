@@ -35,6 +35,9 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
+#include "lobject.h"
+#include "lapi.h"
+#include "lualib.h"
 
 lua_State *L;
 

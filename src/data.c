@@ -1048,6 +1048,38 @@ find_symbol_value (Lisp_Object symbol)
     }
 }
 
+//converts the object on the stack at postion IDX to a Lisp_Object
+Lisp_Object lua_to_lisp (int idx){
+  int type = lua_type(L, idx);
+  switch(type){
+  case LUA_TNIL: // 0
+    printf("lua: nil\n");
+    return Qnil;
+  case LUA_TBOOLEAN: //1
+    printf("lua: boolean\n");
+    return lua_toboolean(L, idx) ? Qt : Qnil;
+  case LUA_TNUMBER: //3
+    printf("lua: number\n");
+    //return make_number(lua_tonumber(L, idx));
+    return make_float(lua_tonumber(L, idx));
+  case LUA_TSTRING: //4
+    return build_string(lua_tostring(L, idx)); //TODO: create reference or copy?
+
+  case LUA_TLIGHTUSERDATA: //2
+    //val_(o).p
+  case LUA_TTABLE: //5
+    //&val_(o).gc->h
+  case LUA_TFUNCTION: //5
+    //&val_(o).gc->cl
+  case LUA_TUSERDATA: //7
+  case LUA_TTHREAD: //8
+  case LUA_NUMTAGS: //9 ??
+    //    return;
+  default:
+    printf("ERROR -- lua_to_lisp: trying to convert unknown type: %d\n", type);
+  }
+}
+
 DEFUN ("symbol-value", Fsymbol_value, Ssymbol_value, 1, 1, 0,
        doc: /* Return SYMBOL's value.  Error if that is void.
 Note that if `lexical-binding' is in effect, this returns the
