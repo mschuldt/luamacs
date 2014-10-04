@@ -3331,6 +3331,18 @@ build_overlay (Lisp_Object start, Lisp_Object end, Lisp_Object plist)
   return overlay;
 }
 
+//mbs
+Lisp_Object
+build_lua_tvalue (TValue * o){
+  register Lisp_Object val;
+  register struct Lisp_Lua_TValue *p;
+
+  val = allocate_misc(Lisp_Misc_Lua_TValue);
+  p = XLUA_VALUE(val);
+  p->o = o;
+  return val;
+}
+
 DEFUN ("make-marker", Fmake_marker, Smake_marker, 0, 0, 0,
        doc: /* Return a newly allocated marker which does not point at any place.  */)
   (void)
@@ -4030,6 +4042,7 @@ live_misc_p (struct mem_node *m, void *p)
 {
   if (m->type == MEM_TYPE_MISC)
     {
+      //      return 1;//mbs
       struct marker_block *b = (struct marker_block *) m->start;
       ptrdiff_t offset = (char *) p - (char *) &b->markers[0];
 
