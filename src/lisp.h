@@ -32,6 +32,8 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <intprops.h>
 
+#include "lua.h"
+
 INLINE_HEADER_BEGIN
 #ifndef LISP_INLINE
 # define LISP_INLINE INLINE

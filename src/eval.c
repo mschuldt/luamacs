@@ -32,6 +32,15 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "xterm.h"
 #endif
 
+
+DEFUN ("lua-test", Flua_test, Slua_test, 2, 2, 0,
+       doc: /* Return t if the two args are the same Lisp object. */)
+  (Lisp_Object obj1, Lisp_Object obj2)
+{
+  return build_string(mbs_test());
+}
+
+
 struct backtrace *backtrace_list;
 
 #if !BYTE_MARK_STACK
@@ -3539,6 +3548,7 @@ alist of active lexical bindings.  */);
 
   inhibit_lisp_code = Qnil;
 
+  defsubr (&Slua_test); 
   defsubr (&Sor);
   defsubr (&Sand);
   defsubr (&Sif);

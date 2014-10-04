@@ -16,6 +16,9 @@
 #include "luaconf.h"
 
 
+const char* mbs_test();
+
+
 #define LUA_VERSION_MAJOR	"5"
 #define LUA_VERSION_MINOR	"2"
 #define LUA_VERSION_NUM		502

@@ -495,3 +495,7 @@ int lua_main (int argc, char **argv) {
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
+
+const char* mbs_test(){
+  return "lua test success";
+}
