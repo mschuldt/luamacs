@@ -32,6 +32,24 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "xterm.h"
 #endif
 
+DEFUN ("lua-concat", Flua_concat, Slua_concat, 0, MANY, 0,
+       doc: /* Concatenate all the arguments and make the result a string.
+The result is a string whose elements are the elements of all the arguments.
+Each argument may be a string or a list or vector of characters (integers).
+usage: (concat &rest SEQUENCES)  */)
+  (ptrdiff_t nargs, Lisp_Object *args)
+{
+  lua_State *L = luaL_newstate();
+  luaL_openlibs(L);
+  char * str;
+  for (int i = 0; i < nargs; i++){
+    str = XSTRING(args[i])->data;
+    lua_pushlstring(L, str, strlen(str));
+  }
+  lua_concat(L, nargs);
+  const char *msg = lua_tostring(L, -1);
+  return build_string(msg);
+}
 
 DEFUN ("lua-test", Flua_test, Slua_test, 2, 2, 0,
        doc: /* Return t if the two args are the same Lisp object. */)
@@ -3548,6 +3566,7 @@ alist of active lexical bindings.  */);
 
   inhibit_lisp_code = Qnil;
 
+  defsubr (&Slua_concat);
   defsubr (&Slua_test); 
   defsubr (&Sor);
   defsubr (&Sand);
