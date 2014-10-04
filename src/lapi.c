@@ -465,6 +465,17 @@ LUA_API const void *lua_topointer (lua_State *L, int idx) {
 ** push functions (C -> stack)
 */
 
+//mbs
+//puah a TValue onto the top of the stack
+LUA_API void lua_pushTValue (lua_State *L, TValue * o) {
+  lua_lock(L);
+  TValue* top = L->top;
+  top->tt_ = o->tt_;
+  top->value_ = o->value_;
+  api_incr_top(L);
+  lua_unlock(L);
+}
+
 
 LUA_API void lua_pushnil (lua_State *L) {
   lua_lock(L);
