@@ -1037,7 +1037,7 @@ find_symbol_value (Lisp_Object symbol)
 
   CHECK_SYMBOL (symbol);
   sym = XSYMBOL (symbol);
-
+  
  start:
   switch (sym->redirect)
     {
@@ -1056,9 +1056,10 @@ find_symbol_value (Lisp_Object symbol)
     }
 }
 
-#define LUA_VAR_STRING_P(str) ((str[3] == '.')          \
-                               && (str[0] == 'l')       \
-                               && (str[1] == 'u')       \
+#define LUA_VAR_STRING_P(str) (str[0] && str[1] && str[2] && str[3] \
+                               && (str[3] == '.')                   \
+                               && (str[0] == 'l')                   \
+                               && (str[1] == 'u')                   \
                                && (str[2] == 'a'))
 
 //converts the object on the stack at postion IDX to a Lisp_Object
@@ -1095,7 +1096,7 @@ Lisp_Object lua_to_lisp (int idx){
   case LUA_NUMTAGS: //9 ??
     //    return;
   default:
-    
+    //TODO: lisp error 
     printf("ERROR -- lua_to_lisp: trying to convert unknown type: %d\n", type);
   }
 }
@@ -1107,10 +1108,8 @@ global value outside of any lexical scope.  */)
   (Lisp_Object symbol)
 {
   Lisp_Object val;
-
   char * name = XSTRING(XSYMBOL(symbol)->name)->data;
-  int len = strlen(name);
-  if (len > 4 && LUA_VAR_STRING_P(name)){ //mbs
+  if (LUA_VAR_STRING_P(name)){ //mbs
     name += 4;
     printf("looking up lua value: %s\n", name);
     lua_pushglobaltable(L);
