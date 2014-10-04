@@ -89,7 +89,8 @@ typedef void * (*lua_Alloc) (void *ud, void *ptr, size_t osize, size_t nsize);
 #define LUA_TTHREAD		8
 
 #define LUA_NUMTAGS		9
-
+//mbs
+#define LUA_LISP_OBJECT         10 //lua reference to a Lisp_Object
 
 
 /* minimum Lua stack available to a C function */

@@ -1079,6 +1079,9 @@ Lisp_Object lua_to_lisp (int idx){
   case LUA_TSTRING: //4
     return build_string(lua_tostring(L, idx)); //TODO: create reference or copy?
 
+  case LUA_LISP_OBJECT: //lua reference to a Lisp_Object
+    return lua_tolisp(L, idx);
+    
   case LUA_TTABLE: //5
     printf("lua table\n");
     //&val_(o).gc->h
@@ -1088,7 +1091,7 @@ Lisp_Object lua_to_lisp (int idx){
     
     return build_lua_tvalue(getStackItem(L, idx)); //doing
 
-    
+
   case LUA_TLIGHTUSERDATA: //2
     //val_(o).p
   case LUA_TUSERDATA: //7
@@ -1127,6 +1130,7 @@ global value outside of any lexical scope.  */)
   xsignal1 (Qvoid_variable, symbol);
 }
 
+
 //pushes the lua representation of OBJ onto the stack
 void Lisp_to_lua(Lisp_Object obj){
   int type = XTYPE (obj);
@@ -1152,7 +1156,9 @@ void Lisp_to_lua(Lisp_Object obj){
   case Lisp_Cons:
   case Lisp_Vectorlike:
   default: //bad type
-    printf("ERROR -- lua_to_lisp: trying to convert unsupported type: %d\n", type);
+    //printf("ERROR -- lua_to_lisp: trying to convert unsupported type: %d\n", type);
+
+    lua_pushlisp(L, obj);
   }
 }
 

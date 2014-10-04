@@ -27,8 +27,6 @@
 #include "lundump.h"
 #include "lvm.h"
 
-
-
 const char lua_ident[] =
   "$LuaVersion: " LUA_COPYRIGHT " $"
   "$LuaAuthors: " LUA_AUTHORS " $";
@@ -407,6 +405,12 @@ LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
   return svalue(o);
 }
 
+//mbs
+Lisp_Object lua_tolisp (lua_State *L, int idx) {
+  const TValue *o = getStackItem(L, idx);
+  return lisp_value(o);
+}
+
 
 LUA_API size_t lua_rawlen (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
@@ -466,7 +470,7 @@ LUA_API const void *lua_topointer (lua_State *L, int idx) {
 */
 
 //mbs
-//puah a TValue onto the top of the stack
+//push a TValue onto the top of the stack
 LUA_API void lua_pushTValue (lua_State *L, TValue * o) {
   lua_lock(L);
   TValue* top = L->top;
@@ -494,6 +498,14 @@ LUA_API void lua_pushnumber (lua_State *L, lua_Number n) {
   lua_unlock(L);
 }
 
+
+//mbs
+void lua_pushlisp (lua_State *L, Lisp_Object n) {
+  lua_lock(L);
+  setlispvalue(L->top, n);
+  api_incr_top(L);
+  lua_unlock(L);
+}
 
 LUA_API void lua_pushinteger (lua_State *L, lua_Integer n) {
   lua_lock(L);

@@ -146,6 +146,7 @@ typedef struct lua_TValue TValue;
 #define ttisuserdata(o)		checktag((o), ctb(LUA_TUSERDATA))
 #define ttisthread(o)		checktag((o), ctb(LUA_TTHREAD))
 #define ttisdeadkey(o)		checktag((o), LUA_TDEADKEY)
+#define ttislispobject(o)       checktag((o), LUA_LISP_OBJECT) //mbs
 
 #define ttisequal(o1,o2)	(rttype(o1) == rttype(o2))
 
@@ -166,6 +167,8 @@ typedef struct lua_TValue TValue;
 #define thvalue(o)	check_exp(ttisthread(o), &val_(o).gc->th)
 /* a dead value may get the 'gc' field, but cannot access its contents */
 #define deadvalue(o)	check_exp(ttisdeadkey(o), cast(void *, val_(o).gc))
+//mbs
+#define lisp_value(o)   check_exp(ttislispobject(o), val_(o).lisp_o)
 
 #define l_isfalse(o)	(ttisnil(o) || (ttisboolean(o) && bvalue(o) == 0))
 
@@ -186,6 +189,10 @@ typedef struct lua_TValue TValue;
 
 #define setnvalue(obj,x) \
   { TValue *io=(obj); num_(io)=(x); settt_(io, LUA_TNUMBER); }
+
+//mbs
+#define setlispvalue(obj,x) \
+  { TValue *io=(obj); val_(io).lisp_o=(x); settt_(io, LUA_LISP_OBJECT); }
 
 #define setnilvalue(obj) settt_(obj, LUA_TNIL)
 
@@ -384,13 +391,15 @@ typedef struct lua_TValue TValue;
 ** =======================================================
 */
 
+#include "lisp_object.h"
 
 union Value {
   GCObject *gc;    /* collectable objects */
   void *p;         /* light userdata */
   int b;           /* booleans */
   lua_CFunction f; /* light C functions */
-  numfield         /* numbers */
+  numfield;         /* numbers */
+  Lisp_Object lisp_o;  //mbs
 };
 
 
