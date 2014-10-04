@@ -658,12 +658,41 @@ void (*__malloc_initialize_hook) (void) EXTERNALLY_VISIBLE = malloc_initialize_h
 
 extern lua_State *L;
 
+int lua__index_method (lua_State *L){
+  int n = lua_gettop(L);
+  char* name = lua_tostring(L, -1);
+  //printf("lua looking for: emacs.%s...", name);
+  Lisp_Object sym = Fintern_soft(build_string(name), Qnil);
+  Lisp_Object val;
+  if (!EQ(sym, Qnil)){
+    val = find_symbol_value (sym);
+    if (!EQ (val, Qunbound)){
+      //printf("found.\n");
+      Lisp_to_lua(val);
+      return 1;
+    }
+  }
+  printf("Error: emacs.%s is unbound\n", name); //TODO: lua error
+}
+
+
 /* ARGSUSED */
 int
 main (int argc, char **argv)
 {
   L = luaL_newstate();
   luaL_openlibs(L);
+
+  lua_pushglobaltable(L);
+  lua_newtable(L); //emacs table
+  lua_newtable(L); //metatable
+  lua_pushstring(L, "__index");
+  lua_pushcfunction(L, lua__index_method);
+  lua_settable(L, -3);
+  lua_setmetatable(L, -2);
+  lua_setfield(L, -2, "emacs");
+  
+  
 #if GC_MARK_STACK
   Lisp_Object dummy;
 #endif
