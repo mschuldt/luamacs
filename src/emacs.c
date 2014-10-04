@@ -675,6 +675,22 @@ int lua__index_method (lua_State *L){
   printf("Error: emacs.%s is unbound\n", name); //TODO: lua error
 }
 
+int lua__newindex_method (lua_State *L){
+  int n = lua_gettop(L);
+  
+  /* printf("new val =  %s\n", lua_tostring(L, -1)); */
+  /* printf("variable =  %s\n", lua_tostring(L, -2)) */;
+  Lisp_Object val = lua_to_lisp(-1);
+  char* name = lua_tostring(L, -2);
+
+  Lisp_Object sym = Fintern(build_string(name), Qnil);
+  
+  Fset(sym, val);
+
+  lua_pushnumber(L, 1);
+  return 1;
+}
+
 
 /* ARGSUSED */
 int
@@ -686,9 +702,17 @@ main (int argc, char **argv)
   lua_pushglobaltable(L);
   lua_newtable(L); //emacs table
   lua_newtable(L); //metatable
+
+  //set __index method
   lua_pushstring(L, "__index");
   lua_pushcfunction(L, lua__index_method);
   lua_settable(L, -3);
+  
+  //set __newindex  method
+  lua_pushstring(L, "__newindex");
+  lua_pushcfunction(L, lua__newindex_method);
+  lua_settable(L, -3);
+
   lua_setmetatable(L, -2);
   lua_setfield(L, -2, "emacs");
   
