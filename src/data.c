@@ -1127,11 +1127,50 @@ global value outside of any lexical scope.  */)
   xsignal1 (Qvoid_variable, symbol);
 }
 
+//pushes the lua representation of OBJ onto the stack
+void Lisp_to_lua(Lisp_Object obj){
+  int type = XTYPE (obj);
+  switch (type){
+  case_Lisp_Int:
+    //lua_pushnumber(L, XINT(obj));
+    lua_pushinteger(L, XINT(obj));
+    return;
+  case Lisp_Float:
+    lua_pushnumber(L, extract_float(obj));
+    return;
+  case Lisp_String:
+    lua_pushstring(L, XSTRING(obj)->data);
+    return;
+  case Lisp_Misc:
+    if (XMISCTYPE (obj) == Lisp_Misc_Lua_TValue){
+      lua_pushTValue(L, XLUA_VALUE(obj)->o);
+    }else{
+      //bad type: fall through
+    }
+
+  case Lisp_Symbol:
+  case Lisp_Cons:
+  case Lisp_Vectorlike:
+  default: //bad type
+    printf("ERROR -- lua_to_lisp: trying to convert unsupported type: %d\n", type);
+  }
+}
+
 DEFUN ("set", Fset, Sset, 2, 2, 0,
        doc: /* Set SYMBOL's value to NEWVAL, and return NEWVAL.  */)
   (register Lisp_Object symbol, Lisp_Object newval)
 {
-  set_internal (symbol, newval, Qnil, 0);
+  char * name = XSTRING(XSYMBOL(symbol)->name)->data;
+
+  if (LUA_VAR_STRING_P(name)){ //mbs
+    name += 4;
+    printf("setting lua value: %s\n", name);
+    lua_pushglobaltable(L);
+    Lisp_to_lua(newval);
+    lua_setfield(L, -2, name);
+  }else{
+    set_internal (symbol, newval, Qnil, 0);
+  }
   return newval;
 }
 
