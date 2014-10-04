@@ -2044,6 +2044,11 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
 	  PRINTCHAR ('>');
 	  break;
 
+        case Lisp_Misc_Lua_TValue: //mbs
+          strout ("#<Lua ref>", -1, -1, printcharfun);
+          //TODO: print the specific type details
+          break;
+
 	default:
 	  goto badtype;
 	}
