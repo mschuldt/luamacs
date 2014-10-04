@@ -6,6 +6,8 @@
 etc/DOC-24.3.*
 src/emacs-24.3.*
 
+lib/stdalign.h
+TAGS
 configure
 Makefile
 autom4te.cache/
