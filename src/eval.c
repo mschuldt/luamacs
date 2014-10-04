@@ -40,6 +40,16 @@ DEFUN ("lua-eval", Flua_eval, Slua_eval, 1, 1, 0,
   return luaL_dostring(L, XSTRING(code)->data) ? Qnil : Qt;
 }
 
+DEFUN ("lua-load", Flua_load, Slua_load, 1, 1, 0,
+       doc: /* load file containing lua code. return t on success, else nil */)
+  (Lisp_Object file)
+{
+  lua_State *L = luaL_newstate();
+  luaL_openlibs(L);
+  int err = luaL_dofile(L, XSTRING(file)->data);
+  return err ? Qnil : Qt;
+}
+
 DEFUN ("lua-concat", Flua_concat, Slua_concat, 0, MANY, 0,
        doc: /* Concatenate all the arguments and make the result a string.
 The result is a string whose elements are the elements of all the arguments.
@@ -3575,6 +3585,7 @@ alist of active lexical bindings.  */);
   inhibit_lisp_code = Qnil;
 
   defsubr (&Slua_eval);
+  defsubr (&Slua_load);
   defsubr (&Slua_concat);
   defsubr (&Slua_test); 
   defsubr (&Sor);
