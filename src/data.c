@@ -34,6 +34,8 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "font.h"
 #include "keymap.h"
 
+Lisp_Object Qlua_value; //mbs
+
 Lisp_Object Qnil, Qt, Qquote, Qlambda, Qunbound;
 static Lisp_Object Qsubr;
 Lisp_Object Qerror_conditions, Qerror_message, Qtop_level;
@@ -157,6 +159,9 @@ for example, (type-of 1) returns `integer'.  */)
     case Lisp_Cons:
       return Qcons;
 
+      //case Lisp_Lua_TValue: //mbs
+      //  return Qlua_value; //TODO: return specific TValue type
+      
     case Lisp_Misc:
       switch (XMISCTYPE (object))
 	{
@@ -166,6 +171,9 @@ for example, (type-of 1) returns `integer'.  */)
 	  return Qoverlay;
 	case Lisp_Misc_Float:
 	  return Qfloat;
+
+        case Lisp_Misc_Lua_TValue: //mbs
+          return Qlua_value;
 	}
       emacs_abort ();
 
@@ -1070,17 +1078,24 @@ Lisp_Object lua_to_lisp (int idx){
   case LUA_TSTRING: //4
     return build_string(lua_tostring(L, idx)); //TODO: create reference or copy?
 
-  case LUA_TLIGHTUSERDATA: //2
-    //val_(o).p
   case LUA_TTABLE: //5
+    printf("lua table\n");
     //&val_(o).gc->h
   case LUA_TFUNCTION: //5
     //&val_(o).gc->cl
+    printf("lua function\n");
+    
+    return build_lua_tvalue(getStackItem(L, idx)); //doing
+
+    
+  case LUA_TLIGHTUSERDATA: //2
+    //val_(o).p
   case LUA_TUSERDATA: //7
   case LUA_TTHREAD: //8
   case LUA_NUMTAGS: //9 ??
     //    return;
   default:
+    
     printf("ERROR -- lua_to_lisp: trying to convert unknown type: %d\n", type);
   }
 }
@@ -3109,6 +3124,9 @@ syms_of_data (void)
   DEFSYM (Qbool_vector, "bool-vector");
   DEFSYM (Qhash_table, "hash-table");
   DEFSYM (Qmisc, "misc");
+
+  //mbs
+  DEFSYM (Qlua_value, "lua-value");
 
   DEFSYM (Qdefun, "defun");
 

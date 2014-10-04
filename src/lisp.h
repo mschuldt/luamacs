@@ -278,6 +278,9 @@ enum Lisp_Type
     Lisp_Cons = 6,
 
     Lisp_Float = 7,
+
+    /* //mbs */
+    /* Lisp_Lua_TValue = 8 */
   };
 
 /* This is the set of data types that share a common structure.
@@ -295,7 +298,9 @@ enum Lisp_Misc_Type
        but let's define this in case we want to change that.  */
     Lisp_Misc_Float,
     /* This is not a type code.  It is for range checking.  */
-    Lisp_Misc_Limit
+    Lisp_Misc_Limit,
+
+    Lisp_Misc_Lua_TValue //mbs
   };
 
 /* These are the types of forwarding objects used in the value slot
@@ -555,6 +560,10 @@ clip_to_bounds (ptrdiff_t lower, EMACS_INT num, ptrdiff_t upper)
 
 #define XCONS(a)   (eassert (CONSP (a)), \
 		    (struct Lisp_Cons *) XUNTAG (a, Lisp_Cons))
+
+//mbs
+//#define XLUA_VALUE(a) (eassert (LUA_VALUE (a)), \ 
+//		    (struct Lisp_Lua_TValue *) XUNTAG (a, Lisp_Lua_TValue))
 #define XVECTOR(a) (eassert (VECTORLIKEP (a)), \
 		    (struct Lisp_Vector *) XUNTAG (a, Lisp_Vectorlike))
 #define XSTRING(a) (eassert (STRINGP (a)), \
@@ -572,6 +581,7 @@ clip_to_bounds (ptrdiff_t lower, EMACS_INT num, ptrdiff_t upper)
 #define XMARKER(a)	(eassert (MARKERP (a)), &(XMISC (a)->u_marker))
 #define XOVERLAY(a)	(eassert (OVERLAYP (a)), &(XMISC (a)->u_overlay))
 #define XSAVE_VALUE(a)	(eassert (SAVE_VALUEP (a)), &(XMISC (a)->u_save_value))
+#define XLUA_VALUE(a)	(eassert (LUA_VALUEP (a)), &(XMISC (a)->lau_val))//mbs
 
 /* Forwarding object types.  */
 
@@ -1408,6 +1418,15 @@ struct Lisp_Free
     union Lisp_Misc *chain;
   };
 
+//mbs
+struct Lisp_Lua_TValue
+{
+  ENUM_BF (Lisp_Misc_Type) type : 16;	/* = Lisp_Misc_Free */
+  unsigned gcmarkbit : 1;
+  TValue* o;
+};
+
+  
 /* To get the type field of a union Lisp_Misc, use XMISCTYPE.
    It uses one of these struct subtypes to get the type field.  */
 
@@ -1418,6 +1437,7 @@ union Lisp_Misc
     struct Lisp_Marker u_marker;
     struct Lisp_Overlay u_overlay;
     struct Lisp_Save_Value u_save_value;
+    struct Lisp_Lua_TValue lau_val; //mbs
   };
 
 /* Forwarding pointer to an int variable.
@@ -1702,12 +1722,14 @@ typedef struct {
 #define VECTORLIKEP(x) (XTYPE ((x)) == Lisp_Vectorlike)
 #define STRINGP(x) (XTYPE ((x)) == Lisp_String)
 #define CONSP(x) (XTYPE ((x)) == Lisp_Cons)
+//#define LUA_VALUEP(x) (XTYPE ((x)) == Lisp_Lua_TValue) //mbs
 
 #define FLOATP(x) (XTYPE ((x)) == Lisp_Float)
 #define VECTORP(x) (VECTORLIKEP (x) && !(ASIZE (x) & PSEUDOVECTOR_FLAG))
 #define OVERLAYP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Overlay)
 #define MARKERP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Marker)
 #define SAVE_VALUEP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Save_Value)
+#define LUA_VALUEP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Lua_TValue) //
 
 #define INTFWDP(x) (XFWDTYPE (x) == Lisp_Fwd_Int)
 #define BOOLFWDP(x) (XFWDTYPE (x) == Lisp_Fwd_Bool)
