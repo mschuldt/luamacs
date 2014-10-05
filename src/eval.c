@@ -2115,6 +2115,7 @@ eval_sub (Lisp_Object form)
       lua_checkstack(L, 8);
       name += 4;
       printf("(eval) calling lua function: %s, ", name);
+
       //function
       //lua_pushglobaltable(L);
       lua_getfield(L, LUA_GLOBALSINDEX, name);
@@ -2811,6 +2812,37 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
   ptrdiff_t i;
 
   QUIT;
+
+  fun = args[0];
+  
+
+  char *name;
+  int n_args = 0;
+  Lisp_Object ret;
+  if (SYMBOLP(fun)){
+    name = XSTRING(XSYMBOL(fun)->name)->data;
+    if (LUA_VAR_STRING_P(name)){
+      lua_checkstack(L, 8);
+      name += 4;
+      printf("(eval) calling lua function: %s, ", name);
+
+      //function
+      //lua_pushglobaltable(L);
+      lua_getfield(L, LUA_GLOBALSINDEX, name);
+        
+      //arguments
+      for (int i = 1;i < nargs; i++){
+        lisp_to_lua(args[i]);
+        args++;
+        n_args++;
+      }
+      printf("with %d args\n", n_args);
+      lua_call(L, n_args, 1);
+      ret = lua_to_lisp(-1);
+      lua_pop(L, 1);
+      return ret;
+    }
+  }
 
   if (++lisp_eval_depth > max_lisp_eval_depth)
     {
