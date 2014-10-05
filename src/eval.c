@@ -2162,11 +2162,13 @@ eval_sub (Lisp_Object form)
       form = XCDR(form);
       while (! NILP (form)){
         ret = eval_sub(XCAR(form));
+        if (LUA_VALUEP(ret)){
+          printf("'eval' -- inspecting lua reference:\n");
+          Finspect_lua_val(ret);
+          XLUA_VALUE(ret)->o->value_ = XLUA_VALUE(ret)->value_;
+          XLUA_VALUE(ret)->o->tt_ = XLUA_VALUE(ret)->tt_;
+        }
         lisp_to_lua(ret);
-        /* if (LUA_VALUEP(ret)){ */
-        /*   printf("'eval' -- inspecting lua reference:\n"); */
-        /*   Finspect_lua_val(ret); */
-        /* } */
         form = XCDR(form);
         n_args++;
       }

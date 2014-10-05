@@ -1121,7 +1121,11 @@ global value outside of any lexical scope.  */)
     //TODO: what if the field does not exist?
     //val = lua_to_lisp(index2addr(L, -1));
     val = lua_to_lisp(-1);
+    printf("symbol-evalue: lua reference (before pop):\n");
+    Finspect_lua_val(val);
     //    lua_pop(L, 1);
+    printf("symbol-evalue: lua reference (after:\n");
+    Finspect_lua_val(val);
   }else{
     val = find_symbol_value (symbol);
   }
@@ -1149,9 +1153,9 @@ void lisp_to_lua(Lisp_Object obj){
     return;
   case Lisp_Misc:
     if (XMISCTYPE (obj) == Lisp_Misc_Lua_TValue){
-      //printf("pushing Lisp_Misc_Lua_TValue to lua\n");
+      printf("pushing Lisp_Misc_Lua_TValue to lua\n");
       lua_pushTValue(L, XLUA_VALUE(obj)->o);
-      //printf("TValue = %d\n", ttypenv(XLUA_VALUE(obj)->o));
+      printf("TValue = %d\n", ttypenv(XLUA_VALUE(obj)->o));
       
       return;
     }else{
