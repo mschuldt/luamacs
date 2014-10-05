@@ -2038,7 +2038,25 @@ it is defines a macro.  */)
     }
 }
 
-
+//mbs
+/* void push_to_lua_from_list (Lisp_Object args){ */
+/*   while (! NILP args){ */
+/*     lisp_to_lua(XCAR(args)); */
+/*     args = XCDR(args); */
+/*   } */
+/* } */
+
+/* void push_to_lua_from_array(Lisp_Object *args, int len){ */
+/*   for (int i = 0; i < len; i++){ */
+/*     lisp_to_lua(args[i]); */
+/*   } */
+/* } */
+
+
+/* Lisp_Object lua_funcall(char * fname); */
+  
+/* } */
+
 DEFUN ("eval", Feval, Seval, 1, 2, 0,
        doc: /* Evaluate FORM and return its value.
 If LEXICAL is t, evaluate using lexical scoping.  */)
@@ -2074,9 +2092,38 @@ eval_sub (Lisp_Object form)
       else
 	return Fsymbol_value (form);
     }
-
+    
   if (!CONSP (form))
     return form;
+  
+  //mbs
+  fun = XCAR (form);
+  char * name;
+  int n_args = 0;
+  Lisp_Object* arg_array;
+  if (SYMBOLP(fun)){
+    name = XSTRING(XSYMBOL(fun)->name)->data;
+    if (LUA_VAR_STRING_P(name)){
+      name += 4;
+      printf("(eval) calling lua function: %s, ", name);
+      //function
+      lua_pushglobaltable(L);
+      lua_getfield(L, -2, name);
+        
+      //arguments
+      form = XCDR(form);
+      while (! NILP (form)){
+        lisp_to_lua(XCAR(form));
+        form = XCDR(form);
+        n_args++;
+      }
+      printf("with %d args\n", n_args);
+      lua_call(L, n_args, 1);
+      
+      return lua_to_lisp(-1);
+    }
+  }
+  
 
   QUIT;
 
