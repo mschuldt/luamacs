@@ -32,6 +32,13 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "xterm.h"
 #endif
 
+DEFUN ("lua-stacksize", Flua_stacksize, Slua_stacksize, 0, 0, 0,
+       doc: /* L->stacksize */)
+  (void)
+{
+  return make_number(L->stacksize);
+}
+
 
 DEFUN ("lua-eval", Flua_eval, Slua_eval, 1, 1, 0,
        doc: /* Evaluate argument as lua code. return t on success, else nil */)
@@ -3631,6 +3638,7 @@ alist of active lexical bindings.  */);
 
   inhibit_lisp_code = Qnil;
 
+  defsubr (&Slua_stacksize);
   defsubr (&Slua_eval);
   defsubr (&Slua_load);
   defsubr (&Slua_concat);
