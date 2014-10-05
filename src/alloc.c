@@ -5556,6 +5556,12 @@ mark_overlay (struct Lisp_Overlay *ptr)
     }
 }
 
+//mbs
+static void
+mark_lua_tvalue (struct Lisp_Lua_TValue *ptr){
+  ptr->gcmarkbit = 1;
+}
+
 /* Mark Lisp_Objects and special pointers in BUFFER.  */
 
 static void
@@ -5905,6 +5911,9 @@ mark_object (Lisp_Object arg)
 	  mark_overlay (XOVERLAY (obj));
 	  break;
 
+        case Lisp_Misc_Lua_TValue:
+          mark_lua_tvalue(XLUA_VALUE(obj));
+          break;;
 	default:
 	  emacs_abort ();
 	}
