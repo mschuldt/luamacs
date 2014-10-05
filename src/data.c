@@ -1060,6 +1060,7 @@ find_symbol_value (Lisp_Object symbol)
 //converts the object on the stack at postion IDX to a Lisp_Object
 Lisp_Object lua_to_lisp (int idx){
   int type = lua_type(L, idx);
+  Lisp_Object ret;
   switch(type){
   case LUA_TNIL: // 0
     printf("lua: nil\n");
@@ -1084,8 +1085,11 @@ Lisp_Object lua_to_lisp (int idx){
     //&val_(o).gc->cl
     printf("lua function\n");
     
-    return build_lua_tvalue(getStackItem(L, idx)); //doing
-
+    ret =  build_lua_tvalue(getStackItem(L, idx)); //doing
+    //printf("inspecting newly create lua reference:\n");
+    Finspect_lua_val(ret);
+    
+    return ret;
 
   case LUA_TLIGHTUSERDATA: //2
     //val_(o).p
@@ -1111,12 +1115,13 @@ global value outside of any lexical scope.  */)
     name += 4;
     printf("looking up lua value: %s\n", name);
     lua_checkstack(L, 2);
-    //lua_pushglobaltable(L);
-    lua_getfield(L, LUA_GLOBALSINDEX, name);
+    lua_pushglobaltable(L);
+    //lua_getfield(L, LUA_GLOBALSINDEX, name);
+    lua_getfield(L, -1, name);
     //TODO: what if the field does not exist?
     //val = lua_to_lisp(index2addr(L, -1));
     val = lua_to_lisp(-1);
-    lua_pop(L, 1);
+    //    lua_pop(L, 1);
   }else{
     val = find_symbol_value (symbol);
   }
@@ -1144,7 +1149,11 @@ void lisp_to_lua(Lisp_Object obj){
     return;
   case Lisp_Misc:
     if (XMISCTYPE (obj) == Lisp_Misc_Lua_TValue){
+      //printf("pushing Lisp_Misc_Lua_TValue to lua\n");
       lua_pushTValue(L, XLUA_VALUE(obj)->o);
+      //printf("TValue = %d\n", ttypenv(XLUA_VALUE(obj)->o));
+      
+      return;
     }else{
       //bad type: fall through
     }
@@ -1154,7 +1163,7 @@ void lisp_to_lua(Lisp_Object obj){
   case Lisp_Vectorlike:
   default: //bad type
     //printf("ERROR -- lua_to_lisp: trying to convert unsupported type: %d\n", type);
-
+    printf("bad type\n");
     lua_pushlisp(L, obj);
   }
 }
@@ -1169,9 +1178,10 @@ DEFUN ("set", Fset, Sset, 2, 2, 0,
     name += 4;
     printf("setting lua value: %s\n", name);
     lua_checkstack(L, 2);
-    //lua_pushglobaltable(L);
+    lua_pushglobaltable(L);
     lisp_to_lua(newval);
-    lua_setfield(L, LUA_GLOBALSINDEX, name);
+    //lua_setfield(L, LUA_GLOBALSINDEX, name);
+    lua_setfield(L, -2, name);
     
   }else{
     set_internal (symbol, newval, Qnil, 0);

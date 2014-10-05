@@ -1378,7 +1378,10 @@ struct Lisp_Lua_TValue
 {
   ENUM_BF (Lisp_Misc_Type) type : 16;	/* = Lisp_Misc_Free */
   unsigned gcmarkbit : 1;
+  int spacer : 15;
   TValue* o;
+  int tt_;
+  Value value_;
 };
 
   
@@ -3740,6 +3743,7 @@ INLINE_HEADER_END
 Lisp_Object lua_to_lisp (int idx);
 Lisp_Object build_lua_tvalue (TValue * o);
 void lisp_to_lua(Lisp_Object obj);
-Lisp_Object lua_to_lisp (int idx);
 TValue *getStackItem (lua_State *L, int idx);
+void lua_pushlisp (lua_State *L, Lisp_Object n);
+
 #endif /* EMACS_LISP_H */

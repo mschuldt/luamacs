@@ -3333,13 +3333,18 @@ build_overlay (Lisp_Object start, Lisp_Object end, Lisp_Object plist)
 
 //mbs
 Lisp_Object
-build_lua_tvalue (TValue * o){
+build_lua_tvalue (TValue * o)
+{
   register Lisp_Object val;
   register struct Lisp_Lua_TValue *p;
-
+  /* printf("ttypenv(o) = %d\n", ttypenv(o)); */
   val = allocate_misc(Lisp_Misc_Lua_TValue);
   p = XLUA_VALUE(val);
   p->o = o;
+  p->tt_ = o->tt_;
+  p->value_ = o->value_;
+  /* printf("lua reference just born:\n"); */
+  /* Finspect_lua_val(val); */
   return val;
 }
 

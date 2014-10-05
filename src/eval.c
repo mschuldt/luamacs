@@ -32,6 +32,44 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "xterm.h"
 #endif
 
+DEFUN ("inspect-lua-val", Finspect_lua_val, Sinspect_lua_val, 1, 1, 0,
+       doc: /* Evaluate argument as lua code. return t on success, else nil */)
+  (Lisp_Object obj)
+{
+  int type = ttypenv(XLUA_VALUE(obj)->o);
+  printf("obj->o->tt_ = %d\n", XLUA_VALUE(obj)->o->tt_);
+  printf("obj->tt_ = %d\n", XLUA_VALUE(obj)->tt_);
+  //  printf("(obj->value_ == obj->o->value__) = %d\n", (int)XLUA_VALUE(obj)->value_ == (int) XLUA_VALUE(obj)->o->value_);
+
+  printf("type = ");
+  switch(type){
+  case 0:
+    printf("LUA_TNIL\n"); break;
+  case 1:
+    printf("LUA_TBOOLEAN\n"); break;
+  case 2:
+    printf("LUA_TLIGHTUSERDATA\n"); break;
+  case 3:
+    printf("LUA_TNUMBER\n"); break;
+  case 4:
+    printf("LUA_TSTRING\n"); break;
+  case 5:
+    printf("LUA_TTABLE\n"); break;
+  case 6:
+    printf("LUA_TFUNCTION\n"); break;
+  case 7:
+    printf("LUA_TUSERDATA\n"); break;
+  case 8:
+    printf("LUA_TTHREAD\n"); break;
+  case 9:
+    printf("LUA_NUMTAGS\n"); break;
+  case 10:
+    printf("LUA_LISP_OBJECT\n"); break;
+  default:
+    printf("<unknown type %d>\n", type);
+  }
+}
+
 DEFUN ("lua-stacksize", Flua_stacksize, Slua_stacksize, 0, 0, 0,
        doc: /* L->stacksize */)
   (void)
@@ -2117,20 +2155,25 @@ eval_sub (Lisp_Object form)
       printf("(eval) calling lua function: %s, ", name);
 
       //function
-      //lua_pushglobaltable(L);
-      lua_getfield(L, LUA_GLOBALSINDEX, name);
-        
+      //lua_getfield(L, LUA_GLOBALSINDEX, name);
+      lua_pushglobaltable(L);
+      lua_getfield(L, -1, name);
       //arguments
       form = XCDR(form);
       while (! NILP (form)){
-        lisp_to_lua(eval_sub(XCAR(form)));
+        ret = eval_sub(XCAR(form));
+        lisp_to_lua(ret);
+        /* if (LUA_VALUEP(ret)){ */
+        /*   printf("'eval' -- inspecting lua reference:\n"); */
+        /*   Finspect_lua_val(ret); */
+        /* } */
         form = XCDR(form);
         n_args++;
       }
       printf("with %d args\n", n_args);
       lua_call(L, n_args, 1);
       ret = lua_to_lisp(-1);
-      lua_pop(L, 1);
+      //lua_pop(L, 1);
       return ret;
     }
   }
@@ -2824,7 +2867,7 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
     if (LUA_VAR_STRING_P(name)){
       lua_checkstack(L, 8);
       name += 4;
-      printf("(eval) calling lua function: %s, ", name);
+      printf("(funcall) calling lua function: %s, ", name);
 
       //function
       //lua_pushglobaltable(L);
@@ -3673,6 +3716,7 @@ alist of active lexical bindings.  */);
 
   inhibit_lisp_code = Qnil;
 
+  defsubr (&Sinspect_lua_val);
   defsubr (&Slua_stacksize);
   defsubr (&Slua_eval);
   defsubr (&Slua_load);
