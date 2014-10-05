@@ -660,7 +660,7 @@ extern lua_State *L;
 
 int lua__index_method (lua_State *L){
   int n = lua_gettop(L);
-  char* name = lua_tostring(L, -1);
+  const char* name = lua_tostring(L, -1);
   //printf("lua looking for: emacs.%s...", name);
   Lisp_Object sym = Fintern_soft(build_string(name), Qnil);
   Lisp_Object val;
@@ -681,7 +681,7 @@ int lua__newindex_method (lua_State *L){
   /* printf("new val =  %s\n", lua_tostring(L, -1)); */
   /* printf("variable =  %s\n", lua_tostring(L, -2)) */;
   Lisp_Object val = lua_to_lisp(-1);
-  char* name = lua_tostring(L, -2);
+  const char* name = lua_tostring(L, -2);
 
   Lisp_Object sym = Fintern(build_string(name), Qnil);
   
