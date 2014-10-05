@@ -2163,6 +2163,10 @@ eval_sub (Lisp_Object form)
       //lua_getfield(L, LUA_GLOBALSINDEX, name);
       lua_pushglobaltable(L);
       lua_getfield(L, -1, name);
+      if (!lua_isfunction(L, -1)){
+        printf("ERROR: trying to call lua non-function (%s)", name);
+        return Qnil;
+      }
       //arguments
       form = XCDR(form);
       while (! NILP (form)){
