@@ -40,6 +40,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "lualib.h"
 
 lua_State *L;
+int LUA_GLOBALSINDEX;
 
 #define LUA_VAR_STRING_P(str) (str[0] && str[1] && str[2] && str[3] \
                                && (str[3] == '.')                   \

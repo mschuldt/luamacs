@@ -2115,8 +2115,8 @@ eval_sub (Lisp_Object form)
       name += 4;
       printf("(eval) calling lua function: %s, ", name);
       //function
-      lua_pushglobaltable(L);
-      lua_getfield(L, -2, name);
+      //lua_pushglobaltable(L);
+      lua_getfield(L, LUA_GLOBALSINDEX, name);
         
       //arguments
       form = XCDR(form);

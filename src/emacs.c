@@ -657,6 +657,7 @@ void (*__malloc_initialize_hook) (void) EXTERNALLY_VISIBLE = malloc_initialize_h
 #endif /* DOUG_LEA_MALLOC */
 
 extern lua_State *L;
+extern int LUA_GLOBALSINDEX;
 
 int lua__index_method (lua_State *L){
   int n = lua_gettop(L);
@@ -696,10 +697,14 @@ int lua__newindex_method (lua_State *L){
 int
 main (int argc, char **argv)
 {
+  
+    
   L = luaL_newstate();
   luaL_openlibs(L);
 
   lua_pushglobaltable(L);
+  LUA_GLOBALSINDEX = lua_absindex(L, -1);
+  
   lua_newtable(L); //emacs table
   lua_newtable(L); //metatable
 
@@ -715,7 +720,6 @@ main (int argc, char **argv)
 
   lua_setmetatable(L, -2);
   lua_setfield(L, -2, "emacs");
-  
   
 #if GC_MARK_STACK
   Lisp_Object dummy;
