@@ -3732,4 +3732,7 @@ INLINE_HEADER_END
 
 Lisp_Object lua_to_lisp (int idx);
 Lisp_Object build_lua_tvalue (TValue * o);
+void lisp_to_lua(Lisp_Object obj);
+Lisp_Object lua_to_lisp (int idx);
+TValue *getStackItem (lua_State *L, int idx);
 #endif /* EMACS_LISP_H */
