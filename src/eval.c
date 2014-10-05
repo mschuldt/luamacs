@@ -2123,7 +2123,7 @@ eval_sub (Lisp_Object form)
       //arguments
       form = XCDR(form);
       while (! NILP (form)){
-        lisp_to_lua(XCAR(form));
+        lisp_to_lua(eval_sub(XCAR(form)));
         form = XCDR(form);
         n_args++;
       }
