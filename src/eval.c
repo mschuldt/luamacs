@@ -2111,6 +2111,7 @@ eval_sub (Lisp_Object form)
   if (SYMBOLP(fun)){
     name = XSTRING(XSYMBOL(fun)->name)->data;
     if (LUA_VAR_STRING_P(name)){
+      lua_checkstack(L, 8);
       name += 4;
       printf("(eval) calling lua function: %s, ", name);
       //function

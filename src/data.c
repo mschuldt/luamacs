@@ -1110,6 +1110,7 @@ global value outside of any lexical scope.  */)
   if (LUA_VAR_STRING_P(name)){ //mbs
     name += 4;
     printf("looking up lua value: %s\n", name);
+    lua_checkstack(L, 2);
     lua_pushglobaltable(L);
     lua_getfield(L, -1, name);
     //TODO: what if the field does not exist?
@@ -1166,6 +1167,7 @@ DEFUN ("set", Fset, Sset, 2, 2, 0,
   if (LUA_VAR_STRING_P(name)){ //mbs
     name += 4;
     printf("setting lua value: %s\n", name);
+    lua_checkstack(L, 2);
     lua_pushglobaltable(L);
     lisp_to_lua(newval);
     lua_setfield(L, -2, name);
