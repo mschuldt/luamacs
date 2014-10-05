@@ -41,6 +41,12 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 
 lua_State *L;
 
+#define LUA_VAR_STRING_P(str) (str[0] && str[1] && str[2] && str[3] \
+                               && (str[3] == '.')                   \
+                               && (str[0] == 'l')                   \
+                               && (str[1] == 'u')                   \
+                               && (str[2] == 'a'))
+
 INLINE_HEADER_BEGIN
 #ifndef LISP_INLINE
 # define LISP_INLINE INLINE

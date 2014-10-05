@@ -1056,11 +1056,6 @@ find_symbol_value (Lisp_Object symbol)
     }
 }
 
-#define LUA_VAR_STRING_P(str) (str[0] && str[1] && str[2] && str[3] \
-                               && (str[3] == '.')                   \
-                               && (str[0] == 'l')                   \
-                               && (str[1] == 'u')                   \
-                               && (str[2] == 'a'))
 
 //converts the object on the stack at postion IDX to a Lisp_Object
 Lisp_Object lua_to_lisp (int idx){
