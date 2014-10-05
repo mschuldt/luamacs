@@ -1086,9 +1086,9 @@ Lisp_Object lua_to_lisp (int idx){
     printf("lua function\n");
     
     ret =  build_lua_tvalue(getStackItem(L, idx)); //doing
-    //printf("inspecting newly create lua reference:\n");
+    printf("inspecting newly create lua reference:\n");
     Finspect_lua_val(ret);
-    
+
     return ret;
 
   case LUA_TLIGHTUSERDATA: //2
@@ -1121,11 +1121,7 @@ global value outside of any lexical scope.  */)
     //TODO: what if the field does not exist?
     //val = lua_to_lisp(index2addr(L, -1));
     val = lua_to_lisp(-1);
-    printf("symbol-evalue: lua reference (before pop):\n");
-    Finspect_lua_val(val);
     //    lua_pop(L, 1);
-    printf("symbol-evalue: lua reference (after:\n");
-    Finspect_lua_val(val);
   }else{
     val = find_symbol_value (symbol);
   }

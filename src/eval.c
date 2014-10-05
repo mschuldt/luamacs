@@ -36,39 +36,44 @@ DEFUN ("inspect-lua-val", Finspect_lua_val, Sinspect_lua_val, 1, 1, 0,
        doc: /* Evaluate argument as lua code. return t on success, else nil */)
   (Lisp_Object obj)
 {
-  int type = ttypenv(XLUA_VALUE(obj)->o);
-  printf("obj->o->tt_ = %d\n", XLUA_VALUE(obj)->o->tt_);
-  printf("obj->tt_ = %d\n", XLUA_VALUE(obj)->tt_);
-  //  printf("(obj->value_ == obj->o->value__) = %d\n", (int)XLUA_VALUE(obj)->value_ == (int) XLUA_VALUE(obj)->o->value_);
+  if (XLUA_VALUE(obj)){
+    int type = ttypenv(XLUA_VALUE(obj)->o);
+    printf("obj->o->tt_ = %d\n", XLUA_VALUE(obj)->o->tt_);
+    printf("obj->tt_ = %d\n", XLUA_VALUE(obj)->tt_);
+    //  printf("(obj->value_ == obj->o->value__) = %d\n", (int)XLUA_VALUE(obj)->value_ == (int) XLUA_VALUE(obj)->o->value_);
 
-  printf("type = ");
-  switch(type){
-  case 0:
-    printf("LUA_TNIL\n"); break;
-  case 1:
-    printf("LUA_TBOOLEAN\n"); break;
-  case 2:
-    printf("LUA_TLIGHTUSERDATA\n"); break;
-  case 3:
-    printf("LUA_TNUMBER\n"); break;
-  case 4:
-    printf("LUA_TSTRING\n"); break;
-  case 5:
-    printf("LUA_TTABLE\n"); break;
-  case 6:
-    printf("LUA_TFUNCTION\n"); break;
-  case 7:
-    printf("LUA_TUSERDATA\n"); break;
-  case 8:
-    printf("LUA_TTHREAD\n"); break;
-  case 9:
-    printf("LUA_NUMTAGS\n"); break;
-  case 10:
-    printf("LUA_LISP_OBJECT\n"); break;
-  default:
-    printf("<unknown type %d>\n", type);
+    printf("type = ");
+    switch(type){
+    case 0:
+      printf("LUA_TNIL\n"); break;
+    case 1:
+      printf("LUA_TBOOLEAN\n"); break;
+    case 2:
+      printf("LUA_TLIGHTUSERDATA\n"); break;
+    case 3:
+      printf("LUA_TNUMBER\n"); break;
+    case 4:
+      printf("LUA_TSTRING\n"); break;
+    case 5:
+      printf("LUA_TTABLE\n"); break;
+    case 6:
+      printf("LUA_TFUNCTION\n"); break;
+    case 7:
+      printf("LUA_TUSERDATA\n"); break;
+    case 8:
+      printf("LUA_TTHREAD\n"); break;
+    case 9:
+      printf("LUA_NUMTAGS\n"); break;
+    case 10:
+      printf("LUA_LISP_OBJECT\n"); break;
+    default:
+      printf("<unknown type %d>\n", type);
+    }
+  }else{
+    printf("<not a lua obj>\n");
   }
 }
+
 
 DEFUN ("lua-stacksize", Flua_stacksize, Slua_stacksize, 0, 0, 0,
        doc: /* L->stacksize */)
