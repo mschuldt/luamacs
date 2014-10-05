@@ -668,7 +668,7 @@ int lua__index_method (lua_State *L){
     val = find_symbol_value (sym);
     if (!EQ (val, Qunbound)){
       //printf("found.\n");
-      Lisp_to_lua(val);
+      lisp_to_lua(val);
       return 1;
     }
   }

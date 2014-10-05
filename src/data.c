@@ -1127,7 +1127,7 @@ global value outside of any lexical scope.  */)
 
 
 //pushes the lua representation of OBJ onto the stack
-void Lisp_to_lua(Lisp_Object obj){
+void lisp_to_lua(Lisp_Object obj){
   int type = XTYPE (obj);
   switch (type){
   case_Lisp_Int:
@@ -1167,7 +1167,7 @@ DEFUN ("set", Fset, Sset, 2, 2, 0,
     name += 4;
     printf("setting lua value: %s\n", name);
     lua_pushglobaltable(L);
-    Lisp_to_lua(newval);
+    lisp_to_lua(newval);
     lua_setfield(L, -2, name);
   }else{
     set_internal (symbol, newval, Qnil, 0);
