@@ -1116,6 +1116,7 @@ global value outside of any lexical scope.  */)
     //TODO: what if the field does not exist?
     //val = lua_to_lisp(index2addr(L, -1));
     val = lua_to_lisp(-1);
+    lua_pop(L, 1);
   }else{
     val = find_symbol_value (symbol);
   }
