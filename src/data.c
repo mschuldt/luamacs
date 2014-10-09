@@ -1121,7 +1121,7 @@ global value outside of any lexical scope.  */)
     //TODO: what if the field does not exist?
     //val = lua_to_lisp(index2addr(L, -1));
     val = lua_to_lisp(-1);
-    //    lua_pop(L, 1);
+    lua_pop(L, 2);
   }else{
     val = find_symbol_value (symbol);
   }
@@ -1182,6 +1182,7 @@ DEFUN ("set", Fset, Sset, 2, 2, 0,
     lisp_to_lua(newval);
     //lua_setfield(L, LUA_GLOBALSINDEX, name);
     lua_setfield(L, -2, name);
+    lua_pop(L, 1);
     
   }else{
     set_internal (symbol, newval, Qnil, 0);

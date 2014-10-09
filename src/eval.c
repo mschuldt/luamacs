@@ -2181,7 +2181,7 @@ eval_sub (Lisp_Object form)
       printf("with %d args\n", n_args);
       lua_call(L, n_args, 1);
       ret = lua_to_lisp(-1);
-      //lua_pop(L, 1);
+      lua_pop(L, 2);
       return ret;
     }
   }
