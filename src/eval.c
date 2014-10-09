@@ -38,8 +38,6 @@ DEFUN ("inspect-lua-val", Finspect_lua_val, Sinspect_lua_val, 1, 1, 0,
 {
   if (XLUA_VALUE(obj)){
     int type = ttypenv(XLUA_VALUE(obj)->o);
-    printf("obj->o->tt_ = %d\n", XLUA_VALUE(obj)->o->tt_);
-    printf("obj->tt_ = %d\n", XLUA_VALUE(obj)->tt_);
     //  printf("(obj->value_ == obj->o->value__) = %d\n", (int)XLUA_VALUE(obj)->value_ == (int) XLUA_VALUE(obj)->o->value_);
 
     printf("type = ");
@@ -2175,8 +2173,6 @@ eval_sub (Lisp_Object form)
         if (LUA_VALUEP(ret)){
           printf("'eval' -- inspecting lua reference:\n");
           Finspect_lua_val(ret);
-          XLUA_VALUE(ret)->o->value_ = XLUA_VALUE(ret)->value_;
-          XLUA_VALUE(ret)->o->tt_ = XLUA_VALUE(ret)->tt_;
         }
         lisp_to_lua(ret);
         form = XCDR(form);

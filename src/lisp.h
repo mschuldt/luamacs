@@ -1380,8 +1380,6 @@ struct Lisp_Lua_TValue
   unsigned gcmarkbit : 1;
   int spacer : 15;
   TValue* o;
-  int tt_;
-  Value value_;
 };
 
   

@@ -47,6 +47,8 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <verify.h>
 
+#include "lmem.h"
+
 /* GC_CHECK_MARKED_OBJECTS means do sanity checks on allocated objects.
    Doable only if GC_MARK_STACK.  */
 #if ! GC_MARK_STACK
@@ -3340,9 +3342,9 @@ build_lua_tvalue (TValue * o)
   /* printf("ttypenv(o) = %d\n", ttypenv(o)); */
   val = allocate_misc(Lisp_Misc_Lua_TValue);
   p = XLUA_VALUE(val);
-  p->o = o;
-  p->tt_ = o->tt_;
-  p->value_ = o->value_;
+  p->o = luaM_new(L, TValue);
+  p->o->tt_ = o->tt_;
+  p->o->value_ = o->value_;
   /* printf("lua reference just born:\n"); */
   /* Finspect_lua_val(val); */
   return val;
