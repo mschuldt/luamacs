@@ -134,6 +134,14 @@ To get the number of bytes, use `string-bytes'.  */)
     }
   else if (NILP (sequence))
     XSETFASTINT (val, 0);
+  else if (LUA_VALUEP(sequence)){
+      printf("taking length of lua object\n");
+      EMACS_INT i;
+      EXTRACT_PUSH_LUA_VAL(sequence);
+      lua_len(L, -1);
+      XSETFASTINT(val, lua_tointeger(L, -1));
+      lua_pop(L, 1);
+  }  
   else
     wrong_type_argument (Qsequencep, sequence);
 
