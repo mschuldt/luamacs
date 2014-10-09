@@ -72,6 +72,7 @@ DEFUN ("inspect-lua-val", Finspect_lua_val, Sinspect_lua_val, 1, 1, 0,
   }else{
     printf("<not a lua obj>\n");
   }
+  return Qnil;
 }
 
 
