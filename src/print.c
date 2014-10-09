@@ -1366,7 +1366,7 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
     }
 
   print_depth++;
-
+  int type;
   switch (XTYPE (obj))
     {
     case_Lisp_Int:
@@ -2045,10 +2045,47 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
 	  break;
 
         case Lisp_Misc_Lua_TValue: //mbs
-          strout ("#<Lua ref>", -1, -1, printcharfun);
-          //TODO: print the specific type details
+          switch(type = ttypenv(XLUA_VALUE(obj)->o)){
+            //TODO: lots of these should never happen...
+            //also, most should return additional information
+          case 0:
+            strout ("#<Lua nil>", -1, -1, printcharfun);
+            break;
+          case 1:
+            strout ("#<Lua boolean>", -1, -1, printcharfun);
+            break;
+          case 2:
+            strout ("#<Lua lightuserdata>", -1, -1, printcharfun);
+            break;
+          case 3:
+            strout ("#<Lua number>", -1, -1, printcharfun);
+            break;
+          case 4:
+            strout ("#<Lua string>", -1, -1, printcharfun);
+            break;
+          case 5:
+            strout ("#<Lua table>", -1, -1, printcharfun);
+            break;
+          case 6:
+            strout ("#<Lua function>", -1, -1, printcharfun);
+            break;
+          case 7:
+            strout ("#<Lua user data>", -1, -1, printcharfun);
+            break;
+          case 8:
+            strout ("#<Lua thread>", -1, -1, printcharfun);
+            break;
+          case 9:
+            strout ("#<Lua NUMTAGS>", -1, -1, printcharfun);
+            break;
+          case 10:
+            strout ("#<!!ERROR!! (lua_lisp_object)>", -1, -1, printcharfun);
+            break;
+          default:
+            printf("ERROR: unknown lua type: %d\n", type);
+            strout ("<unknown lua type>", -1, -1, printcharfun);
+          }
           break;
-
 	default:
 	  goto badtype;
 	}
