@@ -1150,7 +1150,7 @@ void lisp_to_lua(Lisp_Object obj){
   case Lisp_Misc:
     if (XMISCTYPE (obj) == Lisp_Misc_Lua_TValue){
       printf("pushing Lisp_Misc_Lua_TValue to lua\n");
-      lua_pushTValue(L, XLUA_VALUE(obj)->o);
+      EXTRACT_PUSH_LUA_VAL(obj);
       printf("TValue = %d\n", ttypenv(XLUA_VALUE(obj)->o));
       
       return;

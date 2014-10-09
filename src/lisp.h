@@ -48,6 +48,8 @@ int LUA_GLOBALSINDEX;
                                && (str[1] == 'u')                   \
                                && (str[2] == 'a'))
 
+#define EXTRACT_PUSH_LUA_VAL(obj) lua_pushTValue(L, XLUA_VALUE(obj)->o);
+
 INLINE_HEADER_BEGIN
 #ifndef LISP_INLINE
 # define LISP_INLINE INLINE
