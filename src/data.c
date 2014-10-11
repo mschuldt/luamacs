@@ -1152,18 +1152,10 @@ void lisp_to_lua(Lisp_Object obj){
       printf("pushing Lisp_Misc_Lua_TValue to lua\n");
       EXTRACT_PUSH_LUA_VAL(obj);
       printf("TValue = %d\n", ttypenv(XLUA_VALUE(obj)->o));
-      
       return;
-    }else{
-      //bad type: fall through
     }
-
-  case Lisp_Symbol:
-  case Lisp_Cons:
-  case Lisp_Vectorlike:
-  default: //bad type
-    //printf("ERROR -- lua_to_lisp: trying to convert unsupported type: %d\n", type);
-    printf("bad type\n");
+  default:
+    //wrap the lisp object in a lua type
     lua_pushlisp(L, obj);
   }
 }
