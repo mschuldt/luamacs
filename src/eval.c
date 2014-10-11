@@ -33,6 +33,16 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #endif
 
 
+DEFUN ("lua-new-table", Flua_new_table, Slua_new_table, 0, 0, 0,
+       doc: /* Create a new lua table */)
+  (void)
+{
+  lua_newtable(L);
+  Lisp_Object ret = lua_to_lisp(-1);
+  lua_pop(L, 1);
+  return ret;
+}
+
 DEFUN ("alist-to-table", Falist_to_table, Salist_to_table, 1, 1, 0,
        doc: /* Create a new table and add the items of ALIST to it*/)
   (Lisp_Object alist)
@@ -3780,6 +3790,7 @@ alist of active lexical bindings.  */);
 
   inhibit_lisp_code = Qnil;
 
+  defsubr (&Slua_new_table);
   defsubr (&Salist_to_table);
   defsubr (&Slua_get);
   defsubr (&Slua_set);
