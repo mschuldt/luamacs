@@ -1160,6 +1160,49 @@ void lisp_to_lua(Lisp_Object obj){
   }
 }
 
+void store_lisp_reference (Lisp_Object obj){
+  //doing  
+  XSETINT (Vnum_lua_refs, XINT (Vnum_lua_refs) + 1);
+
+  switch (XTYPE (obj))
+    {
+    case Lisp_String: //currently unused
+      XSTRING(obj)->hash = Vnum_lua_refs;
+      Fputhash(Vnum_lua_refs, obj, Vreferenced_from_lua);
+      break;
+
+    case Lisp_Vectorlike:
+      XVECTOR (obj)->header.hash = Vnum_lua_refs;
+      Fputhash(Vnum_lua_refs, obj, Vreferenced_from_lua);
+      break;
+    
+    case Lisp_Symbol:
+      XSYMBOL (obj)->hash = Vnum_lua_refs;
+      Fputhash(Vnum_lua_refs , obj, Vreferenced_from_lua);
+      break;
+
+    case Lisp_Misc:
+      //TODO: this needs to be tested with all the Lisp_Misc types
+      XMISCANY (obj)->hash = Vnum_lua_refs;
+      Fputhash(Vnum_lua_refs , obj, Vreferenced_from_lua);
+      break;
+
+    case Lisp_Cons:
+      XCONS (obj)-> hash = Vnum_lua_refs;
+      Fputhash(Vnum_lua_refs , obj, Vreferenced_from_lua);
+      break;
+
+    case Lisp_Float:
+    case_Lisp_Int:
+      //these types are converted to lua types
+      break;
+
+    default:
+      printf("ERROR -- store_lisp_reference: unhandled type\n");
+      emacs_abort ();
+    }
+}
+
 //mbs
 void lua_pushlisp (lua_State *L, Lisp_Object obj) {
   lua_lock(L);
@@ -1167,6 +1210,7 @@ void lua_pushlisp (lua_State *L, Lisp_Object obj) {
   api_incr_top(L);
   lua_unlock(L);
   //save an extra reference to OBJ to prevent it getting GCed
+  store_lisp_reference(obj);
 }
 
 DEFUN ("set", Fset, Sset, 2, 2, 0,
@@ -3297,4 +3341,18 @@ syms_of_data (void)
 	       doc: /* The smallest value that is representable in a Lisp integer.  */);
   Vmost_negative_fixnum = make_number (MOST_NEGATIVE_FIXNUM);
   XSYMBOL (intern_c_string ("most-negative-fixnum"))->constant = 1;
+
+  DEFVAR_LISP ("__referenced_from_lua", Vreferenced_from_lua,
+	       doc: /* Table of lisp objects that are referenced by active lua objects.
+                  ***NO NOT MODIFY***
+                  */);
+  Lisp_Object args[6];
+  args[0] = QCtest;
+  args[1] = Qeq;
+  args[2] = QCweakness;
+  args[3] = Qnil;
+  args[4] = QCsize;
+  args[5] = make_number (1000);
+  Vreferenced_from_lua = Fmake_hash_table (6, args);
+
 }

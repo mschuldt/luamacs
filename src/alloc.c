@@ -3341,6 +3341,13 @@ DEFUN ("num-lua-refs-from-lisp", Fnum_lua_refs_from_lisp, Snum_lua_refs_from_lis
   return make_number(G(L)->num_lisp_refs);
 }
 
+DEFUN ("num-lisp-refs-from-lua", Fnum_lisp_refs_from_lua, Snum_lisp_refs_from_lua, 0, 0, 0,
+       doc: /* returns the number of lisp objects referenced by lua objects */)
+  (void)
+{
+  return Vnum_lua_refs;
+}
+
 //mbs
 Lisp_Object
 build_lua_tvalue (TValue * o)
@@ -6612,6 +6619,13 @@ do hash-consing of the objects allocated to pure space.  */);
 	       doc: /* Non-nil means Emacs cannot get much more Lisp memory.  */);
   Vmemory_full = Qnil;
 
+  //mbs
+  DEFVAR_LISP("__num_lua_refs", Vnum_lua_refs,
+              doc: /* number of lisp objects referenced by lua
+                      ***DO NOT MODIFY***
+                    */);
+  Vnum_lua_refs = make_number(0);
+
   DEFSYM (Qconses, "conses");
   DEFSYM (Qsymbols, "symbols");
   DEFSYM (Qmiscs, "miscs");
@@ -6634,8 +6648,8 @@ The time is in seconds as a floating point value.  */);
   DEFVAR_INT ("gcs-done", gcs_done,
 	      doc: /* Accumulated number of garbage collections done.  */);
 
-  defsubr (&Slua_num_refs); //mbs
   defsubr (&Snum_lua_refs_from_lisp); //mbs
+  defsubr (&Snum_lisp_refs_from_lua); //mbs
   defsubr (&Scons);
   defsubr (&Slist);
   defsubr (&Svector);

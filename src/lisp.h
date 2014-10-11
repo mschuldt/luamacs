@@ -668,7 +668,7 @@ struct Lisp_Cons
   {
     /* Car of this cons cell.  */
     Lisp_Object car;
-
+    unsigned long hash;
     union
     {
       /* Cdr of this cons cell.  */
@@ -776,6 +776,7 @@ static ptrdiff_t const STRING_BYTES_BOUND =
 struct Lisp_String
   {
     ptrdiff_t size;
+    unsigned long hash;
     ptrdiff_t size_byte;
     INTERVAL intervals;		/* Text properties in this string.  */
     unsigned char *data;
@@ -805,6 +806,7 @@ struct vectorlike_header
          vector on a free-list and PSEUDOVECTOR_SIZE_BITS indicates its size
          in bytes.  */
     ptrdiff_t size;
+    unsigned long hash;
 
     /* When the vector is allocated from a vector block, NBYTES is used
        if the vector is not on a free list, and VECTOR is used otherwise.
@@ -1073,7 +1075,7 @@ struct Lisp_Symbol
      2 : it's a localized var, the value is in the `blv' object.
      3 : it's a forwarding variable, the value is in `forward'.  */
   ENUM_BF (symbol_redirect) redirect : 3;
-
+  unsigned long hash;
   /* Non-zero means symbol is constant, i.e. changing its value
      should signal an error.  If the value is 3, then the var
      can be changed, but only by `defconst'.  */
@@ -1284,6 +1286,7 @@ struct Lisp_Misc_Any		/* Supertype of all Misc types.  */
   ENUM_BF (Lisp_Misc_Type) type : 16;		/* = Lisp_Misc_??? */
   unsigned gcmarkbit : 1;
   int spacer : 15;
+  unsigned long hash;
 };
 
 struct Lisp_Marker
@@ -1291,6 +1294,7 @@ struct Lisp_Marker
   ENUM_BF (Lisp_Misc_Type) type : 16;		/* = Lisp_Misc_Marker */
   unsigned gcmarkbit : 1;
   int spacer : 13;
+  unsigned long hash;
   /* This flag is temporarily used in the functions
      decode/encode_coding_object to record that the marker position
      must be adjusted after the conversion.  */
@@ -1345,6 +1349,7 @@ struct Lisp_Overlay
     ENUM_BF (Lisp_Misc_Type) type : 16;	/* = Lisp_Misc_Overlay */
     unsigned gcmarkbit : 1;
     int spacer : 15;
+    unsigned long hash;
     struct Lisp_Overlay *next;
     Lisp_Object start;
     Lisp_Object end;
@@ -1361,6 +1366,7 @@ struct Lisp_Save_Value
     /* If DOGC is set, POINTER is the address of a memory
        area containing INTEGER potential Lisp_Objects.  */
     unsigned int dogc : 1;
+    unsigned long hash;
     void *pointer;
     ptrdiff_t integer;
   };
@@ -1372,6 +1378,7 @@ struct Lisp_Free
     ENUM_BF (Lisp_Misc_Type) type : 16;	/* = Lisp_Misc_Free */
     unsigned gcmarkbit : 1;
     int spacer : 15;
+    unsigned long hash;
     union Lisp_Misc *chain;
   };
 
@@ -1381,6 +1388,7 @@ struct Lisp_Lua_TValue
   ENUM_BF (Lisp_Misc_Type) type : 16;	/* = Lisp_Misc_Free */
   unsigned gcmarkbit : 1;
   int spacer : 15;
+  unsigned long hash;
   TValue* o;
 };
 
