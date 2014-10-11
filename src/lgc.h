@@ -154,4 +154,10 @@ LUAI_FUNC void luaC_checkfinalizer (lua_State *L, GCObject *o, Table *mt);
 LUAI_FUNC void luaC_checkupvalcolor (global_State *g, UpVal *uv);
 LUAI_FUNC void luaC_changemode (lua_State *L, int mode);
 
+
+/*
+** link table 'h' into list pointed by 'p'
+*/
+#define linktable(h,p)	((h)->gclist = *(p), *(p) = obj2gco(h))
+
 #endif

@@ -95,12 +95,6 @@ static void reallymarkobject (global_State *g, GCObject *o);
 
 
 /*
-** link table 'h' into list pointed by 'p'
-*/
-#define linktable(h,p)	((h)->gclist = *(p), *(p) = obj2gco(h))
-
-
-/*
 ** if key is not marked, mark its entry as dead (therefore removing it
 ** from the table)
 */
