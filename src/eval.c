@@ -32,6 +32,14 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "xterm.h"
 #endif
 
+DEFUN ("lua-garbage-collect", Flua_garbage_collect, Slua_garbage_collect, 0, 0, 0,
+       doc: /* run lua garbage collection */)
+  (void)
+{
+  luaC_fullgc(L, 0);
+  return Qt;
+}
+
 DEFUN ("inspect-lua-val", Finspect_lua_val, Sinspect_lua_val, 1, 1, 0,
        doc: /* Evaluate argument as lua code. return t on success, else nil */)
   (Lisp_Object obj)
@@ -3724,6 +3732,7 @@ alist of active lexical bindings.  */);
 
   inhibit_lisp_code = Qnil;
 
+  defsubr (&Slua_garbage_collect);
   defsubr (&Sinspect_lua_val);
   defsubr (&Slua_stacksize);
   defsubr (&Slua_eval);
