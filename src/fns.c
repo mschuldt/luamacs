@@ -140,7 +140,7 @@ To get the number of bytes, use `string-bytes'.  */)
       EXTRACT_PUSH_LUA_VAL(sequence);
       lua_len(L, -1);
       XSETFASTINT(val, lua_tointeger(L, -1));
-      lua_pop(L, 1);
+      lua_pop(L, 2);
   }  
   else
     wrong_type_argument (Qsequencep, sequence);
