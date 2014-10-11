@@ -32,7 +32,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
    amount of storage.  This is a lot more update-robust that defining
    BASE_PURESIZE or even PURESIZE directly.  */
 #ifndef SYSTEM_PURESIZE_EXTRA
-#define SYSTEM_PURESIZE_EXTRA 0
+#define SYSTEM_PURESIZE_EXTRA 4000000
 #endif
 
 #ifndef SITELOAD_PURESIZE_EXTRA
