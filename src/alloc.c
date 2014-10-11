@@ -3349,10 +3349,7 @@ build_lua_tvalue (TValue * o)
   p->o->tt_ = o->tt_;
   p->o->value_ = o->value_;
   
-  
-  if (iscollectable(o)){
-    //TODO: also need mark everything this object refers to
-
+  if (iscollectable(o) && ! gcv->gch.referenced_from_lisp){
     gcv->gch.referenced_from_lisp = 1;
     switch (gch(gcv)->tt) {
 
