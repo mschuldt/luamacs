@@ -212,6 +212,7 @@ GCObject *luaC_newobj (lua_State *L, int tt, size_t sz, GCObject **list,
     list = &g->allgc;  /* standard list for collectable objects */
   gch(o)->marked = luaC_white(g);
   gch(o)->referenced_from_lisp = 0; //mbs
+  gch(o)->lisp_hash = 0; //mbs
   gch(o)->tt = tt;
   gch(o)->next = *list;
   *list = o;
@@ -336,10 +337,6 @@ static void restartcollection (global_State *g) {
  
   markobject(g, g->mainthread);
   markvalue(g, &g->l_registry);
-  if (g->referenced_by_lisp){
-    printf("g->referenced_by_lisp ::: TRUE\n");
-    reallymarkobject(g, g->referenced_by_lisp);
-  }
   markmt(g);
   markbeingfnz(g);  /* mark any finalizing object left from previous cycle */
 }

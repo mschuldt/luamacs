@@ -3334,6 +3334,13 @@ build_overlay (Lisp_Object start, Lisp_Object end, Lisp_Object plist)
   return overlay;
 }
 
+DEFUN ("lua-num-refs", Flua_num_refs, Slua_num_refs, 0, 0, 0,
+       doc: /* returns the number of lua objects referenced by lisp objects */)
+  (void)
+{
+  return make_number(G(L)->num_lisp_refs);
+}
+
 //mbs
 Lisp_Object
 build_lua_tvalue (TValue * o)
@@ -3351,35 +3358,16 @@ build_lua_tvalue (TValue * o)
   
   if (iscollectable(o) && ! gcv->gch.referenced_from_lisp){
     gcv->gch.referenced_from_lisp = 1;
-    switch (gch(gcv)->tt) {
+    g->num_lisp_refs += 1;
 
-    case LUA_TLCL: {
-      gco2lcl(gcv)->gclist = g->referenced_by_lisp;
-      g->referenced_by_lisp = gcv;
-      break;
-    }
-    case LUA_TCCL: {
-      gco2ccl(gcv)->gclist = g->referenced_by_lisp;
-      g->referenced_by_lisp = gcv;
-      break;
-    }
-    case LUA_TTABLE: {
-      linktable(gco2t(gcv), &g->referenced_by_lisp);
-      break;
-    }
-    case LUA_TTHREAD: {
-      gco2th(gcv)->gclist = g->referenced_by_lisp;
-      g->referenced_by_lisp = gcv;
-      break;
-    }
-    case LUA_TPROTO: {
-      gco2p(gcv)->gclist = g->referenced_by_lisp;
-      g->referenced_by_lisp = gcv;
-      break;
-    }
-    default:
-      break;
-    }
+    //save a reference to prevent garbage collection
+    gcv->gch.lisp_hash = g->num_lisp_refs;
+    lua_pushglobaltable(L);
+    lua_getfield(L, -1, "__lisp_references");
+    lua_pushinteger(L, g->num_lisp_refs);
+    lua_pushTValue(L, o);
+    lua_settable(L, -3);
+    lua_pop(L, 2);
   }
   /* printf("lua reference just born:\n"); */
   /* Finspect_lua_val(val); */
@@ -6646,6 +6634,7 @@ The time is in seconds as a floating point value.  */);
   DEFVAR_INT ("gcs-done", gcs_done,
 	      doc: /* Accumulated number of garbage collections done.  */);
 
+  defsubr (&Slua_num_refs); //mbs
   defsubr (&Scons);
   defsubr (&Slist);
   defsubr (&Svector);

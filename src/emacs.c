@@ -704,6 +704,8 @@ main (int argc, char **argv)
 
   lua_pushglobaltable(L);
   LUA_GLOBALSINDEX = lua_absindex(L, -1);
+  lua_newtable(L);
+  lua_setfield(L, -2, "__lisp_references");
   
   lua_newtable(L); //emacs table
   lua_newtable(L); //metatable
@@ -720,7 +722,7 @@ main (int argc, char **argv)
 
   lua_setmetatable(L, -2);
   lua_setfield(L, -2, "emacs");
-  
+
 #if GC_MARK_STACK
   Lisp_Object dummy;
 #endif

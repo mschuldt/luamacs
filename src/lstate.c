@@ -299,6 +299,7 @@ LUA_API lua_State *lua_newstate (lua_Alloc f, void *ud) {
   g->sweepgc = g->sweepfin = NULL;
   g->gray = g->grayagain = NULL;
   g->referenced_by_lisp = NULL;
+  g->num_lisp_refs = 0;
   g->weak = g->ephemeron = g->allweak = NULL;
   g->totalbytes = sizeof(LG);
   g->GCdebt = 0;
