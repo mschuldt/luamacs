@@ -217,6 +217,7 @@ GCObject *luaC_newobj (lua_State *L, int tt, size_t sz, GCObject **list,
   if (list == NULL)
     list = &g->allgc;  /* standard list for collectable objects */
   gch(o)->marked = luaC_white(g);
+  gch(o)->referenced_from_lisp = 0; //mbs
   gch(o)->tt = tt;
   gch(o)->next = *list;
   *list = o;
@@ -734,7 +735,10 @@ static GCObject **sweeplist (lua_State *L, GCObject **p, lu_mem count) {
   while (*p != NULL && count-- > 0) {
     GCObject *curr = *p;
     int marked = gch(curr)->marked;
-    if (isdeadm(ow, marked)) {  /* is 'curr' dead? */
+    if (isdeadm(ow, marked) && gch(curr)->referenced_from_lisp){
+      printf("Object is dead, but referenced frmo lisp\n");
+    }
+    if (isdeadm(ow, marked) && ! gch(curr)->referenced_from_lisp) {  /* is 'curr' dead and not ? */
       *p = gch(curr)->next;  /* remove 'curr' from list */
       freeobj(L, curr);  /* erase 'curr' */
     }

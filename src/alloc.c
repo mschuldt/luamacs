@@ -3345,6 +3345,11 @@ build_lua_tvalue (TValue * o)
   p->o = luaM_new(L, TValue);
   p->o->tt_ = o->tt_;
   p->o->value_ = o->value_;
+  if (iscollectable(o)){
+    //TODO: also need mark everything this object refers to
+
+    gcv->gch.referenced_from_lisp = 1;
+  }
   /* printf("lua reference just born:\n"); */
   /* Finspect_lua_val(val); */
   return val;
