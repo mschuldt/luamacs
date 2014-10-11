@@ -134,6 +134,7 @@ typedef struct global_State {
   GCObject *ephemeron;  /* list of ephemeron tables (weak keys) */
   GCObject *allweak;  /* list of all-weak tables */
   GCObject *tobefnz;  /* list of userdata to be GC */
+  GCObject *referenced_by_lisp;
   UpVal uvhead;  /* head of double-linked list of all open upvalues */
   Mbuffer buff;  /* temporary buffer for string concatenation */
   int gcpause;  /* size of pause between successive GCs */

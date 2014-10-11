@@ -330,10 +330,16 @@ static void remarkupvals (global_State *g) {
 ** incremental (or full) collection
 */
 static void restartcollection (global_State *g) {
+  printf("-----restartcollection()\n");
   g->gray = g->grayagain = NULL;
   g->weak = g->allweak = g->ephemeron = NULL;
+ 
   markobject(g, g->mainthread);
   markvalue(g, &g->l_registry);
+  if (g->referenced_by_lisp){
+    printf("g->referenced_by_lisp ::: TRUE\n");
+    reallymarkobject(g, g->referenced_by_lisp);
+  }
   markmt(g);
   markbeingfnz(g);  /* mark any finalizing object left from previous cycle */
 }
@@ -656,6 +662,7 @@ static void clearvalues (global_State *g, GCObject *l, GCObject *f) {
 
 
 static void freeobj (lua_State *L, GCObject *o) {
+  printf(">>>>>  freeobj() <<<<<\n");
   switch (gch(o)->tt) {
     case LUA_TPROTO: luaF_freeproto(L, gco2p(o)); break;
     case LUA_TLCL: {
@@ -1048,6 +1055,7 @@ static lu_mem singlestep (lua_State *L) {
     }
     case GCSpropagate: {
       if (g->gray) {
+        printf("==========>  g->gray\n");
         lu_mem oldtrav = g->GCmemtrav;
         propagatemark(g);
         return g->GCmemtrav - oldtrav;  /* memory traversed in this step */
@@ -1185,6 +1193,7 @@ void luaC_step (lua_State *L) {
 ** finalizers (which could change stack positions)
 */
 void luaC_fullgc (lua_State *L, int isemergency) {
+  printf("==> luaC_fullgc\n");
   global_State *g = G(L);
   int origkind = g->gckind;
   lua_assert(origkind != KGC_EMERGENCY);

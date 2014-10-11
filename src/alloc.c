@@ -48,6 +48,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include <verify.h>
 
 #include "lmem.h"
+#include "lgc.h"
 
 /* GC_CHECK_MARKED_OBJECTS means do sanity checks on allocated objects.
    Doable only if GC_MARK_STACK.  */
@@ -3339,21 +3340,55 @@ build_lua_tvalue (TValue * o)
 {
   register Lisp_Object val;
   register struct Lisp_Lua_TValue *p;
+  global_State* g = G(L);
+  GCObject* gcv = gcvalue(o);
   /* printf("ttypenv(o) = %d\n", ttypenv(o)); */
   val = allocate_misc(Lisp_Misc_Lua_TValue);
   p = XLUA_VALUE(val);
   p->o = luaM_new(L, TValue);
   p->o->tt_ = o->tt_;
   p->o->value_ = o->value_;
+  
+  
   if (iscollectable(o)){
     //TODO: also need mark everything this object refers to
 
     gcv->gch.referenced_from_lisp = 1;
+    switch (gch(gcv)->tt) {
+
+    case LUA_TLCL: {
+      gco2lcl(gcv)->gclist = g->referenced_by_lisp;
+      g->referenced_by_lisp = gcv;
+      break;
+    }
+    case LUA_TCCL: {
+      gco2ccl(gcv)->gclist = g->referenced_by_lisp;
+      g->referenced_by_lisp = gcv;
+      break;
+    }
+    case LUA_TTABLE: {
+      linktable(gco2t(gcv), &g->referenced_by_lisp);
+      break;
+    }
+    case LUA_TTHREAD: {
+      gco2th(gcv)->gclist = g->referenced_by_lisp;
+      g->referenced_by_lisp = gcv;
+      break;
+    }
+    case LUA_TPROTO: {
+      gco2p(gcv)->gclist = g->referenced_by_lisp;
+      g->referenced_by_lisp = gcv;
+      break;
+    }
+    default:
+      break;
+    }
   }
   /* printf("lua reference just born:\n"); */
   /* Finspect_lua_val(val); */
   return val;
 }
+
 
 DEFUN ("make-marker", Fmake_marker, Smake_marker, 0, 0, 0,
        doc: /* Return a newly allocated marker which does not point at any place.  */)
