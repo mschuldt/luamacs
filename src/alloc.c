@@ -3334,7 +3334,7 @@ build_overlay (Lisp_Object start, Lisp_Object end, Lisp_Object plist)
   return overlay;
 }
 
-DEFUN ("lua-num-refs", Flua_num_refs, Slua_num_refs, 0, 0, 0,
+DEFUN ("num-lua-refs-from-lisp", Fnum_lua_refs_from_lisp, Snum_lua_refs_from_lisp, 0, 0, 0,
        doc: /* returns the number of lua objects referenced by lisp objects */)
   (void)
 {
@@ -6635,6 +6635,7 @@ The time is in seconds as a floating point value.  */);
 	      doc: /* Accumulated number of garbage collections done.  */);
 
   defsubr (&Slua_num_refs); //mbs
+  defsubr (&Snum_lua_refs_from_lisp); //mbs
   defsubr (&Scons);
   defsubr (&Slist);
   defsubr (&Svector);
