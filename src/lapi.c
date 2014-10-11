@@ -498,15 +498,6 @@ LUA_API void lua_pushnumber (lua_State *L, lua_Number n) {
   lua_unlock(L);
 }
 
-
-//mbs
-void lua_pushlisp (lua_State *L, Lisp_Object n) {
-  lua_lock(L);
-  setlispvalue(L->top, n);
-  api_incr_top(L);
-  lua_unlock(L);
-}
-
 LUA_API void lua_pushinteger (lua_State *L, lua_Integer n) {
   lua_lock(L);
   setnvalue(L->top, cast_num(n));

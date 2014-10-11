@@ -1160,6 +1160,15 @@ void lisp_to_lua(Lisp_Object obj){
   }
 }
 
+//mbs
+void lua_pushlisp (lua_State *L, Lisp_Object obj) {
+  lua_lock(L);
+  setlispvalue(L->top, obj);
+  api_incr_top(L);
+  lua_unlock(L);
+  //save an extra reference to OBJ to prevent it getting GCed
+}
+
 DEFUN ("set", Fset, Sset, 2, 2, 0,
        doc: /* Set SYMBOL's value to NEWVAL, and return NEWVAL.  */)
   (register Lisp_Object symbol, Lisp_Object newval)
