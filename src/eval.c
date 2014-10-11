@@ -32,6 +32,35 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "xterm.h"
 #endif
 
+
+DEFUN ("lua-get", Flua_get, Slua_get, 2, 2, 0,
+       doc: /* Is the equivalent TABLE[FIELD]
+               TABLE is a lua table, FIELD is a string*/)
+  (Lisp_Object table, Lisp_Object field)
+{
+  Lisp_Object ret;
+  //TODO: check types, gcpro?
+  EXTRACT_PUSH_LUA_VAL(table);
+  //note: currently strings cannot be lua refs - they are converted
+  lua_getfield(L, -1, XSTRING(field)->data);
+  ret = lua_to_lisp(-1);
+  lua_pop(L, 2); //pop field value and table
+  return ret;
+}
+
+DEFUN ("lua-set", Flua_set, Slua_set, 3, 3, 0,
+       doc: /* Does the equivalent of TABLE[FIELD] = VALUE
+               TABLE is a lua table, FIELD is a string */)
+  (Lisp_Object table, Lisp_Object field, Lisp_Object value)
+{
+  EXTRACT_PUSH_LUA_VAL(table);
+  lisp_to_lua(value);
+  lua_setfield(L, -2, XSTRING(field)->data);
+  lua_pop(L, 1); //pop table
+  return value;
+}
+
+
 DEFUN ("lua-garbage-collect", Flua_garbage_collect, Slua_garbage_collect, 0, 0, 0,
        doc: /* run lua garbage collection */)
   (void)
@@ -3732,6 +3761,8 @@ alist of active lexical bindings.  */);
 
   inhibit_lisp_code = Qnil;
 
+  defsubr (&Slua_get);
+  defsubr (&Slua_set);
   defsubr (&Slua_garbage_collect);
   defsubr (&Sinspect_lua_val);
   defsubr (&Slua_stacksize);
