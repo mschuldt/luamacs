@@ -3354,23 +3354,30 @@ build_lua_tvalue (TValue * o)
 {
   register Lisp_Object val;
   register struct Lisp_Lua_TValue *p;
-  global_State* g = G(L);
+  global_State* g;
+  TValue* newTval;
   GCObject* gcv = gcvalue(o);
+
+  if (gcv->gch.lispp){
+    return gcv->gch.lispp;
+  }
+  g = G(L);
+
   /* printf("ttypenv(o) = %d\n", ttypenv(o)); */
   val = allocate_misc(Lisp_Misc_Lua_TValue);
   p = XLUA_VALUE(val);
   p->o = luaM_new(L, TValue);
   p->o->tt_ = o->tt_;
   p->o->value_ = o->value_;
-  
-  if (iscollectable(o) && ! gcv->gch.referenced_from_lisp){
-    gcv->gch.referenced_from_lisp = 1;
-    g->num_lisp_refs += 1;
 
+  if (iscollectable(o)){
+    gcv->gch.lispp = val;// &val;
+    g->num_lisp_refs += 1;
     //save a reference to prevent garbage collection
     gcv->gch.lisp_hash = g->num_lisp_refs;
     lua_pushglobaltable(L);
     lua_getfield(L, -1, "__lisp_references");
+    //lua_pushinteger(L, &(o->value_));
     lua_pushinteger(L, g->num_lisp_refs);
     lua_pushTValue(L, o);
     lua_settable(L, -3);

@@ -14,7 +14,7 @@
 
 #include "llimits.h"
 #include "lua.h"
-
+#include "lisp_object.h"
 
 /*
 ** Extra tags for non-values
@@ -74,7 +74,7 @@ typedef union GCObject GCObject;
 ** Common Header for all collectable objects (in macro form, to be
 ** included in other objects)
 */
-#define CommonHeader	GCObject *next; lu_byte tt; lu_byte marked; unsigned referenced_from_lisp : 1; unsigned long lisp_hash; //mbs
+#define CommonHeader	GCObject *next; lu_byte tt; lu_byte marked; Lisp_Object* lispp; unsigned long lisp_hash; //mbs
 
 
 /*
