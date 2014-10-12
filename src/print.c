@@ -1367,6 +1367,7 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
 
   print_depth++;
   int type;
+  Value val;
   switch (XTYPE (obj))
     {
     case_Lisp_Int:
@@ -2045,6 +2046,7 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
 	  break;
 
         case Lisp_Misc_Lua_TValue: //mbs
+          val = XLUA_VALUE(obj)->o->value_;
           switch(type = ttypenv(XLUA_VALUE(obj)->o)){
             //TODO: lots of these should never happen...
             //also, most should return additional information
@@ -2055,25 +2057,31 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
             strout ("#<Lua boolean>", -1, -1, printcharfun);
             break;
           case 2:
-            strout ("#<Lua lightuserdata>", -1, -1, printcharfun);
+            sprintf(buf, "#<Lua lightuserdata at 0x%x>", val);
+            strout (buf, -1, -1, printcharfun);
             break;
           case 3:
             strout ("#<Lua number>", -1, -1, printcharfun);
             break;
           case 4:
-            strout ("#<Lua string>", -1, -1, printcharfun);
+            sprintf(buf, "#<Lua string at 0x%x>", val);
+            strout (buf, -1, -1, printcharfun);
             break;
           case 5:
-            strout ("#<Lua table>", -1, -1, printcharfun);
+            sprintf(buf, "#<Lua table at 0x%x>", val);
+            strout (buf, -1, -1, printcharfun);
             break;
           case 6:
-            strout ("#<Lua function>", -1, -1, printcharfun);
+            sprintf(buf, "#<Lua function at 0x%x>", val);
+            strout (buf, -1, -1, printcharfun);
             break;
           case 7:
-            strout ("#<Lua user data>", -1, -1, printcharfun);
+            sprintf(buf, "#<Lua user data at 0x%x>", val);
+            strout (buf, -1, -1, printcharfun);
             break;
           case 8:
-            strout ("#<Lua thread>", -1, -1, printcharfun);
+            sprintf(buf, "#<Lua thread at 0x%x>", val);
+            strout (buf, -1, -1, printcharfun);
             break;
           case 9:
             strout ("#<Lua NUMTAGS>", -1, -1, printcharfun);
