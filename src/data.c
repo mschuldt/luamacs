@@ -1163,7 +1163,7 @@ void lisp_to_lua(Lisp_Object obj){
 void store_lisp_reference (Lisp_Object obj){
   XSETINT (Vnum_lua_refs, XINT (Vnum_lua_refs) + 1);
   //Fputhash(&obj, obj, Vreferenced_from_lua);
-  Fputhash(XHASH(obj), obj, Vreferenced_from_lua);
+  Fputhash(obj, Qt, Vreferenced_from_lua);
 }
 
 //mbs
