@@ -1161,46 +1161,9 @@ void lisp_to_lua(Lisp_Object obj){
 }
 
 void store_lisp_reference (Lisp_Object obj){
-  //doing  
   XSETINT (Vnum_lua_refs, XINT (Vnum_lua_refs) + 1);
-
-  switch (XTYPE (obj))
-    {
-    case Lisp_String: //currently unused
-      XSTRING(obj)->hash = Vnum_lua_refs;
-      Fputhash(Vnum_lua_refs, obj, Vreferenced_from_lua);
-      break;
-
-    case Lisp_Vectorlike:
-      XVECTOR (obj)->header.hash = Vnum_lua_refs;
-      Fputhash(Vnum_lua_refs, obj, Vreferenced_from_lua);
-      break;
-    
-    case Lisp_Symbol:
-      XSYMBOL (obj)->hash = Vnum_lua_refs;
-      Fputhash(Vnum_lua_refs , obj, Vreferenced_from_lua);
-      break;
-
-    case Lisp_Misc:
-      //TODO: this needs to be tested with all the Lisp_Misc types
-      XMISCANY (obj)->hash = Vnum_lua_refs;
-      Fputhash(Vnum_lua_refs , obj, Vreferenced_from_lua);
-      break;
-
-    case Lisp_Cons:
-      XCONS (obj)-> hash = Vnum_lua_refs;
-      Fputhash(Vnum_lua_refs , obj, Vreferenced_from_lua);
-      break;
-
-    case Lisp_Float:
-    case_Lisp_Int:
-      //these types are converted to lua types
-      break;
-
-    default:
-      printf("ERROR -- store_lisp_reference: unhandled type\n");
-      emacs_abort ();
-    }
+  //Fputhash(&obj, obj, Vreferenced_from_lua);
+  Fputhash(XHASH(obj), obj, Vreferenced_from_lua);
 }
 
 //mbs
