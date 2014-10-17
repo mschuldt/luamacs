@@ -709,21 +709,17 @@ void luaV_execute (lua_State *L) {
       vmcase(OP_CALL,
         int b = GETARG_B(i);
         int nresults = GETARG_C(i) - 1;
-        if (ttislispobject(ra)){
-          //mbs
-          call_from_lua(L, lisp_value(ra), b);
-        }else{
-          if (b != 0) L->top = ra+b;  /* else previous instruction set top */
-          if (luaD_precall(L, ra, nresults)) {  /* C function? */
-            if (nresults >= 0) L->top = ci->top;  /* adjust results */
-            base = ci->u.l.base;
-          }
-          else {  /* Lua function */
-            ci = L->ci;
-            ci->callstatus |= CIST_REENTRY;
-            goto newframe;  /* restart luaV_execute over new Lua function */
-          }
+        if (b != 0) L->top = ra+b;  /* else previous instruction set top */
+        if (luaD_precall(L, ra, nresults)) {  /* C function? */
+          if (nresults >= 0) L->top = ci->top;  /* adjust results */
+          base = ci->u.l.base;
         }
+        else {  /* Lua function */
+          ci = L->ci;
+          ci->callstatus |= CIST_REENTRY;
+          goto newframe;  /* restart luaV_execute over new Lua function */
+        }
+
       )
       vmcase(OP_TAILCALL,
         int b = GETARG_B(i);
