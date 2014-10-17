@@ -90,6 +90,16 @@ DEFUN ("lua-set", Flua_set, Slua_set, 3, 3, 0,
   lua_pop(L, 1); //pop table
   return value;
 }
+
+DEFUN ("lua-rawset", Flua_rawset, Slua_rawset, 3, 3, 0,
+       doc: /*  Similar to `lua-set', but does a raw assignment
+(i.e., without metamethods). */)
+  (Lisp_Object table, Lisp_Object field, Lisp_Object value)
+{
+  EXTRACT_PUSH_LUA_VAL(table);
+  lisp_to_lua(L, field);
+  lisp_to_lua(L, value);
+  lua_rawset(L, -3);
   lua_pop(L, 1); //pop table
   return value;
 }
@@ -3813,6 +3823,7 @@ alist of active lexical bindings.  */);
   defsubr (&Salist_to_table);
   defsubr (&Slua_get);
   defsubr (&Slua_set);
+  defsubr (&Slua_rawset);
   defsubr (&Slua_garbage_collect);
   defsubr (&Sinspect_lua_val);
   defsubr (&Slua_stacksize);
