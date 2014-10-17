@@ -123,7 +123,8 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
     }
     else if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_INDEX)))
       luaG_typeerror(L, t, "index");
-    if (ttisfunction(tm)) {
+    if (ttisfunction(tm) || ttislispobject(tm)) { //mbs
+      //mbs TODO: should probably modify 'ttisfunction' instead (also: luaV_settable)
       callTM(L, tm, t, key, val, 1);
       return;
     }
@@ -162,7 +163,7 @@ void luaV_settable (lua_State *L, const TValue *t, TValue *key, StkId val) {
       if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_NEWINDEX)))
         luaG_typeerror(L, t, "index");
     /* there is a metamethod */
-    if (ttisfunction(tm)) {
+    if (ttisfunction(tm) || ttislispobject(tm)) { //mbs
       callTM(L, tm, t, key, val, 0);
       return;
     }
