@@ -692,12 +692,23 @@ int lua__newindex_method (lua_State *L){
   return 1;
 }
 
+int lua__index_method_f (lua_State *L){
+  int n = lua_gettop(L);
+  const char* name = lua_tostring(L, -1);
+  //printf("lua looking for: emacs.%s...", name);
+  Lisp_Object sym = Fintern_soft(build_string(name), Qnil);
+  Lisp_Object val;
+  if (FUNCTIONP(sym)){
+    lisp_to_lua(L, sym);
+    return 1;
+  }
+  printf("Error: function emacs.%s is unbound\n", name); //TODO: lua error
+}
 
 /* ARGSUSED */
 int
 main (int argc, char **argv)
 {
-  
     
   L = luaL_newstate();
   luaL_openlibs(L);
@@ -707,7 +718,7 @@ main (int argc, char **argv)
   lua_newtable(L);
   lua_setfield(L, -2, "__lisp_references");
   
-  lua_newtable(L); //emacs table
+  lua_newtable(L); //el table
   lua_newtable(L); //metatable
 
   //set __index method
@@ -721,7 +732,24 @@ main (int argc, char **argv)
   lua_settable(L, -3);
 
   lua_setmetatable(L, -2);
-  lua_setfield(L, -2, "el");
+  lua_setfield(L, -2, "emacs");
+
+
+  lua_newtable(L); //elf table
+  lua_newtable(L); //metatable
+
+  //set __index method
+  lua_pushstring(L, "__index");
+  lua_pushcfunction(L, lua__index_method_f);
+  lua_settable(L, -3);
+  
+  //set __newindex  method
+  lua_pushstring(L, "__newindex");
+  lua_pushcfunction(L, lua__newindex_method);
+  lua_settable(L, -3);
+
+  lua_setmetatable(L, -2);
+  lua_setfield(L, -2, "elf");
 
 #if GC_MARK_STACK
   Lisp_Object dummy;
