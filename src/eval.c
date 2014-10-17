@@ -53,7 +53,7 @@ DEFUN ("alist-to-table", Falist_to_table, Salist_to_table, 1, 1, 0,
   lua_newtable(L);
   while (! NILP(alist)){
     x = XCAR (alist);
-    lisp_to_lua (XCDR (x));
+    lisp_to_lua (L, XCDR (x));
     lua_setfield (L, -2, XSTRING(XCAR(x))->data);
     alist = XCDR(alist);
   }
@@ -83,7 +83,7 @@ DEFUN ("lua-set", Flua_set, Slua_set, 3, 3, 0,
   (Lisp_Object table, Lisp_Object field, Lisp_Object value)
 {
   EXTRACT_PUSH_LUA_VAL(table);
-  lisp_to_lua(value);
+  lisp_to_lua(L, value);
   lua_setfield(L, -2, XSTRING(field)->data);
   lua_pop(L, 1); //pop table
   return value;
@@ -2240,7 +2240,7 @@ eval_sub (Lisp_Object form)
           printf("'eval' -- inspecting lua reference:\n");
           Finspect_lua_val(ret);
         }
-        lisp_to_lua(ret);
+        lisp_to_lua(L, ret);
         form = XCDR(form);
         n_args++;
       }
@@ -2949,7 +2949,7 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
         
       //arguments
       for (int i = 1;i < nargs; i++){
-        lisp_to_lua(args[i]);
+        lisp_to_lua(L, args[i]);
         args++;
         n_args++;
       }

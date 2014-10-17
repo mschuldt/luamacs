@@ -669,7 +669,7 @@ int lua__index_method (lua_State *L){
     val = find_symbol_value (sym);
     if (!EQ (val, Qunbound)){
       //printf("found.\n");
-      lisp_to_lua(val);
+      lisp_to_lua(L, val);
       return 1;
     }
   }
@@ -721,7 +721,7 @@ main (int argc, char **argv)
   lua_settable(L, -3);
 
   lua_setmetatable(L, -2);
-  lua_setfield(L, -2, "emacs");
+  lua_setfield(L, -2, "el");
 
 #if GC_MARK_STACK
   Lisp_Object dummy;

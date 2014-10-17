@@ -3750,7 +3750,7 @@ INLINE_HEADER_END
 
 Lisp_Object lua_to_lisp (int idx);
 Lisp_Object build_lua_tvalue (TValue * o);
-void lisp_to_lua(Lisp_Object obj);
+void lisp_to_lua(lua_State *L, Lisp_Object obj);
 TValue *getStackItem (lua_State *L, int idx);
 void lua_pushlisp (lua_State *L, Lisp_Object n);
 
