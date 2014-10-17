@@ -2912,6 +2912,20 @@ DEFUN ("functionp", Ffunctionp, Sfunctionp, 1, 1, 0,
   return Qnil;
 }
 
+Lisp_Object call_from_lua(lua_State *L, Lisp_Object func, int n_args){
+  Lisp_Object args[n_args];
+  int ind = n_args - 1;
+  while (ind){
+    args[ind] = lua_to_lisp(-1);
+    lua_pop(L, 1);
+    ind--;
+  }
+  args[0] = func;
+  lua_pop(L, 1);
+  lisp_to_lua(L, Ffuncall(n_args, args));
+  return 1;
+}
+
 DEFUN ("funcall", Ffuncall, Sfuncall, 1, MANY, 0,
        doc: /* Call first argument as a function, passing remaining arguments to it.
 Return the value that function returns.
