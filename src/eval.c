@@ -70,8 +70,8 @@ DEFUN ("lua-get", Flua_get, Slua_get, 2, 2, 0,
   Lisp_Object ret;
   //TODO: check types, gcpro?
   EXTRACT_PUSH_LUA_VAL(table);
-  //note: currently strings cannot be lua refs - they are converted
-  lua_getfield(L, -1, XSTRING(field)->data);
+  lisp_to_lua(L, field);
+  lua_gettable(L, -2);
   ret = lua_to_lisp(-1);
   lua_pop(L, 2); //pop field value and table
   return ret;
@@ -83,8 +83,13 @@ DEFUN ("lua-set", Flua_set, Slua_set, 3, 3, 0,
   (Lisp_Object table, Lisp_Object field, Lisp_Object value)
 {
   EXTRACT_PUSH_LUA_VAL(table);
+  lisp_to_lua(L, field);
   lisp_to_lua(L, value);
-  lua_setfield(L, -2, XSTRING(field)->data);
+  //lua_setfield(L, -2, XSTRING(field)->data);
+  lua_settable(L, -3);
+  lua_pop(L, 1); //pop table
+  return value;
+}
   lua_pop(L, 1); //pop table
   return value;
 }
