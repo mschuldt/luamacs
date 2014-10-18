@@ -301,7 +301,6 @@ int luaD_precall (lua_State *L, StkId func, int nresults) {
   int lisp_func = 0;
   switch (ttype(func)) {
     case LUA_LISP_OBJECT: //mbs
-      lisp_func = 1;
       lisp_func = L->ci->n_args;
       if (lisp_func < 1){
         printf("ERROR: luaD_precall -- invalid arg num: %d\n", lisp_func);
