@@ -125,6 +125,7 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
       luaG_typeerror(L, t, "index");
     if (ttisfunction(tm) || ttislispobject(tm)) { //mbs
       //mbs TODO: should probably modify 'ttisfunction' instead (also: luaV_settable)
+      L->ci->n_args = 3;
       callTM(L, tm, t, key, val, 1);
       return;
     }
@@ -164,6 +165,7 @@ void luaV_settable (lua_State *L, const TValue *t, TValue *key, StkId val) {
         luaG_typeerror(L, t, "index");
     /* there is a metamethod */
     if (ttisfunction(tm) || ttislispobject(tm)) { //mbs
+      L->ci->n_args = 4;
       callTM(L, tm, t, key, val, 0);
       return;
     }
@@ -711,6 +713,7 @@ void luaV_execute (lua_State *L) {
         int b = GETARG_B(i);
         int nresults = GETARG_C(i) - 1;
         if (b != 0) L->top = ra+b;  /* else previous instruction set top */
+        L->ci->n_args = b;//mbs
         if (luaD_precall(L, ra, nresults)) {  /* C function? */
           if (nresults >= 0) L->top = ci->top;  /* adjust results */
           base = ci->u.l.base;

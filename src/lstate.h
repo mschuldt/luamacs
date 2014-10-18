@@ -86,6 +86,8 @@ typedef struct CallInfo {
       lu_byte status;
     } c;
   } u;
+  //mbs
+  int n_args; //number of args 'func' is being called with
 } CallInfo;
 
 

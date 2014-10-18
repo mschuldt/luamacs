@@ -302,6 +302,10 @@ int luaD_precall (lua_State *L, StkId func, int nresults) {
   switch (ttype(func)) {
     case LUA_LISP_OBJECT: //mbs
       lisp_func = 1;
+      lisp_func = L->ci->n_args;
+      if (lisp_func < 1){
+        printf("ERROR: luaD_precall -- invalid arg num: %d\n", lisp_func);
+      }
       goto Cfunc;
     case LUA_TLCF:  /* light C function */
       f = fvalue(func);
@@ -321,7 +325,7 @@ int luaD_precall (lua_State *L, StkId func, int nresults) {
         luaD_hook(L, LUA_HOOKCALL, -1);
       lua_unlock(L);
       if (lisp_func){ //mbs
-        n = call_from_lua(L, lisp_value(func), L->top - func);
+        n = call_from_lua(L, lisp_value(func), lisp_func);
         //(fenwick tree)
       }else{
         n = (*f)(L);  /* do the actual call */
