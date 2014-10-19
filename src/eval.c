@@ -91,6 +91,20 @@ DEFUN ("lua-set", Flua_set, Slua_set, 3, 3, 0,
   return value;
 }
 
+DEFUN ("lua-setmetatable", Flua_setmetatable, Slua_setmetatable, 2, 2, 0,
+       doc: /* Sets the metatable for the given table.
+If metatable is nil, removes the metatable of the given table.
+If the original metatable has a "__metatable" field, raises an error. */)
+  (Lisp_Object table, Lisp_Object metatable)
+{
+  //TODO: raise error if the original metatable has a "__metatable" field
+  EXTRACT_PUSH_LUA_VAL(table);
+  EXTRACT_PUSH_LUA_VAL(metatable);
+  lua_setmetatable(L, -2);
+  lua_pop(L, 1); //pop table
+  return Qt;
+}
+
 DEFUN ("lua-rawset", Flua_rawset, Slua_rawset, 3, 3, 0,
        doc: /*  Similar to `lua-set', but does a raw assignment
 (i.e., without metamethods). */)
@@ -3829,6 +3843,7 @@ alist of active lexical bindings.  */);
   defsubr (&Salist_to_table);
   defsubr (&Slua_get);
   defsubr (&Slua_set);
+  defsubr (&Slua_setmetatable);
   defsubr (&Slua_rawset);
   defsubr (&Slua_garbage_collect);
   defsubr (&Sinspect_lua_val);
