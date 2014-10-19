@@ -2969,24 +2969,26 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
   char *name;
   int n_args = 0;
   Lisp_Object ret;
+
+  if (LUA_VALUEP(fun)){
+    EXTRACT_PUSH_LUA_VAL(fun);
+    goto push_args_and_call;
+  }
+    
   if (SYMBOLP(fun)){
     name = XSTRING(XSYMBOL(fun)->name)->data;
     if (LUA_VAR_STRING_P(name)){
-      lua_checkstack(L, 8);
       name += 4;
-      printf("(funcall) calling lua function: %s, ", name);
-
       //function
       //lua_pushglobaltable(L);
       lua_getfield(L, LUA_GLOBALSINDEX, name);
-        
-      //arguments
+    push_args_and_call:
+      lua_checkstack(L, 8);
       for (int i = 1;i < nargs; i++){
         lisp_to_lua(L, args[i]);
         args++;
         n_args++;
       }
-      printf("with %d args\n", n_args);
       lua_call(L, n_args, 1);
       ret = lua_to_lisp(-1);
       lua_pop(L, 1);
