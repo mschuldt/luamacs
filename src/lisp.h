@@ -3167,6 +3167,7 @@ extern void init_eval (void);
 extern void mark_backtrace (void);
 #endif
 extern void syms_of_eval (void);
+extern void syms_of_luamacs (void); //mbs
 
 /* Defined in editfns.c.  */
 extern Lisp_Object Qfield;

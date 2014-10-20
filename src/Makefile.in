@@ -335,6 +335,7 @@ base_obj = lapi.o lauxlib.o lbaselib.o lbitlib.o lcode.o lcorolib.o lctype.o ldb
 	ldebug.o ldo.o ldump.o lfunc.o lgc.o linit.o liolib.o llex.o lmathlib.o \
 	lmem.o loadlib.o lobject.o lopcodes.o loslib.o lparser.o lstate.o lstring.o \
 	lstrlib.o ltable.o ltablib.o ltm.o lua.o luac.o lundump.o lvm.o lzio.o \
+	luamacs.o \
 	dispnew.o frame.o scroll.o xdisp.o menu.o $(XMENU_OBJ) window.o \
 	charset.o coding.o category.o ccl.o character.o chartab.o bidi.o \
 	cm.o term.o terminal.o xfaces.o $(XOBJ) $(GTK_OBJ) $(DBUS_OBJ) \

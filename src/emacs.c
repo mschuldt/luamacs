@@ -1402,6 +1402,7 @@ Using an Emacs configured with --with-x-toolkit=lucid does not have this problem
     {
       /* The basic levels of Lisp must come first.  Note that
 	 syms_of_data and some others have already been called.  */
+      syms_of_luamacs (); //mbs
       syms_of_chartab ();
       syms_of_lread ();
       syms_of_print ();
