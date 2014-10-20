@@ -1193,7 +1193,7 @@ DEFUN ("set", Fset, Sset, 2, 2, 0,
   //Luamacs --------------------------------------------------------------
   char * name = XSTRING(XSYMBOL(symbol)->name)->data;
 
-  if (LUA_VAR_STRING_P(name)){ //mbs
+  if (LUA_VAR_STRING_P(name)){ 
     name += 4;
     printf("setting lua value: %s\n", name);
     lua_checkstack(L, 2);
@@ -1202,7 +1202,6 @@ DEFUN ("set", Fset, Sset, 2, 2, 0,
     //lua_setfield(L, LUA_GLOBALSINDEX, name);
     lua_setfield(L, -2, name);
     lua_pop(L, 1);
-    
   }else{
     set_internal (symbol, newval, Qnil, 0);
   }

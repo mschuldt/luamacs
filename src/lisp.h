@@ -1400,7 +1400,7 @@ struct Lisp_Lua_TValue
   unsigned long hash;
   TValue* o;
 };
-a//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 
   
 /* To get the type field of a union Lisp_Misc, use XMISCTYPE.

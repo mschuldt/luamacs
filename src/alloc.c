@@ -4089,7 +4089,6 @@ live_misc_p (struct mem_node *m, void *p)
 {
   if (m->type == MEM_TYPE_MISC)
     {
-      //      return 1;//mbs
       struct marker_block *b = (struct marker_block *) m->start;
       ptrdiff_t offset = (char *) p - (char *) &b->markers[0];
 

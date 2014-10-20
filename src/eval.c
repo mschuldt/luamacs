@@ -1993,25 +1993,6 @@ it is defines a macro.  */)
     }
 }
 
-//mbs
-/* void push_to_lua_from_list (Lisp_Object args){ */
-/*   while (! NILP args){ */
-/*     lisp_to_lua(XCAR(args)); */
-/*     args = XCDR(args); */
-/*   } */
-/* } */
-
-/* void push_to_lua_from_array(Lisp_Object *args, int len){ */
-/*   for (int i = 0; i < len; i++){ */
-/*     lisp_to_lua(args[i]); */
-/*   } */
-/* } */
-
-
-/* Lisp_Object lua_funcall(char * fname); */
-  
-/* } */
-
 DEFUN ("eval", Feval, Seval, 1, 2, 0,
        doc: /* Evaluate FORM and return its value.
 If LEXICAL is t, evaluate using lexical scoping.  */)
@@ -2062,7 +2043,7 @@ eval_sub (Lisp_Object form)
     if (LUA_VAR_STRING_P(name)){
       lua_checkstack(L, 8);
       name += 4;
-      printf("(eval) calling lua function: %s, ", name);
+      //printf("(eval) calling lua function: %s, ", name);
 
       //function
       //lua_getfield(L, LUA_GLOBALSINDEX, name);
@@ -2079,7 +2060,7 @@ eval_sub (Lisp_Object form)
       form = XCDR(form);
       while (! NILP (form)){
         ret = eval_sub(XCAR(form));
-        if (LUA_VALUEP(ret)){
+        if (LUA_VALUEP(ret) && 0){
           printf("'eval' -- inspecting lua reference:\n");
           Finspect_lua_val(ret);
         }
@@ -2087,7 +2068,7 @@ eval_sub (Lisp_Object form)
         form = XCDR(form);
         n_args++;
       }
-      printf("with %d args\n", n_args);
+      //printf("with %d args\n", n_args);
       lua_call(L, n_args, 1);
       ret = lua_to_lisp(-1);
       lua_pop(L, 2);
@@ -2821,6 +2802,7 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
       return ret;
     }
   }
+  
 
   if (++lisp_eval_depth > max_lisp_eval_depth)
     {
