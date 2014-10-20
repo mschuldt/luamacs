@@ -63,6 +63,44 @@ DEFUN ("alist-to-table", Falist_to_table, Salist_to_table, 1, 1, 0,
   return ret;
 }
 
+DEFUN ("sequence-to-table", Fsequence_to_table, Ssequence_to_table, 1, 1, 0,
+       doc: /* Create a new table and add the items in SEQUENCE to it
+with indices 1,...,len(sequence)-1
+SEQUENCE is a list or an array
+            */)
+  (Lisp_Object sequence)
+{
+  register Lisp_Object x;
+  Lisp_Object ret;
+  int len;
+  int index = 1;
+  lua_newtable(L);
+  
+  if (CONSP (sequence) || NILP (sequence)){
+    while (! NILP(sequence)){
+      lua_pushinteger(L, index);
+      lisp_to_lua(L, XCAR(sequence));
+      lua_settable(L, -3);
+      sequence = XCDR(sequence);
+      index++;
+    }
+  }else if (ARRAYP (sequence)){
+    len = XFASTINT(Flength(sequence));
+    for (int i = 0; i < len; i++){
+      lua_pushinteger(L, index);
+      lisp_to_lua(L, AREF(sequence, i));
+      lua_settable(L, -3);
+      index++;
+    }
+  }else{
+    printf("sequence-to-table: invalid type\n");
+    //TODO:raise error
+  }
+  ret = lua_to_lisp(-1);
+  lua_pop(L, 1); //pop table
+  return ret;
+}
+
 DEFUN ("lua-get", Flua_get, Slua_get, 2, 2, 0,
        doc: /* Is the equivalent TABLE[FIELD]
                TABLE is a lua table, FIELD is a string*/)
@@ -3842,6 +3880,7 @@ alist of active lexical bindings.  */);
 
   defsubr (&Slua_new_table);
   defsubr (&Salist_to_table);
+  defsubr (&Ssequence_to_table);
   defsubr (&Slua_get);
   defsubr (&Slua_set);
   defsubr (&Slua_setmetatable);
