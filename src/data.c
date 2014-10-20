@@ -1110,18 +1110,22 @@ global value outside of any lexical scope.  */)
   (Lisp_Object symbol)
 {
   Lisp_Object val;
-  char * name = XSTRING(XSYMBOL(symbol)->name)->data;
-  if (LUA_VAR_STRING_P(name)){ //mbs
-    name += 4;
-    printf("looking up lua value: %s\n", name);
-    lua_checkstack(L, 2);
-    lua_pushglobaltable(L);
-    //lua_getfield(L, LUA_GLOBALSINDEX, name);
-    lua_getfield(L, -1, name);
-    //TODO: what if the field does not exist?
-    //val = lua_to_lisp(index2addr(L, -1));
-    val = lua_to_lisp(-1);
-    lua_pop(L, 2);
+  if (SYMBOLP(symbol)){//mbs
+    char * name = XSTRING(XSYMBOL(symbol)->name)->data;
+    if (LUA_VAR_STRING_P(name)){
+      name += 4;
+      printf("looking up lua value: %s\n", name);
+      lua_checkstack(L, 2);
+      lua_pushglobaltable(L);
+      //lua_getfield(L, LUA_GLOBALSINDEX, name);
+      lua_getfield(L, -1, name);
+      //TODO: what if the field does not exist?
+      //val = lua_to_lisp(index2addr(L, -1));
+      val = lua_to_lisp(-1);
+      lua_pop(L, 2);
+    }else{
+      val = find_symbol_value (symbol);
+    }
   }else{
     val = find_symbol_value (symbol);
   }
