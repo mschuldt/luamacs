@@ -35,6 +35,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "keymap.h"
 
 Lisp_Object Qlua_value; //mbs
+Lisp_Object Qtable;
 
 Lisp_Object Qnil, Qt, Qquote, Qlambda, Qunbound;
 static Lisp_Object Qsubr;
@@ -3193,6 +3194,7 @@ syms_of_data (void)
 
   //mbs
   DEFSYM (Qlua_value, "lua-value");
+  DEFSYM (Qtable, "table");
 
   DEFSYM (Qdefun, "defun");
 

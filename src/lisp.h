@@ -2621,6 +2621,9 @@ set_sub_char_table_contents (Lisp_Object table, ptrdiff_t idx, Lisp_Object val)
 }
 
 /* Defined in data.c.  */
+extern Lisp_Object Qlua_value; //mbs
+extern Lisp_Object Qtable;
+
 extern Lisp_Object Qnil, Qt, Qquote, Qlambda, Qunbound;
 extern Lisp_Object Qerror_conditions, Qerror_message, Qtop_level;
 extern Lisp_Object Qerror, Qquit, Qargs_out_of_range;
