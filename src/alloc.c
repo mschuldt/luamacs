@@ -6334,7 +6334,9 @@ gc_sweep (void)
       {
 	register int i;
 	int this_free = 0;
-
+        //Luamacs ------------------------------------------------------------
+        TValue* v;
+        //------- ------------------------------------------------------------
 	for (i = 0; i < lim; i++)
 	  {
 	    if (!mblk->markers[i].m.u_any.gcmarkbit)
@@ -6350,7 +6352,16 @@ gc_sweep (void)
                   //must be set to null or the next time that lua object
                   //is referenced from lisp, a lisp_misc_free type or some
                   //random misc type will be returned (or emacs crashes)
-                  gcvalue(mblk->markers[i].m.lua_val.o)->gch.lispp = NULL;
+                  v = mblk->markers[i].m.lua_val.o;
+                  gcvalue(v)->gch.lispp = NULL;
+                  //remove the lua object from the __lisp_references table
+                  //so that it is possible for lua to garbage collect it
+                  lua_pushglobaltable(L);
+                  lua_getfield(L, -1, "__lisp_references");
+                  lua_pushTValue(L, v);
+                  lua_pushnil(L);
+                  lua_settable(L, -3);
+                  lua_pop(L, 2);
                   break;
                   //----------------------------------------------------------
                 }
