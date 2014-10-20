@@ -1696,6 +1696,7 @@ typedef struct {
 #define MARKERP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Marker)
 #define SAVE_VALUEP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Save_Value)
 #define LUA_VALUEP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Lua_TValue) //
+#define LUA_TABLEP(x) (LUA_VALUEP(x) && ttype(XLUA_VALUE(x)->o) == LUA_TTABLE)
 
 #define INTFWDP(x) (XFWDTYPE (x) == Lisp_Fwd_Int)
 #define BOOLFWDP(x) (XFWDTYPE (x) == Lisp_Fwd_Bool)
@@ -1781,6 +1782,13 @@ typedef struct {
 
 #define CHECK_WINDOW(x) \
   CHECK_TYPE (WINDOWP (x), Qwindowp, x)
+
+//mbs
+#define CHECK_LUA(x) \
+  CHECK_TYPE (LUA_VALUEP (x), Qlua_value, x )
+
+#define CHECK_TABLE(x) \
+  CHECK_TYPE (LUA_TABLEP (x), Qtable, x )
 
 #define CHECK_WINDOW_CONFIGURATION(x) \
   CHECK_TYPE (WINDOW_CONFIGURATIONP (x), Qwindow_configuration_p, x)
