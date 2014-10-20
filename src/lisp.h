@@ -519,7 +519,7 @@ clip_to_bounds (ptrdiff_t lower, EMACS_INT num, ptrdiff_t upper)
 		    (struct Lisp_Cons *) XUNTAG (a, Lisp_Cons))
 
 //mbs
-//#define XLUA_VALUE(a) (eassert (LUA_VALUE (a)), \ 
+//#define XLUA_VALUE(a) (eassert (LUA_VALUE (a)), \
 //		    (struct Lisp_Lua_TValue *) XUNTAG (a, Lisp_Lua_TValue))
 #define XVECTOR(a) (eassert (VECTORLIKEP (a)), \
 		    (struct Lisp_Vector *) XUNTAG (a, Lisp_Vectorlike))
