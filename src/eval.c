@@ -53,8 +53,9 @@ DEFUN ("alist-to-table", Falist_to_table, Salist_to_table, 1, 1, 0,
   lua_newtable(L);
   while (! NILP(alist)){
     x = XCAR (alist);
+    lisp_to_lua (L, XCAR (x));
     lisp_to_lua (L, XCDR (x));
-    lua_setfield (L, -2, XSTRING(XCAR(x))->data);
+    lua_settable(L, -3);
     alist = XCDR(alist);
   }
   ret = lua_to_lisp(-1);
