@@ -233,33 +233,6 @@ DEFUN ("lua-load", Flua_load, Slua_load, 1, 1, 0,
   return err ? Qnil : Qt;
 }
 
-DEFUN ("lua-concat", Flua_concat, Slua_concat, 0, MANY, 0,
-       doc: /* Concatenate all the arguments and make the result a string.
-The result is a string whose elements are the elements of all the arguments.
-Each argument may be a string or a list or vector of characters (integers).
-usage: (concat &rest SEQUENCES)  */)
-  (ptrdiff_t nargs, Lisp_Object *args)
-{
-  lua_State *L = luaL_newstate();
-  luaL_openlibs(L);
-  char * str;
-  for (int i = 0; i < nargs; i++){
-    str = XSTRING(args[i])->data;
-    lua_pushlstring(L, str, strlen(str));
-  }
-  lua_concat(L, nargs);
-  const char *msg = lua_tostring(L, -1);
-  return build_string(msg);
-}
-
-DEFUN ("lua-test", Flua_test, Slua_test, 2, 2, 0,
-       doc: /* Return t if the two args are the same Lisp object. */)
-  (Lisp_Object obj1, Lisp_Object obj2)
-{
-  return build_string(mbs_test());
-}
-
-
 struct backtrace *backtrace_list;
 
 #if !BYTE_MARK_STACK
