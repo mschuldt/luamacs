@@ -75,7 +75,7 @@ typedef union GCObject GCObject;
 ** included in other objects)
 */
 //Luamacs --------------------------------------------------------------
-#define CommonHeader	GCObject *next; lu_byte tt; lu_byte marked; Lisp_Object lispp; unsigned long lisp_hash;
+#define CommonHeader	GCObject *next; lu_byte tt; lu_byte marked; Lisp_Object lispp;
 //----------------------------------------------------------------------
 
 

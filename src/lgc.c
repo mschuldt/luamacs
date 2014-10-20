@@ -213,7 +213,6 @@ GCObject *luaC_newobj (lua_State *L, int tt, size_t sz, GCObject **list,
   gch(o)->marked = luaC_white(g);
   //Luamacs --------------------------------------------------------------
   gch(o)->lispp = NULL;
-  gch(o)->lisp_hash = 0;
   //----------------------------------------------------------------------
   gch(o)->tt = tt;
   gch(o)->next = *list;
