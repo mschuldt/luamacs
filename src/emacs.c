@@ -673,7 +673,9 @@ int lua__index_method (lua_State *L){
       return 1;
     }
   }
-  printf("Error: emacs.%s is unbound\n", name); //TODO: lua error
+  char msg[100]; //TODO: fix this (max var length?)
+  sprintf(msg, "Error: emacs.%s is unbound", name);
+  signal_error(msg, Qnil);
 }
 
 int lua__newindex_method (lua_State *L){
@@ -702,7 +704,9 @@ int lua__index_method_f (lua_State *L){
     lisp_to_lua(L, sym);
     return 1;
   }
-  printf("Error: function emacs.%s is unbound\n", name); //TODO: lua error
+  char msg[100];
+  sprintf(msg, "Error: function emacs.%s is unbound", name);
+  signal_error(msg, Qnil);
 }
 
 /* ARGSUSED */

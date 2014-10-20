@@ -50,6 +50,8 @@ DEFUN ("alist-to-table", Falist_to_table, Salist_to_table, 1, 1, 0,
   register Lisp_Object x;
   Lisp_Object ret;
 
+  CHECK_LIST(alist);
+
   lua_newtable(L);
   while (! NILP(alist)){
     x = XCAR (alist);
@@ -93,8 +95,7 @@ SEQUENCE is a list or an array
       index++;
     }
   }else{
-    printf("sequence-to-table: invalid type\n");
-    //TODO:raise error
+    wrong_type_argument (Qsequencep, sequence);
   }
   ret = lua_to_lisp(-1);
   lua_pop(L, 1); //pop table
@@ -107,7 +108,10 @@ DEFUN ("lua-get", Flua_get, Slua_get, 2, 2, 0,
   (Lisp_Object table, Lisp_Object field)
 {
   Lisp_Object ret;
-  //TODO: check types, gcpro?
+  
+  CHECK_TABLE(table);
+
+  //TODO: gcpro?
   EXTRACT_PUSH_LUA_VAL(table);
   lisp_to_lua(L, field);
   lua_gettable(L, -2);
@@ -121,6 +125,8 @@ DEFUN ("lua-set", Flua_set, Slua_set, 3, 3, 0,
                TABLE is a lua table, FIELD is a string */)
   (Lisp_Object table, Lisp_Object field, Lisp_Object value)
 {
+  CHECK_TABLE(table);
+
   EXTRACT_PUSH_LUA_VAL(table);
   lisp_to_lua(L, field);
   lisp_to_lua(L, value);
@@ -136,6 +142,8 @@ If metatable is nil, removes the metatable of the given table.
 If the original metatable has a "__metatable" field, raises an error. */)
   (Lisp_Object table, Lisp_Object metatable)
 {
+  CHECK_TABLE(table);
+  CHECK_TABLE(metatable);
   //TODO: raise error if the original metatable has a "__metatable" field
   EXTRACT_PUSH_LUA_VAL(table);
   EXTRACT_PUSH_LUA_VAL(metatable);
@@ -149,6 +157,7 @@ DEFUN ("lua-rawset", Flua_rawset, Slua_rawset, 3, 3, 0,
 (i.e., without metamethods). */)
   (Lisp_Object table, Lisp_Object field, Lisp_Object value)
 {
+  CHECK_TABLE(table);
   EXTRACT_PUSH_LUA_VAL(table);
   lisp_to_lua(L, field);
   lisp_to_lua(L, value);
@@ -220,6 +229,7 @@ DEFUN ("lua-eval", Flua_eval, Slua_eval, 1, 1, 0,
        doc: /* Evaluate argument as lua code. return t on success, else nil */)
   (Lisp_Object code)
 {
+  CHECK_STRING(code);
   return luaL_dostring(L, XSTRING(code)->data) ? Qnil : Qt;
 }
 
@@ -227,6 +237,8 @@ DEFUN ("lua-load", Flua_load, Slua_load, 1, 1, 0,
        doc: /* load file containing lua code. return t on success, else nil */)
   (Lisp_Object file)
 {
+  CHECK_STRING(file);
+
   lua_State *L = luaL_newstate();
   luaL_openlibs(L);
   int err = luaL_dofile(L, XSTRING(file)->data);
