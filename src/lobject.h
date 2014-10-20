@@ -74,7 +74,9 @@ typedef union GCObject GCObject;
 ** Common Header for all collectable objects (in macro form, to be
 ** included in other objects)
 */
-#define CommonHeader	GCObject *next; lu_byte tt; lu_byte marked; Lisp_Object lispp; unsigned long lisp_hash; //mbs
+//Luamacs --------------------------------------------------------------
+#define CommonHeader	GCObject *next; lu_byte tt; lu_byte marked; Lisp_Object lispp; unsigned long lisp_hash;
+//----------------------------------------------------------------------
 
 
 /*
@@ -146,7 +148,9 @@ typedef struct lua_TValue TValue;
 #define ttisuserdata(o)		checktag((o), ctb(LUA_TUSERDATA))
 #define ttisthread(o)		checktag((o), ctb(LUA_TTHREAD))
 #define ttisdeadkey(o)		checktag((o), LUA_TDEADKEY)
-#define ttislispobject(o)       checktag((o), LUA_LISP_OBJECT) //mbs
+//Luamacs --------------------------------------------------------------
+#define ttislispobject(o)       checktag((o), LUA_LISP_OBJECT)
+//----------------------------------------------------------------------
 
 #define ttisequal(o1,o2)	(rttype(o1) == rttype(o2))
 
@@ -167,8 +171,9 @@ typedef struct lua_TValue TValue;
 #define thvalue(o)	check_exp(ttisthread(o), &val_(o).gc->th)
 /* a dead value may get the 'gc' field, but cannot access its contents */
 #define deadvalue(o)	check_exp(ttisdeadkey(o), cast(void *, val_(o).gc))
-//mbs
+//Luamacs --------------------------------------------------------------
 #define lisp_value(o)   check_exp(ttislispobject(o), val_(o).lisp_o)
+//----------------------------------------------------------------------
 
 #define l_isfalse(o)	(ttisnil(o) || (ttisboolean(o) && bvalue(o) == 0))
 
@@ -190,9 +195,10 @@ typedef struct lua_TValue TValue;
 #define setnvalue(obj,x) \
   { TValue *io=(obj); num_(io)=(x); settt_(io, LUA_TNUMBER); }
 
-//mbs
+//Luamacs --------------------------------------------------------------
 #define setlispvalue(obj,x) \
   { TValue *io=(obj); val_(io).lisp_o=(x); settt_(io, LUA_LISP_OBJECT); }
+//----------------------------------------------------------------------
 
 #define setnilvalue(obj) settt_(obj, LUA_TNIL)
 
@@ -399,7 +405,9 @@ union Value {
   int b;           /* booleans */
   lua_CFunction f; /* light C functions */
   numfield;         /* numbers */
-  Lisp_Object lisp_o;  //mbs
+  //Luamacs --------------------------------------------------------------  
+  Lisp_Object lisp_o;
+  //----------------------------------------------------------------------
 };
 
 

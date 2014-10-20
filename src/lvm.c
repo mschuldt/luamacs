@@ -123,9 +123,11 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
     }
     else if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_INDEX)))
       luaG_typeerror(L, t, "index");
-    if (ttisfunction(tm) || ttislispobject(tm)) { //mbs
-      //mbs TODO: should probably modify 'ttisfunction' instead (also: luaV_settable)
+    //Luamacs --------------------------------------------------------------
+    if (ttisfunction(tm) || ttislispobject(tm)) { 
+      //TODO: should probably modify 'ttisfunction' instead (also: luaV_settable)
       L->ci->n_args = 3;
+      //----------------------------------------------------------------------
       callTM(L, tm, t, key, val, 1);
       return;
     }
@@ -164,8 +166,10 @@ void luaV_settable (lua_State *L, const TValue *t, TValue *key, StkId val) {
       if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_NEWINDEX)))
         luaG_typeerror(L, t, "index");
     /* there is a metamethod */
-    if (ttisfunction(tm) || ttislispobject(tm)) { //mbs
+    //Luamacs --------------------------------------------------------------
+    if (ttisfunction(tm) || ttislispobject(tm)) {
       L->ci->n_args = 4;
+      //----------------------------------------------------------------------
       callTM(L, tm, t, key, val, 0);
       return;
     }
@@ -713,7 +717,9 @@ void luaV_execute (lua_State *L) {
         int b = GETARG_B(i);
         int nresults = GETARG_C(i) - 1;
         if (b != 0) L->top = ra+b;  /* else previous instruction set top */
-        L->ci->n_args = b;//mbs
+        //Luamacs -----------------------------------------------------------
+        L->ci->n_args = b;
+        //-------------------------------------------------------------------
         if (luaD_precall(L, ra, nresults)) {  /* C function? */
           if (nresults >= 0) L->top = ci->top;  /* adjust results */
           base = ci->u.l.base;

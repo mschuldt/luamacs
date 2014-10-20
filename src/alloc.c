@@ -3334,6 +3334,8 @@ build_overlay (Lisp_Object start, Lisp_Object end, Lisp_Object plist)
   return overlay;
 }
 
+//Luamacs --------------------------------------------------------------
+
 DEFUN ("num-lua-refs-from-lisp", Fnum_lua_refs_from_lisp, Snum_lua_refs_from_lisp, 0, 0, 0,
        doc: /* returns the number of lua objects referenced by lisp objects */)
   (void)
@@ -3348,7 +3350,6 @@ DEFUN ("num-lisp-refs-from-lua", Fnum_lisp_refs_from_lua, Snum_lisp_refs_from_lu
   return Vnum_lua_refs;
 }
 
-//mbs
 Lisp_Object
 build_lua_tvalue (TValue * o)
 {
@@ -3387,7 +3388,7 @@ build_lua_tvalue (TValue * o)
   /* Finspect_lua_val(val); */
   return val;
 }
-
+//----------------------------------------------------------------------
 
 DEFUN ("make-marker", Fmake_marker, Smake_marker, 0, 0, 0,
        doc: /* Return a newly allocated marker which does not point at any place.  */)
@@ -5602,11 +5603,12 @@ mark_overlay (struct Lisp_Overlay *ptr)
     }
 }
 
-//mbs
+//Luamacs --------------------------------------------------------------
 static void
 mark_lua_tvalue (struct Lisp_Lua_TValue *ptr){
   ptr->gcmarkbit = 1;
 }
+//----------------------------------------------------------------------
 
 /* Mark Lisp_Objects and special pointers in BUFFER.  */
 
@@ -6343,7 +6345,8 @@ gc_sweep (void)
                 case Lisp_Misc_Marker:
                   unchain_marker (&mblk->markers[i].m.u_marker);
                   break;
-                case Lisp_Misc_Lua_TValue: //mbs
+                  //Luamacs --------------------------------------------------
+                case Lisp_Misc_Lua_TValue:
                   //we are freeing a reference to a lua object,
                   //the pointer to this object in the lua object
                   //must be set to null or the next time that lua object
@@ -6351,6 +6354,7 @@ gc_sweep (void)
                   //random misc type will be returned (or emacs crashes)
                   gcvalue(mblk->markers[i].m.lua_val.o)->gch.lispp = NULL;
                   break;
+                  //----------------------------------------------------------
                 }
 
 		/* Set the type of the freed object to Lisp_Misc_Free.
@@ -6638,12 +6642,13 @@ do hash-consing of the objects allocated to pure space.  */);
 	       doc: /* Non-nil means Emacs cannot get much more Lisp memory.  */);
   Vmemory_full = Qnil;
 
-  //mbs
+  //Luamacs --------------------------------------------------------------
   DEFVAR_LISP("__num_lua_refs", Vnum_lua_refs,
               doc: /* number of lisp objects referenced by lua
                       ***DO NOT MODIFY***
                     */);
   Vnum_lua_refs = make_number(0);
+  //----------------------------------------------------------------------
 
   DEFSYM (Qconses, "conses");
   DEFSYM (Qsymbols, "symbols");
@@ -6667,8 +6672,10 @@ The time is in seconds as a floating point value.  */);
   DEFVAR_INT ("gcs-done", gcs_done,
 	      doc: /* Accumulated number of garbage collections done.  */);
 
-  defsubr (&Snum_lua_refs_from_lisp); //mbs
-  defsubr (&Snum_lisp_refs_from_lua); //mbs
+  //Luamacs --------------------------------------------------------------
+  defsubr (&Snum_lua_refs_from_lisp);
+  defsubr (&Snum_lisp_refs_from_lua);
+  //----------------------------------------------------------------------
   defsubr (&Scons);
   defsubr (&Slist);
   defsubr (&Svector);

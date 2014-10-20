@@ -656,6 +656,7 @@ void (*__malloc_initialize_hook) (void) EXTERNALLY_VISIBLE = malloc_initialize_h
 
 #endif /* DOUG_LEA_MALLOC */
 
+//Luamacs --------------------------------------------------------------
 extern lua_State *L;
 extern int LUA_GLOBALSINDEX;
 
@@ -708,12 +709,13 @@ int lua__index_method_f (lua_State *L){
   sprintf(msg, "Error: function emacs.%s is unbound", name);
   signal_error(msg, Qnil);
 }
+//----------------------------------------------------------------------
 
 /* ARGSUSED */
 int
 main (int argc, char **argv)
 {
-    
+//Luamacs --------------------------------------------------------------    
   L = luaL_newstate();
   luaL_openlibs(L);
 
@@ -754,7 +756,9 @@ main (int argc, char **argv)
 
   lua_setmetatable(L, -2);
   lua_setfield(L, -2, "elf");
-
+//----------------------------------------------------------------------
+  
+  
 #if GC_MARK_STACK
   Lisp_Object dummy;
 #endif
@@ -1402,7 +1406,9 @@ Using an Emacs configured with --with-x-toolkit=lucid does not have this problem
     {
       /* The basic levels of Lisp must come first.  Note that
 	 syms_of_data and some others have already been called.  */
-      syms_of_luamacs (); //mbs
+      //Luamacs --------------------------------------------------------------
+      syms_of_luamacs ();
+      //----------------------------------------------------------------------
       syms_of_chartab ();
       syms_of_lread ();
       syms_of_print ();

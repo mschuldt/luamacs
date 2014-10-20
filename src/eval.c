@@ -2051,7 +2051,7 @@ eval_sub (Lisp_Object form)
   if (!CONSP (form))
     return form;
   
-  //mbs
+  //Luamacs --------------------------------------------------------------
   fun = XCAR (form);
   char * name;
   int n_args = 0;
@@ -2095,6 +2095,7 @@ eval_sub (Lisp_Object form)
     }
   }
  notlua:
+  //----------------------------------------------------------------------
   
 
   QUIT;
@@ -2790,7 +2791,7 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
 
   fun = args[0];
   
-
+  //Luamacs --------------------------------------------------------------
   char *name;
   int n_args = 0;
   Lisp_Object ret;

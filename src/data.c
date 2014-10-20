@@ -34,8 +34,10 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "font.h"
 #include "keymap.h"
 
-Lisp_Object Qlua_value; //mbs
+//Luamacs --------------------------------------------------------------
+Lisp_Object Qlua_value; 
 Lisp_Object Qtable;
+//----------------------------------------------------------------------
 
 Lisp_Object Qnil, Qt, Qquote, Qlambda, Qunbound;
 static Lisp_Object Qsubr;
@@ -172,9 +174,10 @@ for example, (type-of 1) returns `integer'.  */)
 	  return Qoverlay;
 	case Lisp_Misc_Float:
 	  return Qfloat;
-
-        case Lisp_Misc_Lua_TValue: //mbs
+          //Luamacs -------------------------------------------------------------
+        case Lisp_Misc_Lua_TValue: 
           return Qlua_value;
+          //---------------------------------------------------------------------
 	}
       emacs_abort ();
 
@@ -1111,7 +1114,8 @@ global value outside of any lexical scope.  */)
   (Lisp_Object symbol)
 {
   Lisp_Object val;
-  if (SYMBOLP(symbol)){//mbs
+  //Luamacs --------------------------------------------------------------
+  if (SYMBOLP(symbol)){
     char * name = XSTRING(XSYMBOL(symbol)->name)->data;
     if (LUA_VAR_STRING_P(name)){
       name += 4;
@@ -1130,13 +1134,14 @@ global value outside of any lexical scope.  */)
   }else{
     val = find_symbol_value (symbol);
   }
-
+  //----------------------------------------------------------------------
   if (!EQ (val, Qunbound))
     return val;
 
   xsignal1 (Qvoid_variable, symbol);
 }
 
+//Luamacs --------------------------------------------------------------
 
 //pushes the lua representation of OBJ onto the stack
 void lisp_to_lua(lua_State *L, Lisp_Object obj){
@@ -1171,7 +1176,6 @@ void store_lisp_reference (Lisp_Object obj){
   Fputhash(obj, Qt, Vreferenced_from_lua);
 }
 
-//mbs
 void lua_pushlisp (lua_State *L, Lisp_Object obj) {
   lua_lock(L);
   setlispvalue(L->top, obj);
@@ -1180,11 +1184,13 @@ void lua_pushlisp (lua_State *L, Lisp_Object obj) {
   //save an extra reference to OBJ to prevent it getting GCed
   store_lisp_reference(obj);
 }
+//----------------------------------------------------------------------
 
 DEFUN ("set", Fset, Sset, 2, 2, 0,
        doc: /* Set SYMBOL's value to NEWVAL, and return NEWVAL.  */)
   (register Lisp_Object symbol, Lisp_Object newval)
 {
+  //Luamacs --------------------------------------------------------------
   char * name = XSTRING(XSYMBOL(symbol)->name)->data;
 
   if (LUA_VAR_STRING_P(name)){ //mbs
@@ -1200,6 +1206,7 @@ DEFUN ("set", Fset, Sset, 2, 2, 0,
   }else{
     set_internal (symbol, newval, Qnil, 0);
   }
+  //----------------------------------------------------------------------
   return newval;
 }
 
@@ -3192,9 +3199,10 @@ syms_of_data (void)
   DEFSYM (Qhash_table, "hash-table");
   DEFSYM (Qmisc, "misc");
 
-  //mbs
+  //Luamacs --------------------------------------------------------------
   DEFSYM (Qlua_value, "lua-value");
   DEFSYM (Qtable, "table");
+  //----------------------------------------------------------------------
 
   DEFSYM (Qdefun, "defun");
 

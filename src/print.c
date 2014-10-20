@@ -1366,8 +1366,10 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
     }
 
   print_depth++;
+  //Luamacs --------------------------------------------------------------
   int type;
   Value val;
+  //----------------------------------------------------------------------
   switch (XTYPE (obj))
     {
     case_Lisp_Int:
@@ -2045,7 +2047,8 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
 	  PRINTCHAR ('>');
 	  break;
 
-        case Lisp_Misc_Lua_TValue: //mbs
+          //Luamacs -------------------------------------------------------------
+        case Lisp_Misc_Lua_TValue:
           val = XLUA_VALUE(obj)->o->value_;
           switch(type = ttypenv(XLUA_VALUE(obj)->o)){
             //TODO: lots of these should never happen...
@@ -2094,6 +2097,7 @@ print_object (Lisp_Object obj, register Lisp_Object printcharfun, int escapeflag
             strout ("<unknown lua type>", -1, -1, printcharfun);
           }
           break;
+          //----------------------------------------------------------------------
 	default:
 	  goto badtype;
 	}

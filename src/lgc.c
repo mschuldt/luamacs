@@ -211,8 +211,10 @@ GCObject *luaC_newobj (lua_State *L, int tt, size_t sz, GCObject **list,
   if (list == NULL)
     list = &g->allgc;  /* standard list for collectable objects */
   gch(o)->marked = luaC_white(g);
-  gch(o)->lispp = NULL; //mbs
-  gch(o)->lisp_hash = 0; //mbs
+  //Luamacs --------------------------------------------------------------
+  gch(o)->lispp = NULL;
+  gch(o)->lisp_hash = 0;
+  //----------------------------------------------------------------------
   gch(o)->tt = tt;
   gch(o)->next = *list;
   *list = o;

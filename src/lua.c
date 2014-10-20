@@ -476,8 +476,9 @@ static int pmain (lua_State *L) {
   return 1;
 }
 
-
+//Luamacs --------------------------------------------------------------
 int lua_main (int argc, char **argv) {
+//----------------------------------------------------------------------
   int status, result;
   lua_State *L = luaL_newstate();  /* create state */
   if (L == NULL) {

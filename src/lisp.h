@@ -32,6 +32,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #include <intprops.h>
 
+//Luamacs --------------------------------------------------------------
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
@@ -49,6 +50,7 @@ int LUA_GLOBALSINDEX;
                                && (str[2] == 'a'))
 
 #define EXTRACT_PUSH_LUA_VAL(obj) lua_pushTValue(L, XLUA_VALUE(obj)->o);
+//----------------------------------------------------------------------
 
 INLINE_HEADER_BEGIN
 #ifndef LISP_INLINE
@@ -61,8 +63,9 @@ INLINE_HEADER_BEGIN
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
-//mbs: EMACS_INT was here
-
+//Luamacs --------------------------------------------------------------
+//NOTE:  EMACS_INT was here
+//----------------------------------------------------------------------
 
 /* Number of bits in some machine integer types.  */
 enum
@@ -289,7 +292,9 @@ enum Lisp_Misc_Type
     /* This is not a type code.  It is for range checking.  */
     Lisp_Misc_Limit,
 
-    Lisp_Misc_Lua_TValue //mbs
+    //Luamacs --------------------------------------------------------------
+    Lisp_Misc_Lua_TValue
+    //----------------------------------------------------------------------
   };
 
 /* These are the types of forwarding objects used in the value slot
@@ -351,7 +356,9 @@ enum Lisp_Fwd_Type
    your object -- this way, the same object could be used to represent
    several disparate C structures.  */
 
+//Luamacs --------------------------------------------------------------
 #include "lisp_object.h"
+//----------------------------------------------------------------------
 
 /* In the size word of a vector, this bit means the vector has been marked.  */
 
@@ -538,7 +545,9 @@ clip_to_bounds (ptrdiff_t lower, EMACS_INT num, ptrdiff_t upper)
 #define XMARKER(a)	(eassert (MARKERP (a)), &(XMISC (a)->u_marker))
 #define XOVERLAY(a)	(eassert (OVERLAYP (a)), &(XMISC (a)->u_overlay))
 #define XSAVE_VALUE(a)	(eassert (SAVE_VALUEP (a)), &(XMISC (a)->u_save_value))
-#define XLUA_VALUE(a)	(eassert (LUA_VALUEP (a)), &(XMISC (a)->lua_val))//mbs
+//Luamacs --------------------------------------------------------------
+#define XLUA_VALUE(a)	(eassert (LUA_VALUEP (a)), &(XMISC (a)->lua_val))
+//----------------------------------------------------------------------
 
 /* Forwarding object types.  */
 
@@ -1382,7 +1391,7 @@ struct Lisp_Free
     union Lisp_Misc *chain;
   };
 
-//mbs
+//Luamacs --------------------------------------------------------------
 struct Lisp_Lua_TValue
 {
   ENUM_BF (Lisp_Misc_Type) type : 16;	/* = Lisp_Misc_Free */
@@ -1391,6 +1400,7 @@ struct Lisp_Lua_TValue
   unsigned long hash;
   TValue* o;
 };
+a//----------------------------------------------------------------------
 
   
 /* To get the type field of a union Lisp_Misc, use XMISCTYPE.
@@ -1403,7 +1413,9 @@ union Lisp_Misc
     struct Lisp_Marker u_marker;
     struct Lisp_Overlay u_overlay;
     struct Lisp_Save_Value u_save_value;
-    struct Lisp_Lua_TValue lua_val; //mbs
+    //Luamacs --------------------------------------------------------------
+    struct Lisp_Lua_TValue lua_val;
+    //----------------------------------------------------------------------
   };
 
 /* Forwarding pointer to an int variable.
@@ -1695,8 +1707,10 @@ typedef struct {
 #define OVERLAYP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Overlay)
 #define MARKERP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Marker)
 #define SAVE_VALUEP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Save_Value)
+//Luamacs --------------------------------------------------------------
 #define LUA_VALUEP(x) (MISCP (x) && XMISCTYPE (x) == Lisp_Misc_Lua_TValue) //
 #define LUA_TABLEP(x) (LUA_VALUEP(x) && ttype(XLUA_VALUE(x)->o) == LUA_TTABLE)
+//----------------------------------------------------------------------
 
 #define INTFWDP(x) (XFWDTYPE (x) == Lisp_Fwd_Int)
 #define BOOLFWDP(x) (XFWDTYPE (x) == Lisp_Fwd_Bool)
@@ -1783,12 +1797,13 @@ typedef struct {
 #define CHECK_WINDOW(x) \
   CHECK_TYPE (WINDOWP (x), Qwindowp, x)
 
-//mbs
+//Luamacs --------------------------------------------------------------
 #define CHECK_LUA(x) \
   CHECK_TYPE (LUA_VALUEP (x), Qlua_value, x )
 
 #define CHECK_TABLE(x) \
   CHECK_TYPE (LUA_TABLEP (x), Qtable, x )
+//----------------------------------------------------------------------
 
 #define CHECK_WINDOW_CONFIGURATION(x) \
   CHECK_TYPE (WINDOW_CONFIGURATIONP (x), Qwindow_configuration_p, x)
@@ -2629,9 +2644,10 @@ set_sub_char_table_contents (Lisp_Object table, ptrdiff_t idx, Lisp_Object val)
 }
 
 /* Defined in data.c.  */
-extern Lisp_Object Qlua_value; //mbs
+//Luamacs --------------------------------------------------------------
+extern Lisp_Object Qlua_value; 
 extern Lisp_Object Qtable;
-
+//----------------------------------------------------------------------
 extern Lisp_Object Qnil, Qt, Qquote, Qlambda, Qunbound;
 extern Lisp_Object Qerror_conditions, Qerror_message, Qtop_level;
 extern Lisp_Object Qerror, Qquit, Qargs_out_of_range;
@@ -3167,8 +3183,9 @@ extern void init_eval (void);
 extern void mark_backtrace (void);
 #endif
 extern void syms_of_eval (void);
-extern void syms_of_luamacs (void); //mbs
-
+//Luamacs --------------------------------------------------------------
+extern void syms_of_luamacs (void);
+//----------------------------------------------------------------------
 /* Defined in editfns.c.  */
 extern Lisp_Object Qfield;
 extern void insert1 (Lisp_Object);

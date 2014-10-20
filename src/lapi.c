@@ -76,10 +76,11 @@ static TValue *index2addr (lua_State *L, int idx) {
   }
 }
 
-//mbs
+//Luamacs --------------------------------------------------------------
 TValue *getStackItem (lua_State *L, int idx) {
   return index2addr(L, idx);
 }
+//----------------------------------------------------------------------
 
 /*
 ** to be called by 'lua_checkstack' in protected mode, to grow stack
@@ -405,12 +406,12 @@ LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
   return svalue(o);
 }
 
-//mbs
+//Luamacs --------------------------------------------------------------
 Lisp_Object lua_tolisp (lua_State *L, int idx) {
   const TValue *o = getStackItem(L, idx);
   return lisp_value(o);
 }
-
+//----------------------------------------------------------------------
 
 LUA_API size_t lua_rawlen (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
@@ -469,7 +470,7 @@ LUA_API const void *lua_topointer (lua_State *L, int idx) {
 ** push functions (C -> stack)
 */
 
-//mbs
+//Luamacs --------------------------------------------------------------
 //push a TValue onto the top of the stack
 LUA_API void lua_pushTValue (lua_State *L, TValue * o) {
   lua_lock(L);
@@ -479,7 +480,7 @@ LUA_API void lua_pushTValue (lua_State *L, TValue * o) {
   api_incr_top(L);
   lua_unlock(L);
 }
-
+//----------------------------------------------------------------------
 
 LUA_API void lua_pushnil (lua_State *L) {
   lua_lock(L);
