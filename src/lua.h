@@ -329,6 +329,9 @@ LUA_API void      (lua_setallocf) (lua_State *L, lua_Alloc f, void *ud);
 
 #define lua_pushcfunction(L,f)	lua_pushcclosure(L, (f), 0)
 
+//Luamacs ---------------------------------------------------------------------
+#define lua_islispobject(L,n)	(lua_type(L, (n)) == LUA_LISP_OBJECT)
+//-----------------------------------------------------------------------------
 #define lua_isfunction(L,n)	(lua_type(L, (n)) == LUA_TFUNCTION)
 #define lua_istable(L,n)	(lua_type(L, (n)) == LUA_TTABLE)
 #define lua_islightuserdata(L,n)	(lua_type(L, (n)) == LUA_TLIGHTUSERDATA)
