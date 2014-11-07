@@ -2789,8 +2789,8 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
       //function
       //lua_pushglobaltable(L);
     push_args_and_call:
-      lua_checkstack(L, 8);
       lua_getfield(L, LUA_GLOBALSINDEX, name);
+      lua_checkstack(L, nargs);
       for (int i = 1;i < nargs; i++){
         lisp_to_lua(L, args[i]);
         args++;
@@ -2802,7 +2802,7 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
       return ret;
     }
   }
-  
+  //----------------------------------------------------------------------
 
   if (++lisp_eval_depth > max_lisp_eval_depth)
     {
