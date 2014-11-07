@@ -25,7 +25,11 @@ LUAI_DDEF const char *const luaT_typenames_[LUA_TOTALTAGS] = {
   "no value",
   "nil", "boolean", udatatypename, "number",
   "string", "table", "function", udatatypename, "thread",
-  "proto", "upval"  /* these last two cases are used for tests only */
+  //Luamacs --------------------------------------------------------------
+  "proto", //"upval"  /* these last two cases are used for tests only */
+  //(since it was being used 'for tests only', hopefully it is ok to modify)
+  "lisp_object"
+  //----------------------------------------------------------------------
 };
 
 
