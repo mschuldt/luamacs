@@ -2788,9 +2788,9 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
       name += 4;
       //function
       //lua_pushglobaltable(L);
-      lua_getfield(L, LUA_GLOBALSINDEX, name);
     push_args_and_call:
       lua_checkstack(L, 8);
+      lua_getfield(L, LUA_GLOBALSINDEX, name);
       for (int i = 1;i < nargs; i++){
         lisp_to_lua(L, args[i]);
         args++;
