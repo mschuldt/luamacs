@@ -1164,11 +1164,24 @@ void lisp_to_lua(lua_State *L, Lisp_Object obj){
       printf("TValue = %d\n", ttypenv(XLUA_VALUE(obj)->o));
       return;
     }
+    // separate functions for each lua type
+  case Lisp_Cons:
+    lua_push_cons(L, obj);
+    return;
+  case Lisp_Vectorlike:
+    if (VECTORP (obj)){
+      lua_push_vector(L, obj);
+    } else if (HASH_TABLE_P (obj)){
+      lua_push_hash(L, obj);
+    } else if (BUFFERP (obj)){
+      lua_push_buffer(L, obj);
+    }
+    return;
   default:
-    //wrap the lisp object in a lua type
     lua_pushlisp(L, obj);
   }
 }
+
 
 void store_lisp_reference (Lisp_Object obj){
   XSETINT (Vnum_lua_refs, XINT (Vnum_lua_refs) + 1);
@@ -1183,6 +1196,37 @@ void lua_pushlisp (lua_State *L, Lisp_Object obj) {
   lua_unlock(L);
   //save an extra reference to OBJ to prevent it getting GCed
   store_lisp_reference(obj);
+}
+
+#define _lua_push_helper(metatable)                     \
+  lua_newtable(L);                                      \
+  lua_pushlisp(L, obj);                                 \
+  lua_setfield(L, -2, "_lisp");                         \
+  //lua_getfield(L, LUA_GLOBALSINDEX, metatable_type);  \
+  lua_getglobal(L, metatable);                          \
+  lua_setmetatable(L, -2);
+
+inline void
+lua_push_cons (lua_State *L, Lisp_Object obj){
+  //_lua_push_helper("lisp_cons_metatable")
+  //TODO: why does this not work with _lua_push_helper?
+  lua_newtable(L);
+  lua_pushlisp(L, obj);
+  lua_setfield(L, -2, "_lisp");
+  lua_getglobal(L, "lisp_cons_metatable");
+  lua_setmetatable(L, -2);
+}
+inline void
+lua_push_vector (lua_State *L, Lisp_Object obj){
+  _lua_push_helper("lisp_vector_metatable");
+}
+inline void
+lua_push_buffer (lua_State *L, Lisp_Object obj){
+  _lua_push_helper("lisp_buffer_metatable");
+}
+inline void
+lua_push_hash (lua_State *L, Lisp_Object obj){
+  _lua_push_helper("lisp_hash_metatable");
 }
 //----------------------------------------------------------------------
 
@@ -3318,6 +3362,7 @@ syms_of_data (void)
   Vmost_negative_fixnum = make_number (MOST_NEGATIVE_FIXNUM);
   XSYMBOL (intern_c_string ("most-negative-fixnum"))->constant = 1;
 
+  //Luamacs --------------------------------------------------------------
   DEFVAR_LISP ("__referenced_from_lua", Vreferenced_from_lua,
 	       doc: /* Table of lisp objects that are referenced by active lua objects.
                   ***NO NOT MODIFY***
@@ -3330,5 +3375,5 @@ syms_of_data (void)
   args[4] = QCsize;
   args[5] = make_number (1000);
   Vreferenced_from_lua = Fmake_hash_table (6, args);
-
+  //----------------------------------------------------------------------  
 }
