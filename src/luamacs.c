@@ -270,6 +270,23 @@ int lua_cons__index (lua_State *L){
   /* signal_error(msg, Qnil); */
 }
 
+int lua_cons__len (lua_State *L){
+  printf("lua_cons__len\n");
+
+  if (!lua_istable(L, 1)){
+    printf("Error: not a table\n"); //TODO
+    return 0;
+  }
+  lua_getfield(L, 1, "_lisp");
+  if (lua_isnil(L, -1)){
+    printf("Error: _lisp field is nil\n"); //TODO
+    return 0;
+  }
+
+  lua_pushinteger(L, XINT(Flength(lua_to_lisp(-1))));
+  return 1;
+}
+
 int lua_setup_metatables(lua_State *L){
   printf("lua_setup_metatables()\n");
   
@@ -279,6 +296,9 @@ int lua_setup_metatables(lua_State *L){
   lua_pushstring(L, "__index");
   lua_pushcfunction(L, lua_cons__index);
   lua_rawset(L, -3);
+  // __len
+  lua_pushcfunction(L, lua_cons__len);
+  lua_setfield(L, -2, "__len");
 }
 
 
