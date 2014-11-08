@@ -2786,14 +2786,20 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
     name = XSTRING(XSYMBOL(fun)->name)->data;
     if (LUA_VAR_STRING_P(name)){
       name += 4;
-      //function
       //lua_pushglobaltable(L);
-    push_args_and_call:
       lua_getfield(L, LUA_GLOBALSINDEX, name);
+
+    push_args_and_call:
+      if (!lua_isfunction(L, -1)){
+        printf("ERROR: trying to call lua non-function (%s)", name);
+        lua_pop(L, 1);
+        return Qnil;
+      }
+              
       lua_checkstack(L, nargs);
       for (int i = 1;i < nargs; i++){
         lisp_to_lua(L, args[i]);
-        args++;
+        //args++; //?
         n_args++;
       }
       lua_call(L, n_args, 1);
