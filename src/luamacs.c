@@ -20,7 +20,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include "lisp.h"
 
 DEFUN ("lua-eval", Flua_eval, Slua_eval, 1, 1, 0,
-       doc: /* Evaluate argument as lua code. return t on success, else nil */)
+       doc: /* Evaluate argument as lua code. return t on success */)
   (Lisp_Object code)
 {
   CHECK_STRING(code);
@@ -235,6 +235,50 @@ DEFUN ("inspect-lua-val", Finspect_lua_val, Sinspect_lua_val, 1, 1, 0,
     printf("<not a lua obj>\n");
   }
   return Qnil;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// metatables for lisp object wrappers
+
+int lua_cons__index (lua_State *L){
+  printf("lua_cons__index\n");
+
+  Lisp_Object a,b,c,d;
+
+  if (!lua_istable(L, 1)){
+    printf("Error: not a table\n"); //TODO
+    return 0;
+  }
+  lua_getfield(L, 1, "_lisp");
+  if (lua_isnil(L, -1)){
+    printf("Error: _lisp field is nil\n"); //TODO
+    return 0;
+  }
+  
+  if (lua_isnumber(L, 2)){
+    lisp_to_lua(L, Fcar(Fnthcdr(make_number(lua_tointeger(L, 2)),
+                                lua_to_lisp(-1))));
+  }else{
+    //lisp_to_lua(L, Fassoc(lua_to_lisp(2), lua_to_lisp(-1)));
+    prinf("Error: index must be numeric\n"); //TODO
+  }
+  return 1;
+  /* char msg[100]; //TODO: fix this (max var length?) */
+  /* sprintf(msg, "Error: emacs.%s is unbound", name); */
+  /* signal_error(msg, Qnil); */
+}
+
+int lua_setup_metatables(lua_State *L){
+  printf("lua_setup_metatables()\n");
+  
+  //cons ----------------------------
+  // __index
+  lua_newtable(L);
+  lua_pushstring(L, "__index");
+  lua_pushcfunction(L, lua_cons__index);
+  lua_rawset(L, -3);
 }
 
 
