@@ -43,11 +43,10 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 lua_State *L;
 int LUA_GLOBALSINDEX;
 
-#define LUA_VAR_STRING_P(str) (str[0] && str[1] && str[2] && str[3] \
-                               && (str[3] == '.')                   \
-                               && (str[0] == 'l')                   \
-                               && (str[1] == 'u')                   \
-                               && (str[2] == 'a'))
+#define LUA_VAR_STRING_P(str) ((str[0] == 'l')          \
+                               && (str[1] == 'u')       \
+                               && (str[2] == 'a')       \
+                               && (str[3] == '.'))
 
 #define EXTRACT_PUSH_LUA_VAL(obj) lua_pushTValue(L, XLUA_VALUE(obj)->o);
 //----------------------------------------------------------------------
