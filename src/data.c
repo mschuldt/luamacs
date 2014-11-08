@@ -1063,8 +1063,24 @@ find_symbol_value (Lisp_Object symbol)
 
 //converts the object on the stack at postion IDX to a Lisp_Object
 Lisp_Object lua_to_lisp (int idx){
-  int type = lua_type(L, idx);
+  int type;
   Lisp_Object ret;
+
+  if (lua_istable(L, idx)){
+    lua_getfield(L, idx, "_lisp");
+    if (!lua_isnil(L, -1)){
+      //this table wraps a lisp object      
+      idx = -1; //convert its lisp reference instead
+      //TODO: will have to be removed from the stack before returning,
+      //      but only if idx was not originally -1
+      //      OR just have this function remove the lua value
+    }else{
+      lua_pop(L, 1);//remove the nil
+    }
+  }
+
+  type = lua_type(L, idx);
+  
   switch(type){
   case LUA_TNIL: // 0
     printf("lua: nil\n");
