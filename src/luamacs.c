@@ -251,7 +251,9 @@ int lua_cons__index (lua_State *L){
     printf("Error: not a table\n"); //TODO
     return 0;
   }
-  lua_getfield(L, 1, "_lisp");
+  lua_pushstring(L, "_lisp");
+  lua_rawget(L, 1);
+  //lua_getfield(L, 1, "_lisp");
   if (lua_isnil(L, -1)){
     printf("Error: _lisp field is nil\n"); //TODO
     return 0;
@@ -291,14 +293,22 @@ int lua_setup_metatables(lua_State *L){
   printf("lua_setup_metatables()\n");
   
   //cons ----------------------------
-  // __index
   lua_newtable(L);
+  // __index
   lua_pushstring(L, "__index");
   lua_pushcfunction(L, lua_cons__index);
   lua_rawset(L, -3);
+  // __newindex
+  lua_pushcfunction(L, lua_cons__newindex);
+  lua_pushstring(L, "__newindex");
+  lua_rawset(L, -3);
   // __len
   lua_pushcfunction(L, lua_cons__len);
-  lua_setfield(L, -2, "__len");
+  lua_pushstring(L, "__len");
+  lua_rawset(L, -3);
+
+  // note: __pairs is a lua function
+  lua_setglobal(L, "lisp_cons_metatable");
 }
 
 
