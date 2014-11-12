@@ -299,12 +299,12 @@ int lua_setup_metatables(lua_State *L){
   lua_pushcfunction(L, lua_cons__index);
   lua_rawset(L, -3);
   // __newindex
-  lua_pushcfunction(L, lua_cons__newindex);
   lua_pushstring(L, "__newindex");
+  lua_pushcfunction(L, lua_cons__newindex);
   lua_rawset(L, -3);
   // __len
-  lua_pushcfunction(L, lua_cons__len);
   lua_pushstring(L, "__len");
+  lua_pushcfunction(L, lua_cons__len);
   lua_rawset(L, -3);
 
   // note: __pairs is a lua function
