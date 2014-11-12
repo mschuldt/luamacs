@@ -2053,7 +2053,7 @@ eval_sub (Lisp_Object form)
         printf("ERROR: trying to call lua non-function (%s)", name);
         Fsetcar(form, lua_to_lisp(-1));
         //TODO: ^ check that it is actually a lisp function
-        lua_pop(L, 2);
+        lua_pop(L, 1);
         goto notlua;
       }
       //arguments
@@ -2071,7 +2071,7 @@ eval_sub (Lisp_Object form)
       //printf("with %d args\n", n_args);
       lua_call(L, n_args, 1);
       ret = lua_to_lisp(-1);
-      lua_pop(L, 2);
+      lua_pop(L, 1);
       return ret;
     }
   }
@@ -2743,7 +2743,7 @@ Lisp_Object call_from_lua(lua_State *L, Lisp_Object func, int n_args){
   int ind = n_args - 1;
   while (ind){
     args[ind] = lua_to_lisp(-1);
-    lua_pop(L, 1);
+    //lua_pop(L, 1);
     ind--;
   }
   args[0] = func;
@@ -2804,7 +2804,7 @@ usage: (funcall FUNCTION &rest ARGUMENTS)  */)
       }
       lua_call(L, n_args, 1);
       ret = lua_to_lisp(-1);
-      lua_pop(L, 1);
+      //lua_pop(L, 1);
       return ret;
     }
   }

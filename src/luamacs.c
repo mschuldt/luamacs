@@ -50,7 +50,6 @@ DEFUN ("lua-new-table", Flua_new_table, Slua_new_table, 0, 0, 0,
 {
   lua_newtable(L);
   Lisp_Object ret = lua_to_lisp(-1);
-  lua_pop(L, 1);
   return ret;
 }
 
@@ -68,7 +67,7 @@ DEFUN ("lua-get", Flua_get, Slua_get, 2, 2, 0,
   lisp_to_lua(L, field);
   lua_gettable(L, -2);
   ret = lua_to_lisp(-1);
-  lua_pop(L, 2); //pop field value and table
+  lua_pop(L, 1); //pop table
   return ret;
 }
 
@@ -135,9 +134,8 @@ DEFUN ("alist-to-table", Falist_to_table, Salist_to_table, 1, 1, 0,
     lua_settable(L, -3);
     alist = XCDR(alist);
   }
-  ret = lua_to_lisp(-1);
-  lua_pop(L, 1); //pop table
-  return ret;
+
+  return lua_to_lisp(-1);
 }
 
 DEFUN ("sequence-to-table", Fsequence_to_table, Ssequence_to_table, 1, 1, 0,
@@ -172,9 +170,8 @@ DEFUN ("sequence-to-table", Fsequence_to_table, Ssequence_to_table, 1, 1, 0,
   }else{
     wrong_type_argument (Qsequencep, sequence);
   }
-  ret = lua_to_lisp(-1);
-  lua_pop(L, 1); //pop table
-  return ret;
+
+  return lua_to_lisp(-1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

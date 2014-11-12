@@ -1069,35 +1069,36 @@ Lisp_Object lua_to_lisp (int idx){
   if (lua_istable(L, idx)){
     lua_getfield(L, idx, "_lisp");
     if (!lua_isnil(L, -1)){
-      //this table wraps a lisp object      
+      //this table wraps a lisp object
+      lua_remove(L, idx); // remove table
       idx = -1; //convert its lisp reference instead
-      //TODO: will have to be removed from the stack before returning,
-      //      but only if idx was not originally -1
-      //      OR just have this function remove the lua value
     }else{
       lua_pop(L, 1);//remove the nil
     }
   }
 
   type = lua_type(L, idx);
-  
+
   switch(type){
   case LUA_TNIL: // 0
     printf("lua: nil\n");
-    return Qnil;
+    ret = Qnil;
+    break;
   case LUA_TBOOLEAN: //1
     printf("lua: boolean\n");
-    return lua_toboolean(L, idx) ? Qt : Qnil;
+    ret = lua_toboolean(L, idx) ? Qt : Qnil;
+    break;
   case LUA_TNUMBER: //3
     printf("lua: number\n");
     //return make_number(lua_tonumber(L, idx));
-    return make_float(lua_tonumber(L, idx));
+    ret = make_float(lua_tonumber(L, idx));
+    break;
   case LUA_TSTRING: //4
-    return build_string(lua_tostring(L, idx)); //TODO: create reference or copy?
-
+    ret = build_string(lua_tostring(L, idx)); //TODO: create reference or copy?
+    break;
   case LUA_LISP_OBJECT: //lua reference to a Lisp_Object
-    return lua_tolisp(L, idx);
-    
+    ret = lua_tolisp(L, idx);
+    break;
   case LUA_TTABLE: //5
     printf("lua table\n");
     //&val_(o).gc->h
@@ -1105,11 +1106,11 @@ Lisp_Object lua_to_lisp (int idx){
     //&val_(o).gc->cl
     printf("lua function\n");
     
-    ret =  build_lua_tvalue(getStackItem(L, idx)); //doing
+    ret = build_lua_tvalue(getStackItem(L, idx)); //doing
     printf("inspecting newly create lua reference:\n");
     Finspect_lua_val(ret);
 
-    return ret;
+    break;
 
   case LUA_TLIGHTUSERDATA: //2
     //val_(o).p
@@ -1120,7 +1121,10 @@ Lisp_Object lua_to_lisp (int idx){
   default:
     //TODO: lisp error 
     printf("ERROR -- lua_to_lisp: trying to convert unknown type: %d\n", type);
+    return;
   }
+  lua_remove(L, idx);
+  return ret;
 }
 
 DEFUN ("symbol-value", Fsymbol_value, Ssymbol_value, 1, 1, 0,
@@ -1143,7 +1147,7 @@ global value outside of any lexical scope.  */)
       //TODO: what if the field does not exist?
       //val = lua_to_lisp(index2addr(L, -1));
       val = lua_to_lisp(-1);
-      lua_pop(L, 2);
+      lua_pop(L, 1); //pop globals table
     }else{
       val = find_symbol_value (symbol);
     }
