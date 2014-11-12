@@ -19,6 +19,8 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include <stdio.h>
 #include "lisp.h"
 
+static int lua_fn_extract_lisp_value (lua_State *L);
+  
 DEFUN ("lua-eval", Flua_eval, Slua_eval, 1, 1, 0,
        doc: /* Evaluate argument as lua code. return t on success */)
   (Lisp_Object code)
@@ -247,24 +249,14 @@ int lua_cons__index (lua_State *L){
 
   Lisp_Object a,b,c,d;
 
-  if (!lua_istable(L, 1)){
-    printf("Error: not a table\n"); //TODO
-    return 0;
-  }
-  lua_pushstring(L, "_lisp");
-  lua_rawget(L, 1);
-  //lua_getfield(L, 1, "_lisp");
-  if (lua_isnil(L, -1)){
-    printf("Error: _lisp field is nil\n"); //TODO
-    return 0;
-  }
-  
+  lua_fn_extract_lisp_value(L);
+
   if (lua_isnumber(L, 2)){
     lisp_to_lua(L, Fcar(Fnthcdr(make_number(lua_tointeger(L, 2)),
                                 lua_to_lisp(-1))));
   }else{
     //lisp_to_lua(L, Fassoc(lua_to_lisp(2), lua_to_lisp(-1)));
-    prinf("Error: index must be numeric\n"); //TODO
+    printf("Error: index must be numeric\n"); //TODO
   }
   return 1;
   /* char msg[100]; //TODO: fix this (max var length?) */
@@ -275,15 +267,13 @@ int lua_cons__index (lua_State *L){
 int lua_cons__len (lua_State *L){
   printf("lua_cons__len\n");
 
-  if (!lua_istable(L, 1)){
-    printf("Error: not a table\n"); //TODO
-    return 0;
-  }
-  lua_getfield(L, 1, "_lisp");
-  if (lua_isnil(L, -1)){
-    printf("Error: _lisp field is nil\n"); //TODO
-    return 0;
-  }
+  lua_fn_extract_lisp_value(L);
+  
+  int n = Flength(lua_to_lisp(-1));
+  printf("=====length = %d\n", n);
+  lua_pushinteger(L, XINT(n));
+  return 1;
+}
 
   lua_pushinteger(L, XINT(Flength(lua_to_lisp(-1))));
   return 1;
@@ -309,8 +299,22 @@ int lua_setup_metatables(lua_State *L){
 
   // note: __pairs is a lua function
   lua_setglobal(L, "lisp_cons_metatable");
+////////////////////////////////////////////////////////////////////////////////
+static int
+lua_fn_extract_lisp_value (lua_State *L){
+  // for use by lua table methods
+  if (!lua_istable(L, 1)){
+    printf("Error: not a table\n"); //TODO
+    return 0;
+  }
+  lua_getfield(L, 1, "_lisp");
+  if (lua_isnil(L, -1)){
+    printf("Error: _lisp field is nil\n"); //TODO
+    return 0;
+  }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 
 void
 syms_of_luamacs (void)
