@@ -292,6 +292,14 @@ int lua_cons__newindex (lua_State *L){
   return 0;
 }
 
+int lua_vector__newindex (lua_State *L){
+  lua_fn_extract_lisp_value(L);
+  Lisp_Object list = lua_to_lisp(-1);
+  Lisp_Object val = lua_to_lisp(-1);
+  Faset(list, make_number(lua_tointeger(L, -1)), val);
+  return 0;
+}
+
 int lua_setup_metatables(lua_State *L){
   printf("lua_setup_metatables()\n");
   
@@ -318,6 +326,10 @@ int lua_setup_metatables(lua_State *L){
   // __index
   lua_pushstring(L, "__index");
   lua_pushcfunction(L, lua_vector__index);
+  lua_rawset(L, -3);
+  // __newindex
+  lua_pushstring(L, "__newindex");
+  lua_pushcfunction(L, lua_vector__newindex);
   lua_rawset(L, -3);
   // __len
   lua_pushstring(L, "__len");
