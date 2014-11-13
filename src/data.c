@@ -1217,7 +1217,14 @@ void lisp_to_lua(lua_State *L, Lisp_Object obj){
 void store_lisp_reference (Lisp_Object obj){
   XSETINT (Vnum_lua_refs, XINT (Vnum_lua_refs) + 1);
   //Fputhash(&obj, obj, Vreferenced_from_lua);
-  Fputhash(obj, Qt, Vreferenced_from_lua);
+  int nrefs;
+  Lisp_Object o = Fgethash(obj, Vreferenced_from_lua, Qnil);
+  if (NILP(o)){
+    nrefs = 1; //first reference
+  }else{
+    nrefs = XFASTINT(o) + 1; //increment reference count
+  }
+  Fputhash(obj, make_number(nrefs), Vreferenced_from_lua);
 }
 
 void lua_pushlisp (lua_State *L, Lisp_Object obj) {
