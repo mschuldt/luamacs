@@ -1,6 +1,8 @@
 
 (require 'luamacs-tests)
 
+(defvar lua-version "5.2")
+
 (defun lua-eval-buffer ()
   "Evaluate the current buffer contents as lua code"
   ;;TODO: other options like `eval-buffer'
