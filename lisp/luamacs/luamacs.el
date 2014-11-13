@@ -1,3 +1,4 @@
+(lua-init)
 
 (require 'luamacs-tests)
 

@@ -23,7 +23,31 @@ extern lua_State *L;
 extern int LUA_GLOBALSINDEX;
 
 static int lua_fn_extract_lisp_value (lua_State *L);
+
+int lua_initialized_p = 0;
+
+DEFUN ("lua-init", Flua_init, Slua_init, 0, 0, 0,
+       doc: /* initialize the lua state */)
+  (void)
+{
+  Lisp_Object message[1];
+  if (lua_initialized_p){
+    message[0] = build_string("Lua state is already initialized");
+    Fmessage(1, message);
+    return Qnil;
+  }
+  lua_initialized_p = 1;
+
+  L = luaL_newstate();
+  luaL_openlibs(L);
   
+  lua_setup_metatables(L);
+
+  message[0] = build_string("Lua initialized");
+  Fmessage(1, message);
+  return Qt;
+}
+
 DEFUN ("lua-eval", Flua_eval, Slua_eval, 1, 1, 0,
        doc: /* Evaluate argument as lua code. return t on success */)
   (Lisp_Object code)
@@ -432,6 +456,9 @@ int lua_setup_metatables(lua_State *L){
   
   lua_setglobal(L, "lisp_vector_metatable");
 
+  
+  //hash ------------------------------
+  //buffer ----------------------------
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -476,6 +503,7 @@ lua_fn_extract_lisp_value (lua_State *L){
 void
 syms_of_luamacs (void)
 {
+  defsubr (&Slua_init);
   defsubr (&Slua_eval);
   defsubr (&Slua_load);    
   defsubr (&Slua_new_table);
