@@ -1239,7 +1239,13 @@ lua_push_cons (lua_State *L, Lisp_Object obj){
 }
 inline void
 lua_push_vector (lua_State *L, Lisp_Object obj){
-  _lua_push_helper("lisp_vector_metatable");
+  //_lua_push_helper("lisp_vector_metatable");
+  lua_newtable(L);
+  lua_pushstring(L, "_lisp");
+  lua_pushlisp(L, obj);
+  lua_rawset(L, -3);
+  lua_getglobal(L, "lisp_vector_metatable");
+  lua_setmetatable(L, -2);  
 }
 inline void
 lua_push_buffer (lua_State *L, Lisp_Object obj){

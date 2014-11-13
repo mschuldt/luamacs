@@ -261,6 +261,18 @@ int lua_cons__index (lua_State *L){
   /* signal_error(msg, Qnil); */
 }
 
+int lua_vector__index (lua_State *L){
+  lua_fn_extract_lisp_value(L);
+  if (lua_isnumber(L, 2)){
+    lisp_to_lua(L, Faref(lua_to_lisp(-1),
+                         make_number(lua_tointeger(L, 2))));
+  }else{
+    printf("Error: index must be numeric\n"); //TODO
+  }
+  return 1;
+}
+
+
 int lua_cons__len (lua_State *L){
   printf("lua_cons__len\n");
 
@@ -296,6 +308,16 @@ int lua_setup_metatables(lua_State *L){
 
   // note: __pairs is a lua function
   lua_setglobal(L, "lisp_cons_metatable");
+
+  //vector ----------------------------
+  lua_newtable(L);
+  // __index
+  lua_pushstring(L, "__index");
+  lua_pushcfunction(L, lua_vector__index);
+  lua_rawset(L, -3);
+  
+  lua_setglobal(L, "lisp_vector_metatable");
+
 ////////////////////////////////////////////////////////////////////////////////
 int lua_lisp_table_p (lua_State *L){
   //return true if the table on the top of the stack wraps a lisp object
