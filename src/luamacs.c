@@ -284,8 +284,12 @@ int lua__len (lua_State *L){
   return 1;
 }
 
-  lua_pushinteger(L, XINT(Flength(lua_to_lisp(-1))));
-  return 1;
+int lua_cons__newindex (lua_State *L){
+  lua_fn_extract_lisp_value(L);
+  Lisp_Object list = lua_to_lisp(-1);
+  Lisp_Object val = lua_to_lisp(-1);
+  Fsetcar(Fnthcdr(make_number(lua_tointeger(L, -1)), list), val);
+  return 0;
 }
 
 int lua_setup_metatables(lua_State *L){
@@ -321,6 +325,8 @@ int lua_setup_metatables(lua_State *L){
   lua_rawset(L, -3);  
   
   lua_setglobal(L, "lisp_vector_metatable");
+
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 int lua_lisp_table_p (lua_State *L){
