@@ -1249,12 +1249,13 @@ lua_push_cons (lua_State *L, Lisp_Object obj){
   //_lua_push_helper("lisp_cons_metatable")
   //TODO: why does this not work with _lua_push_helper?
   lua_newtable(L);
-  lua_pushlisp(L, obj);
   lua_pushstring(L, "_lisp");
+  lua_pushlisp(L, obj);
   lua_rawset(L, -3);
   lua_getglobal(L, "lisp_cons_metatable");
   lua_setmetatable(L, -2);
 }
+
 inline void
 lua_push_vector (lua_State *L, Lisp_Object obj){
   //_lua_push_helper("lisp_vector_metatable");
