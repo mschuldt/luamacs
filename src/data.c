@@ -1101,6 +1101,17 @@ Lisp_Object lua_to_lisp (int idx){
     break;
   case LUA_TTABLE: //5
     printf("lua table\n");
+    
+    lua_getfield(L, idx, "_lisp");
+    if (lua_isnil(L, -1)){
+      lua_pop(L, 1); //not a lisp table, proceed as normal
+    }else{
+      ret = lua_tolisp(L, -1);
+      //remove the LUA_LISP_OBJECT object from the stack here
+      //the table wrapper gets removed below
+      lua_pop(L, 1);
+      break;
+    }
     //&val_(o).gc->h
   case LUA_TFUNCTION: //5
     //&val_(o).gc->cl
