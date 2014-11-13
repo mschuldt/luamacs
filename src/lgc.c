@@ -735,9 +735,10 @@ static GCObject **sweeplist (lua_State *L, GCObject **p, lu_mem count) {
     GCObject *curr = *p;
     int marked = gch(curr)->marked;
     if (isdeadm(ow, marked) && gch(curr)->lispp){
-      printf("Object is dead, but referenced from lisp\n");
+      //objects are kept alive via other methods now so this should never happen
+      printf("ERROR: Object is dead, but referenced from lisp\n");
     }
-    if (isdeadm(ow, marked) && ! gch(curr)->lispp) {  /* is 'curr' dead and not ? */
+    if (isdeadm(ow, marked)) {  /* is 'curr' dead and not ? */
       *p = gch(curr)->next;  /* remove 'curr' from list */
       freeobj(L, curr);  /* erase 'curr' */
     }

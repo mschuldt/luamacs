@@ -719,6 +719,7 @@ main (int argc, char **argv)
   L = luaL_newstate();
   luaL_openlibs(L);
 
+  //global table
   lua_pushglobaltable(L);
   LUA_GLOBALSINDEX = lua_absindex(L, -1);
   lua_newtable(L);
