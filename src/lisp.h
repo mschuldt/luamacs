@@ -43,6 +43,8 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 lua_State *L;
 int LUA_GLOBALSINDEX;
 
+int lua_lisp_table_p (lua_State *L);
+
 #define LUA_VAR_STRING_P(str) ((str[0] == 'l')          \
                                && (str[1] == 'u')       \
                                && (str[2] == 'a')       \

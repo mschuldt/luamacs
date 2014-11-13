@@ -297,6 +297,28 @@ int lua_setup_metatables(lua_State *L){
   // note: __pairs is a lua function
   lua_setglobal(L, "lisp_cons_metatable");
 ////////////////////////////////////////////////////////////////////////////////
+int lua_lisp_table_p (lua_State *L){
+  //return true if the table on the top of the stack wraps a lisp object
+  //(if it contains a _lisp field)
+  //TODO: faster
+  printf("lua_lisp_table_p\n");
+  //if (!lua_istable(L, -1)){
+  if (!lua_istable(L, -1)){
+    printf("not a table\n");
+    return 0;
+  }
+  lua_pushstring(L, "_lisp");
+  //lua_rawget(L, 1);
+  lua_rawget(L, -2);
+  if (lua_isnil(L, -1)){
+    printf("_lisp does not exit\n");
+    lua_pop(L, 1);
+    return 0;
+  }
+  lua_pop(L, 1);
+  return 1;
+}
+
 static int
 lua_fn_extract_lisp_value (lua_State *L){
   // for use by lua table methods
