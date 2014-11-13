@@ -280,9 +280,27 @@ mt = getmetatable(v)")
 	 (should (eq lua.lisp_cons_metatable lua.mt)))
   )
 
+(ert-deftest luamacs-vector-metatable()
+  "tests that vector references have the correct metatable"
+  (progn (setq _x ["a"])
+	 (lua-eval "v = emacs._x
+mt = getmetatable(v)")
+	 (should (eq lua.lisp_vector_metatable lua.mt)))
+  )
+
 (ert-deftest luamacs-cons__index ()
   "tests that L[i] works for cons reference L"
   (progn (setq _x '("a" "b" "c"))
+	 (lua-eval "v = emacs._x
+y = v[1]
+sea = emacs._x[2]")
+	 (should (equal lua.y "b"))
+	 (should (equal lua.sea "c"))
+	 ))
+
+(ert-deftest luamacs-vector__index ()
+  "tests that L[i] works for cons reference L"
+  (progn (setq _x ["a" "b" "c"])
 	 (lua-eval "v = emacs._x
 y = v[1]
 sea = emacs._x[2]")
@@ -294,6 +312,17 @@ sea = emacs._x[2]")
   "tests that getting the length with #L works for cons reference L"
   (progn
     (setq _x '(2 3 4))
+    (lua-eval "len = #emacs._x
+v = emacs._x
+len2 = #v")
+    (should (= lua.len (length _x)))
+    (should (= lua.len2 (length _x)))
+    ))
+
+(ert-deftest luamacs-vector__len ()
+  "tests that getting the length with #L works for cons reference L"
+  (progn
+    (setq _x [2 3 4])
     (lua-eval "len = #emacs._x
 v = emacs._x
 len2 = #v")
