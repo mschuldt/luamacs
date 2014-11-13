@@ -2062,6 +2062,11 @@ internal_equal (Lisp_Object o1, Lisp_Object o2, int depth, bool props)
 		  && (XMARKER (o1)->buffer == 0
 		      || XMARKER (o1)->bytepos == XMARKER (o2)->bytepos));
 	}
+      //Luamacs --------------------------------------------------------------
+      if (LUA_VALUEP(o1)){
+          return EQ(o1, o2); //TODO: deep compare
+        }
+      //----------------------------------------------------------------------
       break;
 
     case Lisp_Vectorlike:
