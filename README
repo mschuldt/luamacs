@@ -1,13 +1,19 @@
-[[ most tests currently failing ]]
-
 Luamacs -- Emacs with Lua
 
 Luamacs is is a result of merging the Emacs-lisp and Lua interpreters.
 Each of the interpreters can lookup values and call functions
 the from the other one.
 They have each been extended with a new data type that allows them to
-store references to each others values even if they can not themselves
-operate on them.
+manipulate references to values in the other environment.
+
+Setup:
+
+   (require 'luamacs)
+
+
+Running tests:
+
+   M-x luamacs-run-tests
 
 
 Quick demo:
