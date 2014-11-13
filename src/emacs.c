@@ -756,6 +756,8 @@ main (int argc, char **argv)
 
   lua_setmetatable(L, -2);
   lua_setfield(L, -2, "elf");
+
+  lua_setup_metatables(L);
 //----------------------------------------------------------------------
   
   
