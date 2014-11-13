@@ -339,12 +339,31 @@ for k,v in pairs(emacs._x) do
  print('key = ' .. k)
  print('val = ' .. v)
  new[k] = v*v
-end"))
-;;doing  
-  )
+end
+emacs._a = new[0]
+emacs._b = new[1]
+emacs._c = new[3]")
+    (should (and (= _a 4)
+		 (= _b 16)
+		 (= _c 64)))))
 
 
-
+(ert-deftest luamacs-vector__pairs ()
+  "tests that the pairs method works on vector references"
+  (progn 
+    (setq _x [2 4 6 8])
+    (lua-eval "new = {}
+for k,v in pairs(emacs._x) do
+ print('key = ' .. k)
+ print('val = ' .. v)
+ new[k] = v*v
+end
+emacs._a = new[0]
+emacs._b = new[1]
+emacs._c = new[3]")
+    (should (and (= _a 4)
+		 (= _b 16)
+		 (= _c 64)))))
 
 (provide 'luamacs-tests)
 
