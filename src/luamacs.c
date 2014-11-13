@@ -273,8 +273,8 @@ int lua_vector__index (lua_State *L){
 }
 
 
-int lua_cons__len (lua_State *L){
-  printf("lua_cons__len\n");
+int lua__len (lua_State *L){
+  printf("lua__len\n");
 
   lua_fn_extract_lisp_value(L);
   
@@ -291,7 +291,7 @@ int lua_cons__len (lua_State *L){
 int lua_setup_metatables(lua_State *L){
   printf("lua_setup_metatables()\n");
   
-  //cons ----------------------------
+  //cons ----------------------------------------------
   lua_newtable(L);
   // __index
   lua_pushstring(L, "__index");
@@ -303,18 +303,22 @@ int lua_setup_metatables(lua_State *L){
   lua_rawset(L, -3);
   // __len
   lua_pushstring(L, "__len");
-  lua_pushcfunction(L, lua_cons__len);
+  lua_pushcfunction(L, lua__len);
   lua_rawset(L, -3);
 
   // note: __pairs is a lua function
   lua_setglobal(L, "lisp_cons_metatable");
 
-  //vector ----------------------------
+  //vector ------------------------------------------------
   lua_newtable(L);
   // __index
   lua_pushstring(L, "__index");
   lua_pushcfunction(L, lua_vector__index);
   lua_rawset(L, -3);
+  // __len
+  lua_pushstring(L, "__len");
+  lua_pushcfunction(L, lua__len);
+  lua_rawset(L, -3);  
   
   lua_setglobal(L, "lisp_vector_metatable");
 
