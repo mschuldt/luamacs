@@ -1,6 +1,7 @@
 (lua-init)
 
-(require 'luamacs-tests)
+;;FIX: this creates problems when loading from loadup.el
+;;(require 'luamacs-tests)
 
 (defvar lua-version "5.2")
 

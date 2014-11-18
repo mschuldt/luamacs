@@ -276,6 +276,10 @@
 (load "vc/ediff-hook")
 (if (fboundp 'x-show-tip) (load "tooltip"))
 
+;;Luamacs --------------------------------------------------------------
+(load "luamacs/luamacs.el")
+;;----------------------------------------------------------------------
+
 ;If you want additional libraries to be preloaded and their
 ;doc strings kept in the DOC file rather than in core,
 ;you may load them with a "site-load.el" file.
