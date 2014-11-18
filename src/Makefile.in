@@ -425,7 +425,8 @@ emacs$(EXEEXT): temacs$(EXEEXT) $(etc)/DOC $(lisp) $(leimdir)/leim-list.el
 	  test "X$(PAXCTL)" = X || $(PAXCTL) -zex emacs$(EXEEXT); \
 	  rm -f bootstrap-emacs$(EXEEXT); \
 	  ln emacs$(EXEEXT) bootstrap-emacs$(EXEEXT); \
-	fi
+	fi ; \
+        ln -f emacs luamacs
 
 ## We run make-docfile twice because the command line may get too long
 ## on some systems.  The sed command operating on lisp.mk also reduces
