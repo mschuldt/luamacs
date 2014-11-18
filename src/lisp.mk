@@ -161,7 +161,10 @@ lisp = \
 	$(lispsource)/emacs-lisp/float-sup.elc \
 	$(lispsource)/vc/vc-hooks.elc \
 	$(lispsource)/vc/ediff-hook.elc \
-	$(lispsource)/tooltip.elc
+	$(lispsource)/tooltip.elc \
+	$(lispsource)/luamacs/luamacs.elc
+#luamacs^-------------------------------------------------------------------
+#(restrictions on formatting prevent the usual luamacs deliminators)
 
 
 ### lisp.mk ends here
