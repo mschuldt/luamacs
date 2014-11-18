@@ -6,16 +6,6 @@ the from the other one.
 They have each been extended with a new data type that allows them to
 manipulate references to values in the other environment.
 
-Setup:
-
-   (require 'luamacs)
-
-
-Running tests:
-
-   M-x luamacs-run-tests
-
-
 Quick demo:
 
 ;;create lua function that prints a tables field:
@@ -52,4 +42,11 @@ lua.ok
 (lua-eval "b = emacs.this_buff")
 (buffer-name lua.b)
 ==> "*scratch*"
+
+
+
+
+Running tests:
+   (require 'luamacs-tests)
+   M-x luamacs-run-tests
 
