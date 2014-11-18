@@ -308,6 +308,26 @@ sea = emacs._x[2]")
 	 (should (equal lua.sea "c"))
 	 ))
 
+(ert-deftest luamacs-cons__newindex ()
+  "tests that L[i] = v works for cons reference L"
+  (progn (setq _x '(1 2 3))
+	 (lua-eval "_v = emacs._x
+_v[0] = 'first'
+_v[2] = 44
+emacs._x[1] = 'm'")
+	 (should (equal _x '("first" "m" 44.0)))
+	 ))
+
+(ert-deftest luamacs-vector__newindex ()
+  "tests that L[i] = v works for cons reference L"
+  (progn (setq _x [1 2 3])
+	 (lua-eval "_v = emacs._x
+_v[0] = 'first'
+_v[2] = 44
+emacs._x[1] = 'm'")
+	 (should (equal _x ["first" "m" 44.0]))
+	 ))
+
 (ert-deftest luamacs-cons__len ()
   "tests that getting the length with #L works for cons reference L"
   (progn
