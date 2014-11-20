@@ -318,6 +318,13 @@ int lua__len (lua_State *L){
   return 1;
 }
 
+int lua_hash__len (lua_State *L){
+  lua_fn_extract_lisp_value(L);
+  int n = Fhash_table_count(lua_to_lisp(-1));
+  lua_pushinteger(L, XINT(n));
+  return 1;
+}
+
 int lua_cons__newindex (lua_State *L){
   lua_fn_extract_lisp_value(L);
   Lisp_Object list = lua_to_lisp(-1);
@@ -469,6 +476,10 @@ int lua_setup_metatables(lua_State *L){
    // __index 
   lua_pushstring(L, "__index");
   lua_pushcfunction(L, lua_hash__index);
+  lua_rawset(L, -3);
+  // __len
+  lua_pushstring(L, "__len");
+  lua_pushcfunction(L, lua_hash__len);
   lua_rawset(L, -3);
   
   lua_setglobal(L, "lisp_hash_metatable");
