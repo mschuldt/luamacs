@@ -299,6 +299,13 @@ int lua_vector__index (lua_State *L){
   return 1;
 }
 
+int lua_hash__index (lua_State *L){
+  printf("lua_hash__index\n");
+  lua_fn_extract_lisp_value(L);
+  lisp_to_lua(L, Fgethash(lua_to_lisp(2), lua_to_lisp(-1), Qnil));
+  return 1;
+}
+
 
 int lua__len (lua_State *L){
   printf("lua__len\n");
@@ -457,7 +464,15 @@ int lua_setup_metatables(lua_State *L){
   lua_setglobal(L, "lisp_vector_metatable");
 
   
-  //hash ------------------------------
+  //hash --------------------------------------------------
+  lua_newtable(L);
+   // __index 
+  lua_pushstring(L, "__index");
+  lua_pushcfunction(L, lua_hash__index);
+  lua_rawset(L, -3);
+  
+  lua_setglobal(L, "lisp_hash_metatable");
+  
   //buffer ----------------------------
 }
 

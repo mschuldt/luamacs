@@ -1270,9 +1270,17 @@ inline void
 lua_push_buffer (lua_State *L, Lisp_Object obj){
   _lua_push_helper("lisp_buffer_metatable");
 }
+
 inline void
 lua_push_hash (lua_State *L, Lisp_Object obj){
-  _lua_push_helper("lisp_hash_metatable");
+  printf("lua_push_hash\n");
+  //_lua_push_helper("lisp_hash_metatable");
+  lua_newtable(L);
+  lua_pushstring(L, "_lisp");
+  lua_pushlisp(L, obj);
+  lua_rawset(L, -3);
+  lua_getglobal(L, "lisp_hash_metatable");
+  lua_setmetatable(L, -2);
 }
 //----------------------------------------------------------------------
 
