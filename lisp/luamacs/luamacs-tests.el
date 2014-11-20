@@ -308,6 +308,17 @@ sea = emacs._x[2]")
 	 (should (equal lua.sea "c"))
 	 ))
 
+(ert-deftest luamacs-hash__index ()
+  "tests that L[i] works for hash table reference L"
+  (progn (setq _ht (make-hash-table :test 'equal ))
+         (puthash 2.0 "val" _ht)
+         (puthash "k" 'lsk _ht)
+         (lua-eval "htt = emacs.ht")
+         (lua-eval "v = emacs.ht[2]")
+         (should (equal lua.htt ht))
+         (should (equal lua.v "val"))
+         (should (equal lua.v2 'lsk))))
+
 (ert-deftest luamacs-cons__newindex ()
   "tests that L[i] = v works for cons reference L"
   (progn (setq _x '(1 2 3))
@@ -319,7 +330,7 @@ emacs._x[1] = 'm'")
 	 ))
 
 (ert-deftest luamacs-vector__newindex ()
-  "tests that L[i] = v works for cons reference L"
+  "tests that L[i] = v works for vector reference L"
   (progn (setq _x [1 2 3])
 	 (lua-eval "_v = emacs._x
 _v[0] = 'first'
@@ -327,6 +338,21 @@ _v[2] = 44
 emacs._x[1] = 'm'")
 	 (should (equal _x ["first" "m" 44.0]))
 	 ))
+
+(ert-deftest luamacs-hashtable__newindex ()
+  "tests that L[i] = v works for hashtable reference L"
+  (progn 
+    (setq x (make-hash-table :test 'equal))
+    (lua-eval "emacs.x[2] = 'fromlua'
+ht = emacs.x
+v = ht[2]")
+    (should (and (equal lua.v "fromlua")
+		 (equal (gethash 2.0 x) "fromlua")))
+    (lua-eval "emacs.x[2] = emacs.x[2] .. '!!'")
+    (should (equal (gethash 2.0 x) "fromlua!!"))
+    ))
+
+
 
 (ert-deftest luamacs-cons__len ()
   "tests that getting the length with #L works for cons reference L"
@@ -349,6 +375,19 @@ len2 = #v")
     (should (= lua.len (length _x)))
     (should (= lua.len2 (length _x)))
     ))
+
+(ert-deftest luamacs-hashtable__len ()
+  "tests that getting the length with #L works for hash table reference L"
+  (progn 
+    (setq _ht (make-hash-table))
+    (puthash 1 2 _ht)
+    (puthash 2 3 _ht)
+    (lua-eval "ht = emacs._ht
+n = #ht")
+    (should (= lua.n 2))
+    (puthash 3 3 _ht)
+    (lua-eval "emacs.nn = #emacs._ht")
+    (should (= nn 3))))
 
 (ert-deftest luamacs-cons__pairs ()
   "tests that the pairs method works on cons references"
