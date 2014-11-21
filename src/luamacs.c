@@ -350,6 +350,12 @@ int lua_hashtable__newindex (lua_State *L){
   return 0;
 }
 
+int lua_buffer_name (lua_State *L){
+  lua_fn_extract_lisp_value(L);
+  lua_pushstring(L,XSTRING(Fbuffer_name(lua_to_lisp(-1)))->data);
+  return 1;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 int lua__index_method (lua_State *L){
   int n = lua_gettop(L);
@@ -496,7 +502,13 @@ int lua_setup_metatables(lua_State *L){
 
   lua_setglobal(L, "lisp_hash_metatable");
 
-  //buffer ----------------------------
+  //buffer ---------------------------------------------------
+  lua_newtable(L);
+  //buffer-name
+  lua_pushstring(L, "name");
+  lua_pushcfunction(L, lua_buffer_name);
+  lua_rawset(L, -3);
+  lua_setglobal(L, "lisp_buffer_metatable");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
