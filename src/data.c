@@ -1204,12 +1204,16 @@ void lisp_to_lua(lua_State *L, Lisp_Object obj){
   case Lisp_Vectorlike:
     if (VECTORP (obj)){
       lua_push_vector(L, obj);
-    } else if (HASH_TABLE_P (obj)){
-      lua_push_hash(L, obj);
-    } else if (BUFFERP (obj)){
-      lua_push_buffer(L, obj);
+      return;
     }
-    return;
+    if (HASH_TABLE_P (obj)){
+      lua_push_hash(L, obj);
+      return;
+    }/*  else if (BUFFERP (obj)){ */
+    /*   lua_push_buffer(L, obj); */
+    /*   return */
+    /* } */
+    //fall through
   push_lisp:
   default:
     lua_pushlisp(L, obj);
@@ -1269,10 +1273,6 @@ lua_push_vector (lua_State *L, Lisp_Object obj){
   lua_getglobal(L, "lisp_vector_metatable");
   lua_setmetatable(L, -2);  
 }
-inline void
-lua_push_buffer (lua_State *L, Lisp_Object obj){
-  _lua_push_helper("lisp_buffer_metatable");
-}
 
 inline void
 lua_push_hash (lua_State *L, Lisp_Object obj){
@@ -1283,6 +1283,18 @@ lua_push_hash (lua_State *L, Lisp_Object obj){
   lua_pushlisp(L, obj);
   lua_rawset(L, -3);
   lua_getglobal(L, "lisp_hash_metatable");
+  lua_setmetatable(L, -2);
+}
+
+inline void
+lua_push_buffer (lua_State *L, Lisp_Object obj){
+  printf("lua_push_buffer\n");
+  //_lua_push_helper("lisp_hash_metatable");
+  lua_newtable(L);
+  lua_pushstring(L, "_lisp");
+  lua_pushlisp(L, obj);
+  lua_rawset(L, -3);
+  lua_getglobal(L, "lisp_buffer_metatable");
   lua_setmetatable(L, -2);
 }
 //----------------------------------------------------------------------
