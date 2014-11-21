@@ -2050,7 +2050,7 @@ eval_sub (Lisp_Object form)
       lua_pushglobaltable(L);
       lua_getfield(L, -1, name);
       if (!lua_isfunction(L, -1)){
-        printf("ERROR: trying to call lua non-function (%s)", name);
+        printf("ERROR: trying to call lua non-function (%s)\n", name);
         Fsetcar(form, lua_to_lisp(-1));
         //TODO: ^ check that it is actually a lisp function
         lua_pop(L, 1);
