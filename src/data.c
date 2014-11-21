@@ -1194,6 +1194,8 @@ void lisp_to_lua(lua_State *L, Lisp_Object obj){
       EXTRACT_PUSH_LUA_VAL(obj);
       printf("TValue = %d\n", ttypenv(XLUA_VALUE(obj)->o));
       return;
+    }else{
+      goto push_lisp;
     }
     // separate functions for each lua type
   case Lisp_Cons:
@@ -1208,6 +1210,7 @@ void lisp_to_lua(lua_State *L, Lisp_Object obj){
       lua_push_buffer(L, obj);
     }
     return;
+  push_lisp:
   default:
     lua_pushlisp(L, obj);
   }
