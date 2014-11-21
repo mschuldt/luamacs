@@ -402,6 +402,7 @@ int lua__index_method_f (lua_State *L){
     lisp_to_lua(L, sym);
     return 1;
   }
+  //TODO: if it is a lambda or closure it makes sence to return it
   char msg[100];
   sprintf(msg, "Error: function emacs.%s is unbound", name);
   signal_error(msg, Qnil);
