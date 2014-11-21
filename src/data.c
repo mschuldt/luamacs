@@ -1154,13 +1154,8 @@ global value outside of any lexical scope.  */)
       name += 4;
       printf("looking up lua value: %s\n", name);
       lua_checkstack(L, 2);
-      lua_pushglobaltable(L);
-      //lua_getfield(L, LUA_GLOBALSINDEX, name);
-      lua_getfield(L, -1, name);
-      //TODO: what if the field does not exist?
-      //val = lua_to_lisp(index2addr(L, -1));
+      lua_getglobal(L, name);
       val = lua_to_lisp(-1);
-      lua_pop(L, 1); //pop globals table
     }else{
       val = find_symbol_value (symbol);
     }
