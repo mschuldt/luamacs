@@ -1177,6 +1177,7 @@ global value outside of any lexical scope.  */)
 //pushes the lua representation of OBJ onto the stack
 void lisp_to_lua(lua_State *L, Lisp_Object obj){
   int type = XTYPE (obj);
+  Lisp_Object car;
   switch (type){
   case_Lisp_Int:
     //lua_pushnumber(L, XINT(obj));
@@ -1199,6 +1200,10 @@ void lisp_to_lua(lua_State *L, Lisp_Object obj){
     }
     // separate functions for each lua type
   case Lisp_Cons:
+    car = XCAR(obj);
+    if (EQ(car, Qlambda) || EQ(car, Qclosure)){
+      goto push_lisp;
+    }
     lua_push_cons(L, obj);
     return;
   case Lisp_Vectorlike:
