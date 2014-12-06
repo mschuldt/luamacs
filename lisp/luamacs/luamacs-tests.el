@@ -14,25 +14,25 @@
   ;;strings
   (let (x)
     (setq x "val")
-    (lua-eval "_v = (emacs.x == 'val')")
+    (lua-eval "_v = (el.x == 'val')")
     (should lua._v))
   (let (x)
-    (lua-eval "emacs.x = 'fromlua'")
+    (lua-eval "el.x = 'fromlua'")
     (should (equal x "fromlua")))
   ;;numbers
   (let (x)
     (setq x 33)
-    (lua-eval "_v = (emacs.x == 33)")
+    (lua-eval "_v = (el.x == 33)")
     (should lua._v))
   (let (x)
-    (lua-eval "emacs.x = 100")
+    (lua-eval "el.x = 100")
     (should (equal x 100.0)))
 
   (let ((ss (lua-stacksize))
 	(x 1))
 
     (dotimes (i 100);(* (lua-stacksize) 2))
-      (lua-eval "_v = emacs.x")
+      (lua-eval "_v = el.x")
       lua._v)
     ;;(should (= ss (lua-stacksize)))
     ;;this is the same problem as described in
@@ -144,15 +144,15 @@ TODO: FIX: THIS TEST FAILS WHEN BYTE COMPILED"
   "tests calling variable bound lisp functions from lua"
   (let (f)
     (setq f (lambda () "ok"))
-    (lua-eval "v = emacs.f()")
+    (lua-eval "v = el.f()")
     (should (equal lua.v "ok")))
   (let (f)
     (setq f (lambda (a) (concat a "!")))
-    (lua-eval "_v1 = emacs.f('x')")
+    (lua-eval "_v1 = el.f('x')")
     (should (equal lua._v1 "x!")))
   (let (f)
     (setq f (lambda (a b) (concat a b "!")))
-    (lua-eval "_v2 = emacs.f('x', 'y')")
+    (lua-eval "_v2 = el.f('x', 'y')")
     (should (equal lua._v2 "xy!")))
   
   ;;TODO: test stacksize
@@ -163,7 +163,7 @@ TODO: FIX: THIS TEST FAILS WHEN BYTE COMPILED"
   "Tests that lisp objects referenced from lua will not be garbage collected"
   (let (l)
     (setq l '(1 2))
-    (lua-eval "ll = emacs.l")
+    (lua-eval "ll = el.l")
     (setq l nil)
     (garbage-collect)
     (should (equal lua.ll '(1 2)))))
@@ -193,15 +193,15 @@ TODO: FIX: THIS TEST FAILS WHEN BYTE COMPILED"
 ;;   "Tests that multiple references in lua to the same lisp objects are the same"
 ;;   (let (v)
 ;;     (setq v '(a b))
-;;     (lua-eval "_a = emacs.v")
-;;     (lua-eval "_b = emacs.v")
+;;     (lua-eval "_a = el.v")
+;;     (lua-eval "_b = el.v")
 ;;     (lua-eval "_v = (_a == _b)")
 ;;     (lua-eval "_vl = (_a.__lisp == _b.__lisp)")
 ;;     (and (should lua._v)
 ;; 	 (should lua._vl))))
 
 (ert-deftest luamacs-tables ()
-  "test table manipulation from emacs"
+  "test table manipulation from el"
   (let (_t) ;;new-table, set, get
     (setq _t (lua-new-table))
     (lua-set _t "a" 3)
@@ -262,7 +262,7 @@ TODO: FIX: THIS TEST FAILS WHEN BYTE COMPILED"
 		  (setq __ms 22)
                   (format "indexed name = '%s'" name)))
     (lua-eval "_x = {}
-             setmetatable(_x, {__index = emacs.index})")
+             setmetatable(_x, {__index = el.index})")
     (lua-eval "_v = _x.nonexistant")
     (should (and (equal lua._v "indexed name = 'nonexistant'")
 		 (equal (lua-get lua._x "something") "indexed name = 'something'"))))
@@ -271,7 +271,7 @@ TODO: FIX: THIS TEST FAILS WHEN BYTE COMPILED"
       (setq newindex (lambda (table name value)
                         (lua-rawset table name (concat value "!"))))
       (lua-eval "_x = {}
-  setmetatable(_x, {__newindex = emacs.newindex})")
+  setmetatable(_x, {__newindex = el.newindex})")
       (lua-eval "_x.new = 'lua'");;set from lua
       (lua-set lua._x "vv" "lisp");;set from emacs
       (should (and (equal (lua-get lua._x "new") "lua!")
@@ -283,7 +283,7 @@ TODO: FIX: THIS TEST FAILS WHEN BYTE COMPILED"
     (lua-set mt "__index" mt)
     (lua-set mt "a" 44)
     (lua-eval "_x = {}")
-    (lua-eval "setmetatable(_x, emacs.mt)")
+    (lua-eval "setmetatable(_x, el.mt)")
     (should (= (lua-get lua._x "a") 44.0)))
   )
 
@@ -291,7 +291,7 @@ TODO: FIX: THIS TEST FAILS WHEN BYTE COMPILED"
   "test that the lua 'type' function works with references to lisp objects"
   (let (x)
     (setq x '(a b c))
-    (lua-eval "v = emacs.x
+    (lua-eval "v = el.x
                vt = type(v)
                lt = type(v.__lisp)")
     (should (equal lua.vt  "table"))
@@ -320,7 +320,7 @@ end")
   "tests that cons references have the correct metatable"
   (let (x)
     (setq x '("a"))
-    (lua-eval "v = emacs.x
+    (lua-eval "v = el.x
 mt = getmetatable(v)")
     (should (eq lua.lisp_cons_metatable lua.mt)))
   )
@@ -329,7 +329,7 @@ mt = getmetatable(v)")
   "tests that vector references have the correct metatable"
   (let (x)
     (setq x ["a"])
-    (lua-eval "v = emacs.x
+    (lua-eval "v = el.x
 mt = getmetatable(v)")
     (should (eq lua.lisp_vector_metatable lua.mt)))
   )
@@ -338,9 +338,9 @@ mt = getmetatable(v)")
   "tests that L[i] works for cons reference L"
   (let (x)
     (setq x '("a" "b" "c"))
-    (lua-eval "v = emacs.x
+    (lua-eval "v = el.x
 y = v[1]
-sea = emacs.x[2]")
+sea = el.x[2]")
     (should (equal lua.y "b"))
     (should (equal lua.sea "c"))
     ))
@@ -349,9 +349,9 @@ sea = emacs.x[2]")
   "tests that L[i] works for cons reference L"
   (let (x)
     (setq x ["a" "b" "c"])
-    (lua-eval "v = emacs.x
+    (lua-eval "v = el.x
 y = v[1]
-sea = emacs.x[2]")
+sea = el.x[2]")
     (should (equal lua.y "b"))
     (should (equal lua.sea "c"))
     ))
@@ -362,9 +362,9 @@ sea = emacs.x[2]")
     (setq ht (make-hash-table :test 'equal ))
     (puthash 2.0 "val" ht)
     (puthash "k" 'lsk ht)
-    (lua-eval "htt = emacs.ht")
-    (lua-eval "v = emacs.ht[2]")
-    (lua-eval "v2 = emacs.ht['k']")
+    (lua-eval "htt = el.ht")
+    (lua-eval "v = el.ht[2]")
+    (lua-eval "v2 = el.ht['k']")
     (should (equal lua.htt ht))
     (should (equal lua.v "val"))
     (should (equal lua.v2 'lsk))))
@@ -373,10 +373,10 @@ sea = emacs.x[2]")
   "tests that L[i] = v works for cons reference L"
   (let (x)
     (setq x '(1 2 3))
-    (lua-eval "_v = emacs.x
+    (lua-eval "_v = el.x
 _v[0] = 'first'
 _v[2] = 44
-emacs.x[1] = 'm'")
+el.x[1] = 'm'")
     (should (equal x '("first" "m" 44.0)))
     ))
 
@@ -384,10 +384,10 @@ emacs.x[1] = 'm'")
   "tests that L[i] = v works for vector reference L"
   (let (x)
     (setq x [1 2 3])
-    (lua-eval "_v = emacs.x
+    (lua-eval "_v = el.x
 _v[0] = 'first'
 _v[2] = 44
-emacs.x[1] = 'm'")
+el.x[1] = 'm'")
     (should (equal x ["first" "m" 44.0]))
     ))
 
@@ -395,12 +395,12 @@ emacs.x[1] = 'm'")
   "tests that L[i] = v works for hashtable reference L"
   (let (x)
     (setq x (make-hash-table :test 'equal))
-    (lua-eval "emacs.x[2] = 'fromlua'
-ht = emacs.x
+    (lua-eval "el.x[2] = 'fromlua'
+ht = el.x
 v = ht[2]")
     (should (and (equal lua.v "fromlua")
 		 (equal (gethash 2.0 x) "fromlua")))
-    (lua-eval "emacs.x[2] = emacs.x[2] .. '!!'")
+    (lua-eval "el.x[2] = el.x[2] .. '!!'")
     (should (equal (gethash 2.0 x) "fromlua!!"))
     ))
 
@@ -410,8 +410,8 @@ v = ht[2]")
   "tests that getting the length with #L works for cons reference L"
   (let (x)
     (setq x '(2 3 4))
-    (lua-eval "len = #emacs.x
-v = emacs.x
+    (lua-eval "len = #el.x
+v = el.x
 len2 = #v")
     (should (= lua.len (length x)))
     (should (= lua.len2 (length x)))
@@ -421,8 +421,8 @@ len2 = #v")
   "tests that getting the length with #L works for cons reference L"
   (let (x)
     (setq x [2 3 4])
-    (lua-eval "len = #emacs.x
-v = emacs.x
+    (lua-eval "len = #el.x
+v = el.x
 len2 = #v")
     (should (= lua.len (length x)))
     (should (= lua.len2 (length x)))
@@ -434,11 +434,11 @@ len2 = #v")
     (setq ht (make-hash-table))
     (puthash 1 2 ht)
     (puthash 2 3 ht)
-    (lua-eval "ht = emacs.ht
+    (lua-eval "ht = el.ht
 n = #ht")
     (should (= lua.n 2))
     (puthash 3 3 ht)
-    (lua-eval "emacs.nn = #emacs.ht")
+    (lua-eval "el.nn = #el.ht")
     (should (= nn 3))))
 
 (ert-deftest luamacs-cons__pairs ()
@@ -446,14 +446,14 @@ n = #ht")
   (let (x)
     (setq x '(2 4 6 8))
     (lua-eval "new = {}
-for k,v in pairs(emacs.x) do
+for k,v in pairs(el.x) do
  print('key = ' .. k)
  print('val = ' .. v)
  new[k] = v*v
 end
-emacs._a = new[0]
-emacs._b = new[1]
-emacs._c = new[3]")
+el._a = new[0]
+el._b = new[1]
+el._c = new[3]")
     (should (and (= _a 4)
 		 (= _b 16)
 		 (= _c 64)))))
@@ -464,14 +464,14 @@ emacs._c = new[3]")
   (let (x)
     (setq x [2 4 6 8])
     (lua-eval "new = {}
-for k,v in pairs(emacs.x) do
+for k,v in pairs(el.x) do
  print('key = ' .. k)
  print('val = ' .. v)
  new[k] = v*v
 end
-emacs._a = new[0]
-emacs._b = new[1]
-emacs._c = new[3]")
+el._a = new[0]
+el._b = new[1]
+el._c = new[3]")
     (should (and (= _a 4)
 		 (= _b 16)
 		 (= _c 64)))))

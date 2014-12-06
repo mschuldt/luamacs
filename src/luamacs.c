@@ -431,7 +431,7 @@ int lua_setup_metatables(lua_State *L){
   lua_settable(L, -3);
 
   lua_setmetatable(L, -2);
-  lua_setfield(L, -2, "emacs");
+  lua_setfield(L, -2, "el");
 
 
   lua_newtable(L); //elf table
