@@ -66,4 +66,20 @@ end")
    end
 end")
 
+;;
+;; The following is used to hack support for interactive Lua functions
+;;
+
+(lua-eval "function def_command(name, fn)
+   elf.def_lua_command(name,fn)
+end")
+
+
+(defun def_lua_command (name fn)
+  (eval `(defun ,(intern name) ()
+	   "This function is defined in Lua.
+It was made interactive with `def_lua_command'"
+           (interactive)
+           (funcall ,fn))))
+
 (provide 'luamacs)
