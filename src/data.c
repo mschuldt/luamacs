@@ -1065,6 +1065,8 @@ find_symbol_value (Lisp_Object symbol)
 Lisp_Object lua_to_lisp (int idx){
   int type;
   Lisp_Object ret;
+  double d;
+  long l;
   if (lua_istable(L, idx)){
     lua_pushstring(L, "_lisp");
     lua_rawget(L, -2);
@@ -1091,7 +1093,13 @@ Lisp_Object lua_to_lisp (int idx){
   case LUA_TNUMBER: //3
     printf("lua: number\n");
     //return make_number(lua_tonumber(L, idx));
-    ret = make_float(lua_tonumber(L, idx));
+    d = lua_tonumber(L, idx);
+    l = (long)d;
+    if (d == l){
+      ret = make_number(l);
+    }else{
+      ret = make_float(d);
+    }
     break;
   case LUA_TSTRING: //4
     ret = build_string(lua_tostring(L, idx)); //TODO: create reference or copy?
