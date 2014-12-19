@@ -1131,6 +1131,8 @@ Lisp_Object lua_to_lisp (int idx){
   case LUA_TTHREAD: //8
   case LUA_NUMTAGS: //9 ??
     //    return;
+    ret = build_lua_tvalue(getStackItem(L, idx));
+    break;
   default:
     //TODO: lisp error 
     printf("ERROR -- lua_to_lisp: trying to convert unknown type: %d\n", type);
