@@ -4,11 +4,11 @@ Luamacs is is a result of merging the Emacs-lisp and Lua interpreters.
 Each of the interpreters can lookup values and call functions
 the from the other one.
 They have each been extended with a new data type that allows them to
-manipulate references to values in the other environment.
+manipulate references to values in the others environment.
 
 Quick demo:
 
-;;create lua function that prints a tables field:
+;;create a lua function that prints a tables field:
 (lua-eval "function ff(x) 
               return x.val
             end")
@@ -16,35 +16,32 @@ Quick demo:
 ;;define a lua table
 (lua-eval "tbl = {val = 'lua string'}")
 
-;;store the lua table in an e-lisp var
+;;store the lua table in an e-lisp variable
 (setq z lua.tbl)
-==> #<Lua ref>
+==> #<Lua table at 0x9e71e80>
 
 ;; call the lua function from emacs 
-(lua.ff z) 
+(lua.ff z)
 ==> "lua string"
 
-;; or refer to the table stored in emacs
-(lua-eval "v = ff(emacs.z)")
+;; Or refer to the table referenced from Emacs.
+(lua-eval "v = ff(el.z)")
 
-;; then reference it from emacs:
+;; then reference the result from emacs:
 (concat lua.v " + emacs string")
 ==> "lua string + emacs string"
 
 ;;referencing non-valid lisp names from lua:
 (setq +illegal-var?! "does it work?")
-(lua-eval "ok = emacs['+illegal-var?!'] .. ' YES!'")
+(lua-eval "ok = el['+illegal-var?!'] .. ' YES!'")
 lua.ok
 ==> "does it work? YES!"
 
-;;storing Lisp_Objects in lua:
+;;storing oisp objects in lua:
 (setq this_buff (current-buffer))
-(lua-eval "b = emacs.this_buff")
+(lua-eval "b = el.this_buff")
 (buffer-name lua.b)
 ==> "*scratch*"
-
-
-
 
 Running tests:
    (require 'luamacs-tests)
