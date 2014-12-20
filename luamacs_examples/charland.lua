@@ -14,7 +14,7 @@
 -- even more points without possibility of loss.
 --
 -- First, evaluate this file with:
---  Mx-x lua-eval-buffer
+--  M-x lua-eval-buffer
 --
 -- start the game:
 --  M-x charland
@@ -24,29 +24,46 @@
 --  a: move left
 --  d: move right
 --  s: move down
---  p: protest class-ism and war. The game is paused while you do so.
+--  p: protest the war. The game is paused while you do so.
 --     press 'p' again to resume
 --
----
+--
 -- Implementation Notes.
--- TODO
+--   The idea was to implement cooperative multitasking using coroutines,
+--   alas, that did not work. This is the first non-trivial Luamacs program,
+--   and a number of bugs where discovered during the course of its creation.
+--   The relevant bug mysteriously prevents the lisp function 'goto-char'
+--   from being called inside a coroutine.
+--   Instead, after each turn, a character inserts itself into a central schedule
+--   (implemented as a priority queue) with some delay value. After that
+--   amount of time has passed, the main update function will call the
+--   characters update function again.
+--
+--
+-- TODO:
+--  The following things are broken or unimplemented:
+--    - the user can still insert text into the game field
+--    - the chars need to modify their course to try catching the user
+--
 
-goto_char = elf['goto-char']
-insert_char = elf['insert-char']
-current_buffer = elf['current-buffer']
-switch_to_buffer = elf['switch-to-buffer']
-run_with_timer = elf['run-with-timer']
-get_buffer = elf['get-buffer']
-backward_char = elf['backward-char']
-delete_char = elf['delete-char']
-buffer_name = elf['buffer-name']
-add_text_properties = elf['add-text-properties']
+-- These lisp function names are not valid in lua, for convenience they
+-- are given a legal local name
+local goto_char = elf['goto-char']
+local insert_char = elf['insert-char']
+local current_buffer = elf['current-buffer']
+local switch_to_buffer = elf['switch-to-buffer']
+local run_with_timer = elf['run-with-timer']
+local get_buffer = elf['get-buffer']
+local backward_char = elf['backward-char']
+local delete_char = elf['delete-char']
+local buffer_name = elf['buffer-name']
+local add_text_properties = elf['add-text-properties']
+
 local cl_buffer = "*CharLand*"
 local cl_paused = false
 
 local counter = 0
 
-people = {}
 min_char = 33
 max_char = 126
 user_start_char = 50
@@ -62,8 +79,6 @@ function Char:new(o)
    o.id = counter
    o.c = math.random(max_char - min_char - 1) + min_char
    o.update_delay = 0.1 + math.random()
-
-   people[counter] = o
    counter = counter + 1
    return o
 end
@@ -169,14 +184,12 @@ function Char:char_below (direction)
 end
 
 function Char:live ()
-   -- just another day living in Charland
    -- while true do
    if self.delete then
       --delete this one and create another one to replace it
       spawn()
       --TODO: need to remove the character from the board if it reaches the edge
       return --delete by not inserting back into the schedule
-
    end
 
    dx = self.x - user.x
@@ -188,9 +201,9 @@ function Char:live ()
    local p = self.line()
    local in_bounds = self:move_to(p)
    -- insert into the main schedule and yield to another process
-   -- these don't work for some reason
-   -- if in_bound then
-   -- if in_bound == true then
+   -- these don't work for some reason, even when in_bound is 'true'
+   --   if in_bound then
+   --   if in_bound == true then
    if in_bound ~= false then
       schedule:insert(self.cr, self.update_delay)
    end
@@ -409,5 +422,3 @@ function update_score()
    end
    goto_char(user.pos)
 end
-
-----------------------------------------------------------------------
