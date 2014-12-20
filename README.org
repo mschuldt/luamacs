@@ -164,6 +164,15 @@ Without some Lisp support.
 - Crashes Emacs: (setq (lambda ()))
 - ...
 * Internals
+** data type conversions
+The main conversion functions are defined in src/data.c they are 'lisp_to_lua'
+and 'lua_to_lisp'. Numbers and strings are converted into native types while
+a reference is created for everything else (references should probably also
+be created for strings).
+
+'setlispvalue' (src/lobject.h) is used to set the lisp object in a lua reference.
+'build_lua_tvalue' (src/alloc.c) is used to create a lisp reference.
+
 ** Lisp references to lua objects
  Lisp references are defined in src/lisp.h, they are made by extending
 the lisp union Lisp_Misc with struct Lisp_Lua_TValue, which contains
@@ -176,13 +185,30 @@ from lisp the same reference object can be returned. When the reference
 is garbage collected, it removes itself from lua object that it references.
 
 ** Lua references to lisp objects
-TODO
+Lua references, unlike the lisp ones, are not collectible. This stems
+from a poor decision made when the structure of Lua data types was not
+well understood.
+
+The Lua references store the lisp object they refer to in the union Value
+(src/lobject.h). The union GCObject should be extended instead instead.
+Doing so would allow them to be collected in the same way as the lisp
+references are. Currently, once a lisp object has been referenced
+from lua, it will never be garbage collected.
+** Accessing lisp data and functions from lua
+This is all done through the tables 'el' and 'elf' defined using the
+lua c API in src/luamacs.c
+** Accessing lua data and functions from lisp
+The lisp primitive 'symbol-value' is modified to intercept symbol value
+lookups that use the pseudo lua object notation (lua.varname), it extracts
+the variable name and looks it up in Lua instead. A similar thing is
+done when calling lua functions from lisp, this time the function 'eval_sub'
+and lisp primitive "funcall" in src/eval.c where modified.
 ** Garbage collection
 Because objects from each of the interpreters can be referenced
 by the other interpreter, some objects that are still reachable may not
 get marked. To make all user-reachable objects GC-reachable, all
 objects that are referenced by the other interpreter are inserted into a
-hash table when a reference to them is created. When the reference collected,
+hash table when a reference to them is created. When the reference is collected,
 that object is removed from the hash table. The lua table that stores objects
 referenced from lisp is '__lisp_references'. The lisp hashtable that
-stores objects referenced from lua is '__referenced_from_lua'
+stores objects referenced from lua is '__referenced_from_lua'.
