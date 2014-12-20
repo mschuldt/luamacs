@@ -12,6 +12,13 @@
 -- therefor your class) increases. When you reach the highest possible class,
 -- you win. Now you are free to terrorize the lower class characters and collect
 -- even more points without possibility of loss.
+-- Additional notes:
+--   - Chars with lower class are green, one with higher class are red.
+--   - Class upgrades occur when your score is 10 times your class.
+--   - When you undergo a class upgrade you lose half your points.
+--   - A negative score does not end the game, but you can only keep
+--     half the points you earn while your score is negative.
+--
 --
 -- First, evaluate this file with:
 --  M-x lua-eval-buffer
@@ -117,7 +124,7 @@ function Char:move_to(location)
       if self == user then
 	 -- we got it!
 	 if self.c >= resident.c then
-	    score = score + resident.c
+            increment_score(resident.c)
 	 else
 	    score = score - resident.c
 	 end
@@ -127,7 +134,7 @@ function Char:move_to(location)
       elseif resident == user then
 	 -- they go us:
 	 if self.c <= resident.c then
-	    score = score + resident.c
+	    increment_score(resident.c)
 	 else
 	    score = score - resident.c
 	 end
@@ -149,6 +156,13 @@ function Char:move_to(location)
    insert_colored_char(self)
    --backward_char()
    return true
+end
+
+function increment_score(amt)
+   if score < 0 then
+      amt = math.floor(amt/2)
+   end
+   score = score + amt
 end
 
 function to_char_position(x,y)
@@ -424,6 +438,6 @@ function update_score()
    -- check if we can upgrade the users class
    if score > user.c * 10 then
       user.c = user.c + 1
-      score  = score/2
+      score = math.floor(score/2)
    end
 end
