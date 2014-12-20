@@ -152,6 +152,7 @@ lua-stacksize:  Returns the size of the lua stack
 * Limitations
 - Calling lisp macros from Lua
 - Lisp Symbols
+- ...
 
 Because of these limitations it is not practical to write a full Emacs mode in Lua
 Without some Lisp support.
@@ -161,3 +162,27 @@ Without some Lisp support.
 - Lua errors are unhandled often cause Emacs to crash
 - Nested calls to lisp functions from Lua. This crashes Emacs: elf.a(elf.b())
 - Crashes Emacs: (setq (lambda ()))
+- ...
+* Internals
+** Lisp references to lua objects
+ Lisp references are defined in src/lisp.h, they are made by extending
+the lisp union Lisp_Misc with struct Lisp_Lua_TValue, which contains
+a field TValue* referencing the lua value. This forms the type
+Lisp_Misc_Lua_TValue.
+
+Each lua object that is referenced from lisp contains a field that points
+to its lisp reference. This way if a lua object is referenced again
+from lisp the same reference object can be returned. When the reference
+is garbage collected, it removes itself from lua object that it references.
+
+** Lua references to lisp objects
+TODO
+** Garbage collection
+Because objects from each of the interpreters can be referenced
+by the other interpreter, some objects that are still reachable may not
+get marked. To make all user-reachable objects GC-reachable, all
+objects that are referenced by the other interpreter are inserted into a
+hash table when a reference to them is created. When the reference collected,
+that object is removed from the hash table. The lua table that stores objects
+referenced from lisp is '__lisp_references'. The lisp hashtable that
+stores objects referenced from lua is '__referenced_from_lua'
