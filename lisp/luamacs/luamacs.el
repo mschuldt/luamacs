@@ -87,4 +87,20 @@ It was made interactive with `def_lua_command'"
 (defun lua-local-set-key (key function)
   (eval `(local-set-key ,key (lambda () (interactive) (funcall ,function)))))
 (setq lua.local_set_key 'lua-local-set-key)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; char-after was returning some kind of lisp-object
+;; so this is a temp solution for the 'charland.lua' example
+(setq lua.char_after '(lambda () (let ((x (char-after)))
+				   (if (eq (type-of x)
+					   'integer)
+				       x
+				     0))))
+
+;;this is here to support the 'charland.lua' example
+(setq red_face `(face (:foreground ,(format "#%02x%02x%02x" 255 0 0))))
+(setq green_face `(face (:foreground ,(format "#%02x%02x%02x" 0 255 0))))
+
+
 (provide 'luamacs)
