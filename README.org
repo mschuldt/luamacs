@@ -7,8 +7,8 @@ the from the other one.
 They have each been extended with a new data type that allows them to
 manipulate references to values in the others environment.
 
-From Emacs, values are referenced using the pseudo object 'lua'. For example,
-the variable 'x' is referenced with 'lua.x'. From Lua, variable values are
+From Emacs, Lua values are referenced using the pseudo object 'lua'. For example,
+the variable 'x' is referenced with 'lua.x'. From Lua, lisp variable values are
 referenced using the table 'el'. Because E-lisp variables and functions
 exist in separate namespaces, a separate table 'elf' is used to reference
 lisp functions from Lua. Additional lisp primitives are provided for
@@ -140,8 +140,8 @@ In the [[file:luamacs_examples/][luamacs_examples/]] directory:
 - [[file:luamacs_examples/charland.lua][charland.lua]]      An example game
 
 * misc lisp primitives
-lua-garbage-collect: Runs the lua garbage collector
-lua-stacksize:  Returns the size of the lua stack
+- 'lua-garbage-collect': Runs the lua garbage collector
+- 'lua-stacksize':  Returns the size of the lua stack
 * Running tests
 #+Begin_SRC emacs-lisp
    (require 'luamacs-tests)
