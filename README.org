@@ -7,55 +7,157 @@ the from the other one.
 They have each been extended with a new data type that allows them to
 manipulate references to values in the others environment.
 
+From Emacs, values are referenced using the pseudo object 'lua'. For example,
+the variable 'x' is referenced with 'lua.x'. From Lua, variable values are
+referenced using the table 'el'. Because E-lisp variables and functions
+exist in separate namespaces, a separate table 'elf' is used to reference
+lisp functions from Lua. Additional lisp primitives are provided for
+working with lua tables directly. When lisp lists, vectors, or hashtables are
+referenced from lua they are wrapped in a Lua table that provides
+methods for manipulating the lisp values in a natural lua way.
+
 * Examples
+** Basic
 Evaluate lua code from lisp:
 #+Begin_SRC emacs-lisp
 ;;create a lua function that prints a tables field:
-(lua-eval "function ff(x) 
+(lua-eval "function ff(x)
               return x.val
             end")
 ;;define a lua table
 (lua-eval "tbl = {val = 'lua string'}")
 #+END_SRC
-store the lua table in an e-lisp variable
+Now store the lua table in a lisp variable
 #+Begin_SRC emacs-lisp
 (setq z lua.tbl)
 ==> #<Lua table at 0x9e71e80>
 #+END_SRC
-call the lua function from emacs 
-#+Begin_SRC emacs-lisp
-(lua.ff z)
-==> "lua string"
-#+END_SRC
-Or refer to the table referenced from Emacs.
-#+Begin_SRC emacs-lisp
-(lua-eval "v = ff(el.z)")
-#+END_SRC
-then reference the result from emacs:
-#+Begin_SRC emacs-lisp
-(concat lua.v " + emacs string")
-==> "lua string + emacs string"
-#+END_SRC
-referencing non-valid lisp names from lua:
-#+Begin_SRC emacs-lisp
-(setq +illegal-var?! "does it work?")
-(lua-eval "ok = el['+illegal-var?!'] .. ' YES!'")
-lua.ok
-==> "does it work? YES!"
-#+END_SRC
-storing oisp objects in lua:
+Lisp objects can also be stored in lua:
 #+Begin_SRC emacs-lisp
 (setq this_buff (current-buffer))
 (lua-eval "b = el.this_buff")
 (buffer-name lua.b)
 ==> "*scratch*"
+lua.b
+==> #<buffer *scratch*>
+#+END_SRC
+Call the Lua function from Emacs:
+#+Begin_SRC emacs-lisp
+(lua.ff z)        ;; or (funcall lua.ff z)
+==> "lua string"
+#+END_SRC
+Or refer to the table stored in Emacs:
+#+Begin_SRC emacs-lisp
+(lua-eval "v = ff(el.z)")
+#+END_SRC
+Then get the result from Emacs:
+#+Begin_SRC emacs-lisp
+(concat lua.v " + emacs string")
+==> "lua string + emacs string"
+#+END_SRC
+Calling lisp functions from lua:
+#+Begin_SRC emacs-lisp
+(lua-eval "x = elf.concat(elf['buffer-name'](), '!!!!!')")
+lua.x
+==> "*scratch*!!!!!"
+#+END_SRC
+** Wrapped lisp values in lua
+list lists, vectors, and hashtables are wrapped in Lua tables when
+they are referenced from Lua, their metatables provide the methods
+__index, __newindex, __len, and __pairs.
+
+Get the length of a lisp sequence in lua:
+#+Begin_SRC emacs-lisp
+(setq v [1 2 3])
+(lua-eval "len = #el.v") ;; the alternative is  "elf.length(el.v)"
+lua.len
+==> 3
+#+END_SRC
+Getting and setting vector values from Lua (also works for lists and hashtables):
+#+Begin_SRC emacs-lisp
+(setq v [1 2 3])
+(lua-eval "el.v[1] = 'new' .. el.v[1]")
+v
+==> [1 "new2" 3]
+#+END_SRC
+Iterate over a list: (also works with vectors and hashtables)
+#+Begin_SRC emacs-lisp
+(setq x '("one" "two" "three"))
+(lua-eval "for k,v in pairs(el.x) do
+ el.x[k] = v ..  k
+end")
+x
+==> ("one0" "two1" "three2")
+#+END_SRC
+Lua function convert a lisp dictionary to an lisp alist
+#+Begin_SRC emacs-lisp
+
+(setq ht (make-hash-table))
+(puthash 1 "first" ht)
+(puthash 2 "second" ht)
+(lua-eval "function to_alist(ht)
+   local list = nil
+   for k,v in pairs(ht) do
+      list = elf.cons(elf.list(k, v), list)
+   end
+   return list
+end")
+(setq alist (lua.to_alist ht))
+alist
+==> ((1 "first") (2 "second"))
 #+END_SRC
 
-* testing
+** Working with lua tables with lisp primitives
+The following primitives are provided:
+lua-new-table, lua-get, lua-set, lua-rawset,
+lua-setmetatable, alist-to-table, sequence-to-table.
+Example:
+#+Begin_SRC emacs-lisp
+(setq tbl (lua-new-table)) ;;==> #<Lua table at 0x10baf000>
+(setq mt (lua-new-table))
+(lua-set mt "__index" mt)
+(lua-set tbl "x" 3)
+(lua-set mt "a" "in metatable")
+(lua-setmetatable tbl mt)
+(lua-get tbl "x")   ==> 3
+(lua-get tbl "a")   ==> "in metatable"
+#+END_SRC
+
+** Creating Emacs commands in Lua
+The lua function 'def_command' is used to define command callable from Emacs
+with M-x.
+#+Begin_SRC emacs-lisp
+(lua-eval "function say_hi ()
+  elf.message('hello from lua')
+end
+
+def_command('say_hi', say_hi)
+")
+#+END_SRC
+** extended examples
+In the [[file:luamacs_examples/][luamacs_examples/]] directory:
+- [[file:luamacs_examples/ascii-table.lua][ascii-table.lua]]   Defines the Emacs command 'ascii_table'
+- [[file:luamacs_examples/charland.lua][charland.lua]]      An example game
+
+* misc lisp primitives
+lua-garbage-collect: Runs the lua garbage collector
+lua-stacksize:  Returns the size of the lua stack
+* Running tests
 #+Begin_SRC emacs-lisp
    (require 'luamacs-tests)
 #+END_SRC
 #+Begin_SRC text
    M-x luamacs-run-tests
 #+END_SRC
+* Limitations
+- Calling lisp macros from Lua
+- Lisp Symbols
 
+Because of these limitations it is not practical to write a full Emacs mode in Lua
+Without some Lisp support.
+* Known bugs
+- You cannot call the lisp function 'goto-char' from within a Coroutine.
+  (I have no idea why)
+- Lua errors are unhandled often cause Emacs to crash
+- Nested calls to lisp functions from Lua. This crashes Emacs: elf.a(elf.b())
+- Crashes Emacs: (setq (lambda ()))
