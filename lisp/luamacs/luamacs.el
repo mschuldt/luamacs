@@ -13,7 +13,9 @@
   "Evaluate the current buffer contents as lua code"
   ;;TODO: other options like `eval-buffer'
   (interactive)
-  (lua-eval (buffer-string)))
+  (message (if (lua-eval (buffer-string))
+	       "OK"
+	     "Error")))
 
 (lua-eval "function lisp_cons_metatable.__pairs (tbl)
    local len = #tbl
