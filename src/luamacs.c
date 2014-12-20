@@ -372,7 +372,7 @@ int lua__index_method (lua_State *L){
     }
   }
   char msg[100]; //TODO: fix this (max var length?)
-  sprintf(msg, "Error: emacs.%s is unbound", name);
+  sprintf(msg, "Error: el.%s is unbound", name);
   signal_error(msg, Qnil);
 }
 
@@ -404,7 +404,7 @@ int lua__index_method_f (lua_State *L){
   }
   //TODO: if it is a lambda or closure it makes sence to return it
   char msg[100];
-  sprintf(msg, "Error: function emacs.%s is unbound", name);
+  sprintf(msg, "Error: function elf.%s is unbound", name);
   signal_error(msg, Qnil);
 }
 
