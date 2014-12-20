@@ -82,4 +82,9 @@ It was made interactive with `def_lua_command'"
            (interactive)
            (funcall ,fn))))
 
+;;local-set-key is one of the cases that requires an interactive function
+;;so we need to handle this case separately for now
+(defun lua-local-set-key (key function)
+  (eval `(local-set-key ,key (lambda () (interactive) (funcall ,function)))))
+(setq lua.local_set_key 'lua-local-set-key)
 (provide 'luamacs)
