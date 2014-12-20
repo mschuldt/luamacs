@@ -421,4 +421,9 @@ function update_score()
       elf.insert(" ")
    end
    goto_char(user.pos)
+   -- check if we can upgrade the users class
+   if score > user.c * 10 then
+      user.c = user.c + 1
+      score  = score/2
+   end
 end
