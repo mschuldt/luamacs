@@ -16,6 +16,15 @@ working with lua tables directly. When lisp lists, vectors, or hashtables are
 referenced from lua they are wrapped in a Lua table that provides
 methods for manipulating the lisp values in a natural lua way.
 
+* Usage
+Evaluate a string as Lua code:
+#+Begin_SRC emacs-lisp
+(lua-eval "<lua code>")
+#+END_SRC
+Evaluate a buffer as Lua code:
+#+Begin_SRC text
+M-x lua-eval-buffer
+#+END_SRC
 * Examples
 ** Basic
 Evaluate lua code from lisp:
@@ -164,7 +173,7 @@ Without some Lisp support.
 - Crashes Emacs: (setq (lambda ()))
 - ...
 * Internals
-** data type conversions
+** Data type conversions
 The main conversion functions are defined in src/data.c they are 'lisp_to_lua'
 and 'lua_to_lisp'. Numbers and strings are converted into native types while
 a reference is created for everything else (references should probably also
