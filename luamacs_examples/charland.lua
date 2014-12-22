@@ -51,7 +51,7 @@
 --  The following things are broken or unimplemented:
 --    - the user can still insert text into the game field
 --    - the chars need to modify their course to try catching the user
---
+--    - pause is broken
 
 -- These lisp function names are not valid in lua, for convenience they
 -- are given a legal local name
@@ -60,11 +60,13 @@ local insert_char = elf['insert-char']
 local current_buffer = elf['current-buffer']
 local switch_to_buffer = elf['switch-to-buffer']
 local run_with_timer = elf['run-with-timer']
+local cancel_timer = elf['cancel-timer']
 local get_buffer = elf['get-buffer']
 local backward_char = elf['backward-char']
 local delete_char = elf['delete-char']
 local buffer_name = elf['buffer-name']
 local add_text_properties = elf['add-text-properties']
+local float_time = elf['float-time']
 
 local cl_buffer = "*CharLand*"
 local cl_paused = false
@@ -85,7 +87,7 @@ function Char:new(o)
    setmetatable(o, self)
    o.id = counter
    o.c = math.random(max_char - min_char - 1) + min_char
-   o.update_delay = 0.1 + math.random()
+   o.update_delay = 0.1 + math.random()/2.0
    counter = counter + 1
    return o
 end
@@ -249,6 +251,7 @@ end
 function random_line ()
    local p1 = random_location()
    local p2 = random_location()
+
    p1.x = 0 -- p1 is on left border
    p2.x = width-1 -- p2 is on right border
    return make_line_fn(p1, p2)
@@ -280,7 +283,13 @@ UP={x=0, y=-1}
 DOWN={x=0, y=1}
 
 function move_user(direction)
-   return user:move_to{x = user.x + direction.x, y = user.y + direction.y}
+   x = user:move_to{x = user.x + direction.x, y = user.y + direction.y}
+   if update_timer then
+      cancel_timer(update_timer)
+      update_timer = nil
+   end
+   update()
+   return x
 end
 
 
@@ -356,7 +365,8 @@ def_command("charland", charland)
 ---------------------------------------------------------------------
 
 function time ()
-   return os.time() - paused_time
+   --return os.time() - paused_time
+   return float_time() - paused_time
 end
 
 schedule = {}
@@ -397,8 +407,11 @@ function schedule:next_time()
    end
 end
 
-cl_update_time = 0.3
+cl_update_time = 0.1
+
+update_timer = nil
 function update()
+   update_timer = nil
    while true do
       if buffer_name() ~= cl_buffer and not paused then
 	 pause_game()
@@ -413,7 +426,7 @@ function update()
       if next_time > time() then
          --schedule this function to be called next
          --run_with_timer(next_time - time(), nil, update)
-	 run_with_timer(cl_update_time, nil, update) -- check more often to pause if needed
+	 update_timer = run_with_timer(cl_update_time, nil, update) -- check more often to pause if needed
 	 return
       end
       local x = schedule:get_next()
@@ -436,8 +449,15 @@ function update_score()
    end
    goto_char(user.pos)
    -- check if we can upgrade the users class
-   if score > user.c * 10 then
+
+   --if score > user.c * 10 then
+   if score > 100 then --for faster demo
       user.c = user.c + 1
-      score = math.floor(score/2)
+      --score = math.floor(score/2)
+      score = 0
    end
 end
+
+--TODO: don't save undo info to avoid this warning message:
+----Warning (undo): Buffer `*CharLand*' undo info was 12038337 bytes long.
+----The undo info was discarded because it exceeded `undo-outer-limit'.
