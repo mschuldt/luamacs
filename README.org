@@ -1,9 +1,9 @@
 Luamacs -- Emacs with Lua
 
 * Overview
-Luamacs is is a result of merging the Emacs-lisp and Lua interpreters.
+Luamacs is the result of merging the Emacs-lisp and Lua interpreters.
 Each of the interpreters can lookup values and call functions
-the from the other one.
+from the other one.
 They have each been extended with a new data type that allows them to
 manipulate references to values in the others environment.
 
